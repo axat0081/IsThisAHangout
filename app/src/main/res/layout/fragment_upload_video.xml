@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgdetails"
+    tools:context=".ui.createContent.UploadVideoFragment">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/video_title_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:backgroundTint="@color/mypink"
+        android:textColorHint="@color/mypink">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background=" #26000000"
+            android:hint="Video Title...."
+            android:inputType="textEmailAddress"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/mypink"
+            android:textSize="20sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/video_text_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video_title_edit_text"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:backgroundTint="@color/mypink"
+        android:textColorHint="@color/mypink">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background=" #26000000"
+            android:hint="Add a description...."
+            android:inputType="textEmailAddress"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/mypink"
+            android:textSize="20sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/select_video_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video_text_edit_text"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/video" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/select_thumbnail_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video_text_edit_text"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@id/select_video_button"
+        android:src="@drawable/image" />
+
+    <ImageView
+        android:id="@+id/crop_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video_text_edit_text"
+        android:layout_marginTop="20dp"
+        android:layout_toEndOf="@id/select_thumbnail_button"
+        android:layout_marginStart="20dp"
+        tools:src="@mipmap/ic_launcher"
+        android:scaleType="fitXY"
+        android:layout_marginEnd="30dp"/>
+
+    <Button
+        android:id="@+id/upload_song_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/crop_image_view"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@id/select_thumbnail_button"
+        android:background="@drawable/rounded_button"
+        android:text="Upload" />
+</RelativeLayout>

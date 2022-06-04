@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/commenter_pfp_image_view"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        tools:src="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/commenter_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
+        android:layout_toEndOf="@id/commenter_pfp_image_view"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/mypink"
+        android:textStyle="bold"
+        tools:text="The Tester" />
+
+    <TextView
+        android:id="@+id/comment_time_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commenter_username"
+        android:layout_alignStart="@id/commenter_username"
+        android:layout_marginEnd="30dp"
+        android:layout_toEndOf="@id/commenter_pfp_image_view"
+        android:textColor="@color/myblue"
+        tools:text="26-07-2919" />
+
+    <TextView
+        android:id="@+id/comment_text_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commenter_pfp_image_view"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:textColor="@color/myblue"
+        android:textSize="17sp"
+        tools:text="@string/test_text" />
+
+    <RelativeLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comment_text_text_view">
+
+        <ProgressBar
+            android:id="@+id/comment_image_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:id="@+id/comment_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitCenter" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_below="@id/layout1"
+        android:layout_marginTop="10dp" />
+</RelativeLayout>

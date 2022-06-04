@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment2">
+
+    <fragment
+        android:id="@+id/homeFragment2"
+        android:name="com.example.isthisahangout.ui.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment2_to_animeDetailsFragment"
+            app:destination="@id/animeDetailsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeByGenreFragment"
+            app:destination="@id/animeByGenreFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeScheduleFragment"
+            app:destination="@id/animeScheduleFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_profileFragment2"
+            app:destination="@id/profileFragment2"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeSeasonFragment2"
+            app:destination="@id/animeSeasonFragment2"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeQuoteFragment"
+            app:destination="@id/animeQuoteFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_favouritesFragment"
+            app:destination="@id/favouritesFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeByNameFragment2"
+            app:destination="@id/animeByNameFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right" />
+        <action
+            android:id="@+id/action_homeFragment2_to_mangaFragment"
+            app:destination="@id/mangaFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animePicsFragment"
+            app:destination="@id/animePicsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_animeNewsFragment"
+            app:destination="@id/animeNewsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatsFragment2"
+        android:name="com.example.isthisahangout.ui.ChatsFragment"
+        android:label="Chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/videosFragment2"
+        android:name="com.example.isthisahangout.ui.VideosFragment"
+        android:label="Videos"
+        tools:layout="@layout/fragment_videos" >
+        <action
+            android:id="@+id/action_videosFragment2_to_uploadVideoFragment"
+            app:destination="@id/uploadVideoFragment" />
+        <action
+            android:id="@+id/action_videosFragment2_to_videoDetailsFragment"
+            app:destination="@id/videoDetailsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/postsFragment2"
+        android:name="com.example.isthisahangout.ui.PostsFragment"
+        android:label="Posts"
+        tools:layout="@layout/fragment_posts">
+        <action
+            android:id="@+id/action_postsFragment2_to_postsDetailsFragment2"
+            app:destination="@id/postsDetailsFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_postsFragment2_to_createPostFragment"
+            app:destination="@id/createPostFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeDetailsFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.AnimeDetailsFragment"
+        android:label="Anime Details"
+        tools:layout="@layout/fragment_anime_detail">
+        <argument
+            android:name="anime"
+            app:argType="com.example.isthisahangout.models.AiringAnimeResponse$AiringAnime" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameDetailsFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.GameDetailsFragment"
+        android:label="Game Details"
+        tools:layout="@layout/fragment_game_details">
+        <argument
+            android:name="game"
+            app:argType="com.example.isthisahangout.models.RoomGames" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeByGenreFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeByGenreFragment"
+        android:label="Anime By Genres"
+        tools:layout="@layout/fragment_anime_by_genre" >
+        <action
+            android:id="@+id/action_animeByGenreFragment_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeScheduleFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeScheduleFragment"
+        android:label="Anime schedule"
+        tools:layout="@layout/fragment_anime_schedule" >
+        <action
+            android:id="@+id/action_animeScheduleFragment_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.isthisahangout.ui.auth.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment2"
+            app:destination="@id/homeFragment2"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.isthisahangout.ui.auth.RegistrationFragment"
+        android:label="Create Account"
+        tools:layout="@layout/fragment_registration">
+        <action
+            android:id="@+id/action_registrationFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_registrationFragment_to_homeFragment2"
+            app:destination="@id/homeFragment2"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment2"
+        android:name="com.example.isthisahangout.ui.navDrawer.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment2_to_addComfortCharacterFragment"
+            app:destination="@id/addComfortCharacterFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_profileFragment2_to_profileImageUpdateFragment"
+            app:destination="@id/profileImageUpdateFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/postsDetailsFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.PostsDetailsFragment"
+        android:label="Post Details"
+        tools:layout="@layout/fragment_post_details">
+        <argument
+            android:name="post"
+            app:argType="com.example.isthisahangout.models.FirebasePost" />
+    </fragment>
+    <fragment
+        android:id="@+id/createPostFragment"
+        android:name="com.example.isthisahangout.ui.createContent.CreatePostFragment"
+        android:label="Create a post"
+        tools:layout="@layout/fragment_create_post">
+        <action
+            android:id="@+id/action_createPostFragment_to_postsFragment2"
+            app:destination="@id/postsFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/songFragment"
+        android:name="com.example.isthisahangout.ui.SongFragment"
+        android:label="Music"
+        tools:layout="@layout/fragment_song">
+        <action
+            android:id="@+id/action_songFragment_to_uploadSongFragment"
+            app:destination="@id/uploadSongFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_songFragment_to_songDetailFragment"
+            app:destination="@id/songDetailFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadSongFragment"
+        android:name="com.example.isthisahangout.ui.createContent.UploadSongFragment"
+        android:label="Music and Chill"
+        tools:layout="@layout/fragment_upload_song" />
+    <fragment
+        android:id="@+id/uploadVideoFragment"
+        android:name="com.example.isthisahangout.ui.createContent.UploadVideoFragment"
+        android:label="Post a video"
+        tools:layout="@layout/fragment_upload_video" />
+    <fragment
+        android:id="@+id/animeSeasonFragment2"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeSeasonFragment"
+        android:label="Search anime by season"
+        tools:layout="@layout/fragment_anime_season" >
+        <action
+            android:id="@+id/action_animeSeasonFragment2_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeQuoteFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeQuoteFragment"
+        android:label="Anime Quotes"
+        tools:layout="@layout/fragment_anime_quotes" />
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.FavouritesFragment"
+        android:label="Favourites"
+        tools:layout="@layout/fragment_favourites" >
+        <action
+            android:id="@+id/action_favouritesFragment_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/videoDetailsFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.VideoDetailsFragment"
+        android:label="Video"
+        tools:layout="@layout/fragment_video_details">
+        <argument
+            android:name="video"
+            app:argType="com.example.isthisahangout.models.FirebaseVideo" />
+    </fragment>
+    <fragment
+        android:id="@+id/songDetailFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.SongDetailFragment"
+        android:label="Play Music"
+        tools:layout="@layout/fragment_song_detail">
+        <argument
+            android:name="song"
+            app:argType="com.example.isthisahangout.models.Song" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeByNameFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeByNameFragment"
+        android:label="Search Anime By Name"
+        tools:layout="@layout/fragment_anime_by_name" >
+        <action
+            android:id="@+id/action_animeByNameFragment_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/mangaFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.MangaFragment"
+        android:label="Manga Corner"
+        tools:layout="@layout/fragment_manga" >
+        <action
+            android:id="@+id/action_mangaFragment_to_detailDisplayFragment"
+            app:destination="@id/detailDisplayFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <dialog
+        android:id="@+id/addComfortCharacterFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AddComfortCharacterFragment"
+        android:label="fragment_add_comfort_character"
+        tools:layout="@layout/fragment_add_comfort_character" />
+    <fragment
+        android:id="@+id/animePicsFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimePicsFragment"
+        android:label="Anime pics"
+        tools:layout="@layout/fragment_anime_pics" />
+    <fragment
+        android:id="@+id/animeNewsFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeNewsFragment"
+        android:label="Otaku News"
+        tools:layout="@layout/fragment_anime_news" />
+    <fragment
+        android:id="@+id/detailDisplayFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.DetailDisplayFragment"
+        android:label="Details"
+        tools:layout="@layout/fragment_detail_display">
+        <argument
+            android:name="content"
+            app:argType="com.example.isthisahangout.models.AnimeGenreResults$AnimeByGenres" />
+    </fragment>
+    <dialog
+        android:id="@+id/profileImageUpdateFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.ProfileImageUpdateFragment"
+        tools:layout="@layout/fragment_profile_image_update" />
+</navigation>

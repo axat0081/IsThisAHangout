@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">IsThisAHangout</string>
+    <string name="could_not_refresh">Could not refresh: %s</string>
+    <string name="unknown_error_occurred">An unknown error occurred</string>
+    <string name="test_text">Interactive problems are still a new topic which confuses many participants. Recently I failed to solve some of the interactive problems during contests, so I decided to practice</string>
+    <string name="top_manga">Top Manga</string>
+</resources>

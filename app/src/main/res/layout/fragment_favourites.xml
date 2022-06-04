@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgdetails"
+    tools:context=".ui.navDrawer.FavouritesFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="30dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/anime_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Anime"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/anime_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_text_view"
+                android:layout_marginTop="10dp"
+                android:background="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_below="@id/anime_search_view"
+                android:layout_marginTop="10dp"
+                android:background="#26000000" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/anime_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_search_view"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/anime_display_layout" />
+
+            <TextView
+                android:id="@+id/game_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_recyclerview"
+                android:layout_marginTop="10dp"
+                android:text="Game"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/game_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/game_text_view"
+                android:layout_marginTop="10dp"
+                android:background="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_below="@id/game_search_view"
+                android:layout_marginTop="10dp"
+                android:background="#26000000" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/games_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/game_search_view"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/anime_display_layout" />
+
+            <TextView
+                android:id="@+id/video_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/games_recyclerview"
+                android:layout_marginTop="10dp"
+                android:text="Video"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/video_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/video_text_view"
+                android:layout_marginTop="10dp"
+                android:background="@color/white" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_below="@id/video_search_view"
+                android:layout_marginTop="10dp"
+                android:background="#26000000" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/video_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/video_search_view"
+                android:orientation="horizontal"
+                tools:listitem="@layout/video_display_layout" />
+
+            <TextView
+                android:id="@+id/post_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/video_recyclerview"
+                android:layout_marginTop="10dp"
+                android:text="Post"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/post_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_text_view"
+                android:layout_marginTop="10dp"
+                android:background="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/posts_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/post_search_view"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/post_display_layout" />
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgdetails"
+    tools:context=".ui.navDrawer.MangaFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/manga_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/top_manga"
+                android:layout_marginBottom="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink" />
+
+            <RelativeLayout
+                android:id="@+id/layout_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/manga_error_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Aw snap, an error occured"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/mypink" />
+
+                <Button
+                    android:id="@+id/manga_retry_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/manga_error_text_view"
+                    android:layout_marginStart="90dp"
+                    android:layout_marginEnd="90dp"
+                    android:background="@drawable/rounded_button"
+                    android:text="Retry" />
+
+                <ProgressBar
+                    android:id="@+id/manga_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/manga_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/anime_display_layout" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/manga_by_genre_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_main"
+                android:text="Search manga by genre"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink" />
+
+            <HorizontalScrollView
+                android:id="@id/chips_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/manga_by_genre_text_view"
+                android:layout_marginTop="10dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/action_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Action"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shoujo_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Shoujo"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shonen_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Shonen"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/psychological_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Psychological"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/adventure_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Adventure"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/mystery_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Mystery"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fantasy_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Fantasy"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/comedy_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Comedy"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/horror_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Horror"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/magic_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Magic"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/mecha_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Mecha"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/romance_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Romance"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/music_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Music"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sci_fi_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Sci Fi"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/slice_of_life_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Slice of Life"
+                        android:textColor="@color/mypink" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chips_bar">
+
+                <TextView
+                    android:id="@+id/manga_by_genre_error_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Aw snap, an error occured!!!"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/mypink" />
+
+                <Button
+                    android:id="@+id/manga_by_genre_retry_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/manga_by_genre_error_text_view"
+                    android:layout_marginStart="90dp"
+                    android:layout_marginEnd="90dp"
+                    android:background="@drawable/rounded_button"
+                    android:text="Retry" />
+
+                <ProgressBar
+                    android:id="@+id/manga_by_genre_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/manga_by_genre_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/anime_display_layout" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

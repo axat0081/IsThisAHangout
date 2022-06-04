@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profileFragment2"
+        android:icon="@drawable/profile"
+        android:iconTint="@color/mypink"
+        android:title="Profile" />
+    <item
+        android:id="@+id/animeByGenreFragment"
+        android:icon="@drawable/search"
+        android:iconTint="@color/mypink"
+        android:title="Search anime by genres" />
+    <item
+        android:id="@+id/animeSeasonFragment2"
+        android:icon="@drawable/calender"
+        android:title="Search anime by season" />
+    <item
+        android:id="@+id/remindersFragment"
+        android:icon="@drawable/reminders"
+        android:iconTint="@color/mypink"
+        android:title="Reminders" />
+    <item
+        android:id="@+id/animeQuoteFragment"
+        android:icon="@drawable/quote"
+        android:iconTint="@color/mypink"
+        android:title="Anime Quotes" />
+    <item
+        android:id="@+id/animeScheduleFragment"
+        android:icon="@drawable/calender"
+        android:title="Anime Schedule" />
+    <item
+        android:id="@+id/mangaFragment"
+        android:icon="@drawable/manga_corner"
+        android:title="Manga Corner" />
+    <item
+        android:id="@+id/animeByNameFragment"
+        android:icon="@drawable/search"
+        android:title="Search Anime By Name" />
+    <item
+        android:id="@+id/favouritesFragment"
+        android:icon="@drawable/favourites"
+        android:title="Favourites" />
+    <item
+        android:id="@+id/animePicsFragment"
+        android:icon="@drawable/image"
+        android:title="Anime pics" />
+    <item
+        android:id="@+id/animeNewsFragment"
+        android:icon="@drawable/news"
+        android:title="Otaku News" />
+</menu>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "150613809370",
+    "project_id": "isthisahangout-61d93",
+    "storage_bucket": "isthisahangout-61d93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150613809370:android:e4105f26cb8e9dd792ede3",
+        "android_client_info": {
+          "package_name": "com.example.isthisahangout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150613809370-qpov3ih2dps2udsmerf4pdcik4n3t55i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDffaDK_VHjaJr8BpK0N0FLP_ZRuwaMldU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150613809370-qpov3ih2dps2udsmerf4pdcik4n3t55i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
