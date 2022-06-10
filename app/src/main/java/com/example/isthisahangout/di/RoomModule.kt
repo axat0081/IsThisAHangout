@@ -13,6 +13,9 @@ import com.example.isthisahangout.cache.games.GamesRemoteKeyDao
 import com.example.isthisahangout.cache.manga.MangaDao
 import com.example.isthisahangout.cache.manga.MangaDatabase
 import com.example.isthisahangout.cache.manga.MangaRemoteKeyDao
+import com.example.isthisahangout.cache.pokemon.PokemonDao
+import com.example.isthisahangout.cache.pokemon.PokemonDatabase
+import com.example.isthisahangout.cache.pokemon.PokemonKeyDao
 import com.example.isthisahangout.cache.posts.PostDatabase
 import com.example.isthisahangout.cache.posts.PostsDao
 import dagger.Module
@@ -123,6 +126,23 @@ object RoomModule {
     @Singleton
     fun providesMangaRemoteKeyDao(db: MangaDatabase): MangaRemoteKeyDao = db.getMangaRemoteKeyDao()
 
+    ///Pokemon
+    @Provides
+    @Singleton
+    fun providesPokemonDatabase(app: Application): PokemonDatabase =
+        Room.databaseBuilder(app, PokemonDatabase::class.java, "pokemon_database")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesPokemonDao(pokemonDatabase: PokemonDatabase): PokemonDao =
+        pokemonDatabase.getPokemonDao()
+
+    @Provides
+    @Singleton
+    fun providesPokemonKeyDao(pokemonDatabase: PokemonDatabase): PokemonKeyDao =
+        pokemonDatabase.getPokemonKeyDao()
 
     ///Posts
     @Provides

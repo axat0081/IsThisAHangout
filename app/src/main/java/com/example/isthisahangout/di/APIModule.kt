@@ -1,9 +1,6 @@
 package com.example.isthisahangout.di
 
-import com.example.isthisahangout.api.AnimeAPI
-import com.example.isthisahangout.api.AnimePicsAPI
-import com.example.isthisahangout.api.AnimeQuoteAPI
-import com.example.isthisahangout.api.GameAPI
+import com.example.isthisahangout.api.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,7 +53,7 @@ object APIModule {
 
     @Provides
     @Singleton
-    fun providesAnimePicsAPI(@Named("AnimePicsAPI")retrofit: Retrofit): AnimePicsAPI =
+    fun providesAnimePicsAPI(@Named("AnimePicsAPI") retrofit: Retrofit): AnimePicsAPI =
         retrofit.create(AnimePicsAPI::class.java)
 
     //Games
@@ -72,4 +69,19 @@ object APIModule {
     @Singleton
     fun providesGameAPI(@Named("GameAPI") retrofit: Retrofit): GameAPI =
         retrofit.create(GameAPI::class.java)
+
+    //Pokemon
+    @Provides
+    @Singleton
+    @Named("PokemonAPI")
+    fun providesPokemonRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(PokemonAPI.BASE_URl)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    fun providesPokemonAPI(@Named("PokemonAPI") retrofit: Retrofit): PokemonAPI =
+        retrofit.create(PokemonAPI::class.java)
+
 }
