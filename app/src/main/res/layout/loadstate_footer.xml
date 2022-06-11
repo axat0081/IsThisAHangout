@@ -15,7 +15,7 @@
         android:id="@+id/load_state_error_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Aw snap, an error occured!!!"
+        android:text="@string/aw_snap_an_error_occurred"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/mypink"
         android:textSize="17sp" />
@@ -26,5 +26,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@drawable/rounded_button"
-        android:text="Retry" />
+        android:text="@string/retry" />
 </LinearLayout>

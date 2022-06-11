@@ -4,4 +4,6 @@
     <string name="unknown_error_occurred">An unknown error occurred</string>
     <string name="test_text">Interactive problems are still a new topic which confuses many participants. Recently I failed to solve some of the interactive problems during contests, so I decided to practice</string>
     <string name="top_manga">Top Manga</string>
+    <string name="aw_snap_an_error_occurred">Aw snap, an error occurred!!!</string>
+    <string name="retry">Retry</string>
 </resources>

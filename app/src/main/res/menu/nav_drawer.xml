@@ -14,11 +14,15 @@
         android:id="@+id/animeSeasonFragment2"
         android:icon="@drawable/calender"
         android:title="Search anime by season" />
-<!--    <item-->
-<!--        android:id="@+id/remindersFragment"-->
-<!--        android:icon="@drawable/reminders"-->
-<!--        android:iconTint="@color/mypink"-->
-<!--        android:title="Reminders" />-->
+    <item
+        android:id="@+id/pokemonFragment"
+        android:icon="@drawable/pokemon"
+        android:title="Pokemons"/>
+    <item
+        android:id="@+id/remindersFragment"
+        android:icon="@drawable/reminders"
+        android:iconTint="@color/mypink"
+        android:title="Reminders" />
     <item
         android:id="@+id/animeQuoteFragment"
         android:icon="@drawable/quote"
@@ -40,10 +44,10 @@
         android:id="@+id/favouritesFragment"
         android:icon="@drawable/favourites"
         android:title="Favourites" />
-<!--    <item-->
-<!--        android:id="@+id/animePicsFragment"-->
-<!--        android:icon="@drawable/image"-->
-<!--        android:title="Anime pics" />-->
+    <item
+        android:id="@+id/animePicsFragment"
+        android:icon="@drawable/image"
+        android:title="Anime pics" />
     <item
         android:id="@+id/animeNewsFragment"
         android:icon="@drawable/news"

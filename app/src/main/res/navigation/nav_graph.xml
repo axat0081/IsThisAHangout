@@ -100,6 +100,9 @@
             app:exitAnim="@anim/to_right"
             app:popEnterAnim="@anim/from_right"
             app:popExitAnim="@anim/to_left" />
+        <action
+            android:id="@+id/action_homeFragment2_to_pokemonFragment"
+            app:destination="@id/pokemonFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment2"
@@ -393,4 +396,9 @@
         android:id="@+id/profileImageUpdateFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.ProfileImageUpdateFragment"
         tools:layout="@layout/fragment_profile_image_update" />
+    <fragment
+        android:id="@+id/pokemonFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.PokemonFragment"
+        android:label="fragment_pokemon"
+        tools:layout="@layout/fragment_pokemon" />
 </navigation>

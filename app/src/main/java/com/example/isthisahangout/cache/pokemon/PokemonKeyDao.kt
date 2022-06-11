@@ -14,6 +14,6 @@ interface PokemonKeyDao {
     @Query("SELECT * FROM pokemon_remote_key where id = :id")
     suspend fun getPokemonRemoteKeys(id: String): PokemonRemoteKey
 
-    @Query("DELETE FROM games_remote_key")
+    @Query("DELETE FROM pokemon_remote_key")
     suspend fun deletePokemonRemoteKey()
 }

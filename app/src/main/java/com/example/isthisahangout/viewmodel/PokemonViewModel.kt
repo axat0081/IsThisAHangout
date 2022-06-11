@@ -11,5 +11,6 @@ import javax.inject.Inject
 class PokemonViewModel @Inject constructor(
     pokemonRepository: PokemonRepository
 ): ViewModel() {
+    var refreshInProgress = false
     val pokemon = pokemonRepository.getPokemonPaginated().cachedIn(viewModelScope)
 }
