@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.isthisahangout.R
@@ -23,7 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 class PokemonFragment : Fragment(R.layout.fragment_pokemon), PokemonAdapter.OnItemClickListener {
     private var _binding: FragmentPokemonBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModels<PokemonViewModel>()
+    private val viewModel by activityViewModels<PokemonViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPokemonBinding.bind(view)
@@ -63,7 +64,7 @@ class PokemonFragment : Fragment(R.layout.fragment_pokemon), PokemonAdapter.OnIt
                                         .error.localizedMessage
                                         ?: getString(R.string.aw_snap_an_error_occurred)
                                 pokemonErrorTextView.text = errorMessage
-                                if(viewModel.refreshInProgress){
+                                if (viewModel.refreshInProgress) {
                                     Snackbar.make(
                                         requireView(),
                                         errorMessage,
@@ -90,7 +91,12 @@ class PokemonFragment : Fragment(R.layout.fragment_pokemon), PokemonAdapter.OnIt
     }
 
     override fun onItemClick(pokemon: Pokemon) {
-
+        findNavController()
+            .navigate(
+                PokemonFragmentDirections.actionPokemonFragmentToPokemonDetailsFragment(
+                    pokemon
+                )
+            )
     }
 
     override fun onDestroyView() {

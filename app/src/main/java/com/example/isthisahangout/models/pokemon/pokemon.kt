@@ -1,7 +1,9 @@
 package com.example.isthisahangout.models.pokemon
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
 
 data class PokemonResponse(
@@ -20,13 +22,14 @@ data class PokemonDto(
         )
 }
 
+@Parcelize
 @Entity(tableName = "pokemon")
 data class Pokemon(
     @PrimaryKey
     val name: String,
     val url: String,
     val image: String
-)
+) : Parcelable
 
 fun getPokemonImageUrl(url: String): String {
     val number = if (url.endsWith("/")) {

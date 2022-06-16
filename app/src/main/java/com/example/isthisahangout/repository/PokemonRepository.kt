@@ -8,8 +8,13 @@ import com.example.isthisahangout.cache.pokemon.PokemonDao
 import com.example.isthisahangout.cache.pokemon.PokemonDatabase
 import com.example.isthisahangout.cache.pokemon.PokemonKeyDao
 import com.example.isthisahangout.models.pokemon.Pokemon
+import com.example.isthisahangout.models.pokemon.PokemonDetails
 import com.example.isthisahangout.remotemediator.PokemonRemoteMediator
+import com.example.isthisahangout.utils.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,4 +39,16 @@ class PokemonRepository @Inject constructor(
             ),
             pagingSourceFactory = { pokemonDao.getPokemonPaginated() }
         ).flow
+
+    fun getPokemonDetails(name: String): Flow<Resource<PokemonDetails>> = flow {
+        emit(Resource.Loading())
+        try {
+            val pokemonDetails = pokemonAPI.getPokemonDetails(name)
+            emit(Resource.Success(pokemonDetails))
+        } catch (exception: HttpException) {
+            emit(Resource.Error(throwable = exception))
+        } catch (exception: IOException) {
+            emit(Resource.Error(throwable = exception))
+        }
+    }
 }

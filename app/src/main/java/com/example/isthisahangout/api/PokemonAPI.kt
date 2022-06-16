@@ -1,7 +1,9 @@
 package com.example.isthisahangout.api
 
+import com.example.isthisahangout.models.pokemon.PokemonDetails
 import com.example.isthisahangout.models.pokemon.PokemonResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface PokemonAPI {
@@ -15,5 +17,9 @@ interface PokemonAPI {
         @Query("offset") offset: Int
     ): PokemonResponse
 
+    @GET("pokemon/{name}")
+    suspend fun getPokemonDetails(
+        @Path("name") name: String
+    ): PokemonDetails
 
 }
