@@ -1,9 +1,12 @@
 package com.example.isthisahangout.di
 
+import android.content.Context
 import com.example.isthisahangout.api.*
+import com.example.isthisahangout.service.music.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -84,4 +87,9 @@ object APIModule {
     fun providesPokemonAPI(@Named("PokemonAPI") retrofit: Retrofit): PokemonAPI =
         retrofit.create(PokemonAPI::class.java)
 
+    @Singleton
+    @Provides
+    fun provideMusicServiceConnection(
+        @ApplicationContext context: Context
+    ) = MusicServiceConnection(context)
 }

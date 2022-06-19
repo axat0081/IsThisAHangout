@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginTop="10dp"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/song_tite_text_view"
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/anime_news_image_view"
+        app:layout_constraintEnd_toEndOf="@+id/anime_news_title_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/anime_news_title_text_view" />
+
+    <ImageView
+        android:id="@+id/song_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/backgrounds/scenic" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:src="@drawable/gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/song_title_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:padding="5dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/mypink"
-        android:textSize="25sp"
         android:textStyle="bold"
-        tools:text="Song title" />
+        android:textColor="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Headline" />
 
-    <LinearLayout
-        android:id="@+id/linear_layout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/uploaded_by_text_view"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/song_tite_text_view"
-        android:orientation="vertical">
+        tools:text="Uploaded by - Username"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        android:textColor="#fff"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/song_title_text_view" />
 
-        <TextView
-            android:id="@+id/uploaded_by_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/myblue"
-            android:textSize="20sp"
-            tools:text="By: The Tester" />
-
-        <TextView
-            android:id="@+id/time_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/myblue"
-            android:textSize="20sp"
-            tools:text="Uploaded - 20.05.2021 " />
-    </LinearLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@id/linear_layout"
-        android:layout_marginTop="10dp" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

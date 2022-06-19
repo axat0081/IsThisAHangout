@@ -1,17 +1,24 @@
 package com.example.isthisahangout.adapter
 
 import android.annotation.SuppressLint
-import android.icu.text.DateFormat
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.paging.PagingDataAdapter
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.isthisahangout.databinding.SongDisplayLayoutBinding
 import com.example.isthisahangout.models.Song
 
-class SongAdapter(private val listener: OnItemClickListener) :
-    PagingDataAdapter<Song, SongAdapter.SongViewHolder>(COMPARATOR) {
+class SongAdapter(
+    private val listener: OnItemClickListener
+) : ListAdapter<Song, SongAdapter.SongViewHolder>(COMPARATOR) {
 
     companion object {
         val COMPARATOR = object : DiffUtil.ItemCallback<Song>() {
@@ -20,6 +27,7 @@ class SongAdapter(private val listener: OnItemClickListener) :
 
             override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean =
                 oldItem == newItem
+
         }
     }
 
@@ -33,10 +41,7 @@ class SongAdapter(private val listener: OnItemClickListener) :
         )
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        val item = getItem(position)
-        if (item != null) {
-            holder.bind(item)
-        }
+        holder.bind(getItem(position))
     }
 
     interface OnItemClickListener {
@@ -45,26 +50,35 @@ class SongAdapter(private val listener: OnItemClickListener) :
 
     inner class SongViewHolder(private val binding: SongDisplayLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val item = getItem(position)
-                    if (item != null) {
-                        listener.onItemClick(item)
-                    }
-                }
-            }
-        }
-
         @SuppressLint("SetTextI18n")
         fun bind(song: Song) {
             binding.apply {
-                songTiteTextView.text = song.title
-                uploadedByTextView.text = "Uploaded by: ${song.username}"
-                timeTextView.text =
-                    "Uploaded on - " + DateFormat.getDateTimeInstance().format(song.time)
+                songTitleTextView.text = song.title
+                uploadedByTextView.text = "Uploaded by - ${song.username}"
+                Glide.with(itemView)
+                    .load(song.thumbnail)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            progressBar.isVisible = false
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            progressBar.isVisible = false
+                            return false
+                        }
+                    }).into(songImageView)
             }
         }
     }

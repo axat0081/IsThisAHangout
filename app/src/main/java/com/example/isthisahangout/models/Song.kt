@@ -5,12 +5,44 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Song(
-    val id: String? = null,
-    val title: String? = null,
-    val text: String? = null,
-    val url: String? = null,
-    val username: String? = null,
-    val pfp: String? = null,
-    val time: Long? = null,
-    val thumbnail: String? = null
+    val id: String,
+    val title: String,
+    val text: String,
+    val url: String,
+    val username: String,
+    val pfp: String,
+    val time: Long,
+    val thumbnail: String
 ) : Parcelable
+
+@Parcelize
+data class SongDto(
+    val mediaId: String = "",
+    val title: String = "",
+    val subtitle: String = "",
+    val songUrl: String = "",
+    val imageUrl: String = ""
+) : Parcelable
+
+fun SongDto.toSong(): Song {
+    val subtitleParts = subtitle.split(',')
+    return Song(
+        id = mediaId,
+        title = title,
+        text = subtitleParts[2],
+        url = songUrl,
+        username = subtitleParts[0],
+        pfp = subtitleParts[1],
+        time = subtitleParts[3].toLong(),
+        thumbnail = imageUrl
+    )
+}
+
+fun Song.toSongDto(): SongDto =
+    SongDto(
+        mediaId = id,
+        title = title,
+        subtitle = "$username,$pfp,$text,$time",
+        songUrl = url,
+        imageUrl = thumbnail
+    )

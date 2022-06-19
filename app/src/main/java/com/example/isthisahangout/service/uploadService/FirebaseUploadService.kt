@@ -477,17 +477,18 @@ class FirebaseUploadService : BaseService() {
                                 taskCompleted()
                             }.addOnSuccessListener { thumbnailUri ->
                                 val id = songCollectionRef.document().id
+                                val songDto = Song(
+                                    id = id,
+                                    text = song.text,
+                                    title = song.title,
+                                    time = song.time,
+                                    pfp = song.pfp,
+                                    username = song.username,
+                                    thumbnail = thumbnailUri.toString(),
+                                    url = songUri.toString()
+                                ).toSongDto()
                                 songCollectionRef.document(id).set(
-                                    Song(
-                                        id = id,
-                                        text = song.text,
-                                        title = song.title,
-                                        time = song.time,
-                                        pfp = song.pfp,
-                                        username = song.username,
-                                        thumbnail = thumbnailUri.toString(),
-                                        url = songUri.toString()
-                                    )
+                                    songDto
                                 ).addOnCompleteListener { songUpload ->
                                     if (songUpload.isSuccessful) {
                                         Log.d(TAG, "uploadFromUri: getDownloadUri success")
