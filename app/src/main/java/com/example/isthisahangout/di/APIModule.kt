@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -87,6 +88,22 @@ object APIModule {
     fun providesPokemonAPI(@Named("PokemonAPI") retrofit: Retrofit): PokemonAPI =
         retrofit.create(PokemonAPI::class.java)
 
+
+    //Stock Market
+    @Provides
+    @Singleton
+    @Named("StockMarketAPI")
+    fun providesStockMarketRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(StockMarketAPI.BASE_URL)
+        .addConverterFactory(MoshiConverterFactory.create())
+        .build()
+
+    @Provides
+    @Singleton
+    fun providesStockMarketAPI(@Named("StockMarketAPI") retrofit: Retrofit): StockMarketAPI =
+        retrofit.create(StockMarketAPI::class.java)
+
+    //Music
     @Singleton
     @Provides
     fun provideMusicServiceConnection(

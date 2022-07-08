@@ -3,53 +3,53 @@
     <item
         android:id="@+id/profileFragment2"
         android:icon="@drawable/profile"
-        android:iconTint="@color/mypink"
-        android:title="Profile" />
+        android:title="@string/profile" />
     <item
         android:id="@+id/animeByGenreFragment"
         android:icon="@drawable/search"
-        android:iconTint="@color/mypink"
-        android:title="Search anime by genres" />
+        android:title="@string/search_anime_by_genres" />
     <item
         android:id="@+id/animeSeasonFragment2"
         android:icon="@drawable/calender"
-        android:title="Search anime by season" />
+        android:title="@string/search_anime_by_season" />
     <item
         android:id="@+id/pokemonFragment"
         android:icon="@drawable/pokemon"
-        android:title="Pokemons"/>
+        android:title="@string/pokemons"/>
     <item
         android:id="@+id/remindersFragment"
         android:icon="@drawable/reminders"
-        android:iconTint="@color/mypink"
-        android:title="Reminders" />
+        android:title="@string/reminders" />
     <item
         android:id="@+id/animeQuoteFragment"
         android:icon="@drawable/quote"
-        android:iconTint="@color/mypink"
-        android:title="Anime Quotes" />
+        android:title="@string/anime_quotes" />
     <item
         android:id="@+id/animeScheduleFragment"
         android:icon="@drawable/calender"
-        android:title="Anime Schedule" />
+        android:title="@string/anime_schedule" />
     <item
         android:id="@+id/mangaFragment"
         android:icon="@drawable/manga_corner"
-        android:title="Manga Corner" />
+        android:title="@string/manga_corner" />
     <item
         android:id="@+id/animeByNameFragment"
         android:icon="@drawable/search"
-        android:title="Search Anime By Name" />
+        android:title="@string/search_anime_by_name" />
     <item
         android:id="@+id/favouritesFragment"
         android:icon="@drawable/favourites"
-        android:title="Favourites" />
+        android:title="@string/favourites" />
     <item
         android:id="@+id/animePicsFragment"
         android:icon="@drawable/image"
-        android:title="Anime pics" />
+        android:title="@string/anime_pics" />
     <item
         android:id="@+id/animeNewsFragment"
         android:icon="@drawable/news"
-        android:title="Otaku News" />
+        android:title="@string/otaku_news" />
+    <item
+        android:id="@+id/stockMarketFragment"
+        android:icon="@drawable/stock"
+        android:title="@string/stock_market"/>
 </menu>

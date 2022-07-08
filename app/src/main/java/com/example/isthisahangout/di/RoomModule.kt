@@ -18,6 +18,8 @@ import com.example.isthisahangout.cache.pokemon.PokemonDatabase
 import com.example.isthisahangout.cache.pokemon.PokemonKeyDao
 import com.example.isthisahangout.cache.posts.PostDatabase
 import com.example.isthisahangout.cache.posts.PostsDao
+import com.example.isthisahangout.cache.stockMarket.StockMarketDao
+import com.example.isthisahangout.cache.stockMarket.StockMarketDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -173,5 +175,18 @@ object RoomModule {
     @Provides
     @Singleton
     fun providesChatDao(db: ChatDatabase): ChatDao = db.getMessagesDao()
+
+    //Stock Market
+    @Provides
+    @Singleton
+    fun providesStockMarketDatabase(app: Application): StockMarketDatabase =
+        Room.databaseBuilder(app, StockMarketDatabase::class.java, "stock_market_database")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesStockMarketDao(db: StockMarketDatabase): StockMarketDao =
+        db.getStockMarketDao()
 
 }

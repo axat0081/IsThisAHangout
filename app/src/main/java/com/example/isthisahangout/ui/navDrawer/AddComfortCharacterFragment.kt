@@ -1,9 +1,7 @@
 package com.example.isthisahangout.ui.navDrawer
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
@@ -21,7 +19,6 @@ import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -31,7 +28,6 @@ class AddComfortCharacterFragment : DialogFragment(R.layout.fragment_add_comfort
     private lateinit var cropImage: ActivityResultLauncher<CropImageContractOptions>
     private val viewModel by activityViewModels<UserViewModel>()
 
-    @InternalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAddComfortCharacterBinding.bind(view)

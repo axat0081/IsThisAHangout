@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_homeFragment2_to_pokemonFragment"
             app:destination="@id/pokemonFragment" />
+        <action
+            android:id="@+id/action_homeFragment2_to_stockMarketFragment"
+            app:destination="@id/stockMarketFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment2"
@@ -414,4 +417,9 @@
             android:name="pokemon"
             app:argType="com.example.isthisahangout.models.pokemon.Pokemon" />
     </fragment>
+    <fragment
+        android:id="@+id/stockMarketFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.StockMarketFragment"
+        android:label="Stock Market"
+        tools:layout="@layout/fragment_stock_market" />
 </navigation>

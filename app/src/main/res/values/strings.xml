@@ -14,4 +14,17 @@
     <string name="videos">Videos</string>
     <string name="posts">Posts</string>
     <string name="lists">Lists</string>
+    <string name="profile">Profile</string>
+    <string name="search_anime_by_genres">Search anime by genres</string>
+    <string name="search_anime_by_season">Search anime by season</string>
+    <string name="pokemons">Pokemons</string>
+    <string name="reminders">Reminders</string>
+    <string name="anime_quotes">Anime Quotes</string>
+    <string name="anime_schedule">Anime Schedule</string>
+    <string name="manga_corner">Manga Corner</string>
+    <string name="search_anime_by_name">Search Anime By Name</string>
+    <string name="favourites">Favourites</string>
+    <string name="anime_pics">Anime pics</string>
+    <string name="otaku_news">Otaku News</string>
+    <string name="stock_market">Stock Market</string>
 </resources>
