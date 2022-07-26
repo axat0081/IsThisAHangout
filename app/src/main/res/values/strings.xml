@@ -27,4 +27,9 @@
     <string name="anime_pics">Anime pics</string>
     <string name="otaku_news">Otaku News</string>
     <string name="stock_market">Stock Market</string>
+    <string name="video_title">Video Title....</string>
+    <string name="add_a_description">Add a description....</string>
+    <string name="upload">Upload</string>
+    <string name="reminder_title">Reminder Title</string>
+    <string name="add_reminder">Add Reminder</string>
 </resources>

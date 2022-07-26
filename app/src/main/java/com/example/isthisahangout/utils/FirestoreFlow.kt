@@ -18,3 +18,19 @@ fun Query.asFlow(): Flow<QuerySnapshot> = callbackFlow {
     }
     awaitClose { registration.remove() }
 }
+
+fun <T> Query.asResourceFlow(
+    parseToObject: (QuerySnapshot) -> List<T>
+): Flow<Resource<List<T>>> = callbackFlow {
+    val registration = addSnapshotListener { snapshots, error ->
+        if (error != null) {
+            this.trySend(Resource.Error(throwable = error)).isFailure
+        } else {
+            if (snapshots != null) {
+                val data = parseToObject(snapshots)
+                this.trySend(Resource.Success(data)).isSuccess
+            }
+        }
+    }
+    awaitClose { registration.remove() }
+}

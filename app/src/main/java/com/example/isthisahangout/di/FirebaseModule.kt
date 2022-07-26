@@ -118,4 +118,10 @@ object FirebaseModule {
     @Named("UserRef")
     fun providesUserRef(): CollectionReference =
         FirebaseFirestore.getInstance().collection("Users")
+
+    @Provides
+    @Singleton
+    @Named("RemindersRef")
+    fun providesRemindersRef(): CollectionReference =
+        FirebaseFirestore.getInstance().collection("Reminders")
 }

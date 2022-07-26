@@ -106,6 +106,9 @@
         <action
             android:id="@+id/action_homeFragment2_to_stockMarketFragment"
             app:destination="@id/stockMarketFragment" />
+        <action
+            android:id="@+id/action_homeFragment2_to_remindersFragment2"
+            app:destination="@id/remindersFragment2" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment2"
@@ -422,4 +425,26 @@
         android:name="com.example.isthisahangout.ui.navDrawer.StockMarketFragment"
         android:label="Stock Market"
         tools:layout="@layout/fragment_stock_market" />
+    <fragment
+        android:id="@+id/remindersFragment2"
+        android:name="com.example.isthisahangout.ui.navDrawer.RemindersFragment"
+        android:label="Reminders"
+        tools:layout="@layout/fragment_reminders" >
+        <action
+            android:id="@+id/action_remindersFragment2_to_addReminderFragment"
+            app:destination="@id/addReminderFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
+    </fragment>
+    <fragment
+        android:id="@+id/addReminderFragment"
+        android:name="com.example.isthisahangout.ui.createContent.AddReminderFragment"
+        android:label="Add Reminder"
+        tools:layout="@layout/fragment_add_reminder" >
+        <argument
+            android:name="reminder"
+            app:argType="com.example.isthisahangout.models.reminders.Reminder" />
+    </fragment>
 </navigation>

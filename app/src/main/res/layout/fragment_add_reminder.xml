@@ -4,10 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bgdetails"
-    tools:context=".ui.createContent.UploadVideoFragment">
+    tools:context=".ui.createContent.AddReminderFragment">
+
+    <ProgressBar
+        android:id="@+id/reminder_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:max="100" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/video_title_edit_text"
+        android:id="@+id/reminder_title_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -21,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background=" #26000000"
-            android:hint="@string/video_title"
+            android:hint="@string/reminder_title"
             android:inputType="textEmailAddress"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/mypink"
@@ -29,10 +38,10 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/video_text_edit_text"
+        android:id="@+id/reminder_desc_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/video_title_edit_text"
+        android:layout_below="@id/reminder_title_edit_text"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:backgroundTint="@color/mypink"
@@ -44,51 +53,24 @@
             android:background=" #26000000"
             android:hint="@string/add_a_description"
             android:inputType="textEmailAddress"
+            android:lines="8"
+            android:maxLines="20"
+            android:minLines="6"
+            android:scrollbars="vertical"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/mypink"
             android:textSize="20sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/select_video_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/video_text_edit_text"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="15dp"
-        android:src="@drawable/video" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/select_thumbnail_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/video_text_edit_text"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_toEndOf="@id/select_video_button"
-        android:src="@drawable/image" />
-
-    <ImageView
-        android:id="@+id/crop_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/video_text_edit_text"
-        android:layout_marginTop="20dp"
-        android:layout_toEndOf="@id/select_thumbnail_button"
-        android:layout_marginStart="20dp"
-        tools:src="@mipmap/ic_launcher"
-        android:scaleType="fitXY"
-        android:layout_marginEnd="30dp"/>
 
     <Button
-        android:id="@+id/upload_song_button"
+        android:id="@+id/add_reminder_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/crop_image_view"
-        android:layout_marginStart="40dp"
+        android:layout_below="@id/reminder_desc_edit_text"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_toEndOf="@id/select_thumbnail_button"
+        android:layout_marginEnd="80dp"
         android:background="@drawable/rounded_button"
-        android:text="@string/upload" />
+        android:text="@string/add_reminder" />
 </RelativeLayout>
