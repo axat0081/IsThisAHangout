@@ -55,17 +55,7 @@ class AnimeByNameFragment : Fragment(R.layout.fragment_anime_by_name),
     }
 
     override fun onItemClick(anime: AnimeByNameResults.AnimeByName) {
-        findNavController().navigate(
-            AnimeByNameFragmentDirections.actionAnimeByNameFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    title = anime.title,
-                    imageUrl = anime.imageUrl,
-                    synopsis = anime.synopsis,
-                    url = anime.url,
-                    id = anime.id
-                )
-            )
-        )
+
     }
 
     override fun onDestroy() {

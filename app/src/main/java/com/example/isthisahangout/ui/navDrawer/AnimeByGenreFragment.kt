@@ -5,29 +5,26 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
-import com.example.isthisahangout.adapter.AnimeByGenreAdapter
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
+import com.example.isthisahangout.adapter.anime.AnimePagingAdapter
 import com.example.isthisahangout.databinding.FragmentAnimeByGenreBinding
-import com.example.isthisahangout.models.AnimeGenreResults
-import com.example.isthisahangout.models.RoomAnimeByGenres
+import com.example.isthisahangout.ui.models.AnimeUIModel
 import com.example.isthisahangout.viewmodel.AnimeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AnimeByGenreFragment : Fragment(R.layout.fragment_anime_by_genre),
-    AnimeByGenreAdapter.OnItemClickListener {
+    AnimePagingAdapter.OnItemClickListener {
     private var _binding: FragmentAnimeByGenreBinding? = null
     private val binding get() = _binding!!
     private val animeViewModel by viewModels<AnimeViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAnimeByGenreBinding.bind(view)
-        val animeAdapter = AnimeByGenreAdapter(this)
+        val animeAdapter = AnimePagingAdapter(this)
         binding.apply {
             animeByGenreRecyclerView.apply {
                 adapter = animeAdapter.withLoadStateHeaderAndFooter(
@@ -91,22 +88,12 @@ class AnimeByGenreFragment : Fragment(R.layout.fragment_anime_by_genre),
         }
     }
 
-    override fun onItemClick(animeResults: RoomAnimeByGenres) {
-        findNavController().navigate(
-            AnimeByGenreFragmentDirections.actionAnimeByGenreFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    title = animeResults.title,
-                    synopsis = animeResults.synopsis,
-                    imageUrl = animeResults.imageUrl,
-                    url = animeResults.url,
-                    id = animeResults.id
-                )
-            )
-        )
+    override fun onItemClick(animeResults: AnimeUIModel.AnimeModel) {
+
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

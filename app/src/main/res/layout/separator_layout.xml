@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="220dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/myblack"
+    xmlns:tools="http://schemas.android.com/tools">
+<TextView
+    android:id="@+id/separator_text_view"
+    android:layout_width="wrap_content"
+    tools:text="1\n2\n/\n0\n7\n/\n2\n0\n2\n2"
+    android:padding="20dp"
+    android:textColor="@color/myblue"
+    android:layout_height="wrap_content"
+    />
+</androidx.cardview.widget.CardView>

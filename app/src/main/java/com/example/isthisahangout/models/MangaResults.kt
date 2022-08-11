@@ -34,7 +34,9 @@ data class MangaGenreResults(
         val url: String,
         @SerializedName("image_url")
         val imageUrl: String,
-        val synopsis: String
+        val synopsis: String,
+        @SerializedName("start_date")
+        val startDate: String
     )
 }
 
@@ -49,7 +51,8 @@ data class RoomMangaByGenre(
     @SerializedName("image_url")
     val imageUrl: String,
     val synopsis: String,
-    val genre: String
+    val genre: String,
+    val startDate: String
 ) : Parcelable
 
 @Entity(tableName = "manga_remote_key")

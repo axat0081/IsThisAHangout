@@ -14,26 +14,23 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
-import com.example.isthisahangout.adapter.AiringAnimeAdapter
-import com.example.isthisahangout.adapter.GamesAdapter
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
-import com.example.isthisahangout.adapter.UpcomingAnimeAdapter
+import com.example.isthisahangout.adapter.anime.AnimePagingAdapter
+import com.example.isthisahangout.adapter.videoGame.VideoGamesPagingAdapter
 import com.example.isthisahangout.databinding.FragmentHomeBinding
-import com.example.isthisahangout.models.AiringAnimeResponse
-import com.example.isthisahangout.models.RoomGames
-import com.example.isthisahangout.models.UpcomingAnimeResponse
+import com.example.isthisahangout.ui.models.AnimeUIModel
+import com.example.isthisahangout.ui.models.VideoGameUIModel
 import com.example.isthisahangout.viewmodel.AnimeViewModel
 import com.example.isthisahangout.viewmodel.FirebaseAuthViewModel
 import com.example.isthisahangout.viewmodel.GameViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(R.layout.fragment_home), UpcomingAnimeAdapter.OnItemClickListener,
-    AiringAnimeAdapter.OnItemClickListener, GamesAdapter.OnItemClickListener {
+class HomeFragment : Fragment(R.layout.fragment_home), AnimePagingAdapter.OnItemClickListener,
+    VideoGamesPagingAdapter.OnItemClickListener {
 
     @Inject
     lateinit var mAuth: FirebaseAuth
@@ -58,9 +55,9 @@ class HomeFragment : Fragment(R.layout.fragment_home), UpcomingAnimeAdapter.OnIt
             viewModel.updateUserData()
         }
         _binding = FragmentHomeBinding.bind(view)
-        val upcomingAnimeAdapter = UpcomingAnimeAdapter(this)
-        val airingAnimeAdapter = AiringAnimeAdapter(this)
-        val gamesAdapter = GamesAdapter(this)
+        val upcomingAnimeAdapter = AnimePagingAdapter(this)
+        val airingAnimeAdapter = AnimePagingAdapter(this)
+        val gamesAdapter = VideoGamesPagingAdapter(this)
         binding.apply {
             upcomingAnimeRecyclerView.apply {
                 layoutManager =
@@ -95,7 +92,6 @@ class HomeFragment : Fragment(R.layout.fragment_home), UpcomingAnimeAdapter.OnIt
                     upcomingAnimeProgressBar.isVisible = false
                     upcomingAnimeRetryBtn.isVisible = false
                     upcomingAnimeAdapter.submitData(viewLifecycleOwner.lifecycle, it)
-
                 }
             }
             viewLifecycleOwner.lifecycleScope.launch {
@@ -135,27 +131,14 @@ class HomeFragment : Fragment(R.layout.fragment_home), UpcomingAnimeAdapter.OnIt
         }
     }
 
-    override fun onItemClick(animeResults: UpcomingAnimeResponse.UpcomingAnime) {
-        val action = HomeFragmentDirections.actionHomeFragment2ToAnimeDetailsFragment(
-            AiringAnimeResponse.AiringAnime(
-                title = animeResults.title,
-                id = animeResults.id,
-                imageUrl = animeResults.imageUrl,
-                startDate = animeResults.startDate
-            )
-        )
-        findNavController().navigate(action)
+    override fun onItemClick(animeResults: AnimeUIModel.AnimeModel) {
+
     }
 
-    override fun onItemClick(animeResults: AiringAnimeResponse.AiringAnime) {
-        val action = HomeFragmentDirections.actionHomeFragment2ToAnimeDetailsFragment(animeResults)
-        findNavController().navigate(action)
+    override fun onItemClick(videoGame: VideoGameUIModel.VideoGameModel) {
+
     }
 
-    override fun onItemClick(games: RoomGames) {
-        val action = HomeFragmentDirections.actionHomeFragment2ToGameDetailsFragment(games)
-        findNavController().navigate(action)
-    }
 
     override fun onDestroy() {
         super.onDestroy()

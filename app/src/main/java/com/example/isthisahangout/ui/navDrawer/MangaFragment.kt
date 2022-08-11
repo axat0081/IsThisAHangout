@@ -6,32 +6,26 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
-import com.example.isthisahangout.adapter.MangaAdapter
-import com.example.isthisahangout.adapter.MangaByGenreAdapter
+import com.example.isthisahangout.adapter.manga.MangaPagingAdapter
 import com.example.isthisahangout.databinding.FragmentMangaBinding
-import com.example.isthisahangout.models.AnimeGenreResults
-import com.example.isthisahangout.models.MangaResults
-import com.example.isthisahangout.models.RoomMangaByGenre
+import com.example.isthisahangout.ui.models.MangaUIModel
 import com.example.isthisahangout.viewmodel.MangaViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
-class MangaFragment : Fragment(R.layout.fragment_manga), MangaByGenreAdapter.OnItemClickListener,
-    MangaAdapter.OnItemClickListener {
+class MangaFragment : Fragment(R.layout.fragment_manga), MangaPagingAdapter.OnItemClickListener {
     private var _binding: FragmentMangaBinding? = null
     private val binding get() = _binding!!
     private val mangaViewModel by viewModels<MangaViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMangaBinding.bind(view)
-        val mangaAdapter = MangaAdapter(this)
-        val mangaByGenreAdapter = MangaByGenreAdapter(this)
+        val mangaAdapter = MangaPagingAdapter(this)
+        val mangaByGenreAdapter = MangaPagingAdapter(this)
         binding.apply {
 
             mangaRecyclerView.apply {
@@ -139,37 +133,12 @@ class MangaFragment : Fragment(R.layout.fragment_manga), MangaByGenreAdapter.OnI
         }
     }
 
-    override fun onItemClick(manga: MangaResults.Manga) {
-        findNavController().navigate(
-            MangaFragmentDirections.actionMangaFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    id = manga.id,
-                    title = manga.title,
-                    imageUrl = manga.imageUrl,
-                    synopsis = "X",
-                    url = manga.url
-                )
-            )
-        )
+    override fun onItemClick(mangaResults: MangaUIModel.MangaModel) {
     }
 
-    override fun onItemClick(manga: RoomMangaByGenre) {
 
-        findNavController().navigate(
-            MangaFragmentDirections.actionMangaFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    id = manga.id,
-                    title = manga.title,
-                    imageUrl = manga.imageUrl,
-                    synopsis = manga.synopsis,
-                    url = manga.url
-                )
-            )
-        )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

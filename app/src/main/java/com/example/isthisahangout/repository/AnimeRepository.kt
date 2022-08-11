@@ -6,6 +6,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.room.withTransaction
 import com.example.isthisahangout.api.AnimeAPI
+import com.example.isthisahangout.api.AnimeMangaDetailAPI
 import com.example.isthisahangout.api.AnimePicsAPI
 import com.example.isthisahangout.api.AnimeQuoteAPI
 import com.example.isthisahangout.cache.anime.*
@@ -18,6 +19,7 @@ import com.example.isthisahangout.utils.networkBoundResource
 import com.example.isthisahangout.utils.normalNetworkBoundResource
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -43,10 +45,10 @@ class AnimeRepository @Inject constructor(
     private val animeByDayDao: AnimeByDayDao,
     private val animePicsDao: AnimePicsDao,
     private val animeNewsDao: AnimeNewsDao,
-    private val animeDatabase: AnimeDatabase
+    private val animeDatabase: AnimeDatabase,
+    private val animeMangaDetailAPI: AnimeMangaDetailAPI
 ) {
-
-
+    val animeDetailDao = animeDatabase.getAnimeDetailDao()
     fun getUpcomingAnime(): Flow<PagingData<UpcomingAnimeResponse.UpcomingAnime>> =
         Pager(
             config = PagingConfig(
@@ -295,5 +297,21 @@ class AnimeRepository @Inject constructor(
 
     private suspend fun scrapNews(): Document = withContext(IO) {
         Jsoup.connect("https://www.cbr.com/tag/anime/").get()
+    }
+
+    fun getAnimeDetail(id: String): Flow<Resource<AnimeDetail?>> = flow{
+        emit(Resource.Loading())
+        val cachedAnimeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
+        emit(Resource.Loading(cachedAnimeDetail))
+        try{
+            val animeDetailDto = animeMangaDetailAPI.getAnimeDetail(id)
+            animeDetailDao.insertAnimeDetail(animeDetailDto.toAnimeDetail())
+            val animeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
+            emit(Resource.Success(animeDetail))
+        }catch (exception: HttpException){
+            emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
+        } catch (exception: IOException){
+            emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
+        }
     }
 }

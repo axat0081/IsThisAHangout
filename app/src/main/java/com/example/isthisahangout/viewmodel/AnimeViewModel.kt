@@ -3,6 +3,9 @@ package com.example.isthisahangout.viewmodel
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.isthisahangout.repository.AnimeRepository
+import com.example.isthisahangout.usecases.anime.GetAiringAnimeUseCase
+import com.example.isthisahangout.usecases.anime.GetAnimeByGenreUseCase
+import com.example.isthisahangout.usecases.anime.GetUpcomingAnimeUseCase
 import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -12,6 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeViewModel @Inject constructor(
+    getAnimeByGenreUseCase: GetAnimeByGenreUseCase,
+    getUpcomingAnimeUseCase: GetUpcomingAnimeUseCase,
+    getAiringAnimeUseCase: GetAiringAnimeUseCase,
     animeRepository: AnimeRepository,
     private val state: SavedStateHandle
 ) : ViewModel() {
@@ -35,7 +41,7 @@ class AnimeViewModel @Inject constructor(
     var animeNameText = state.get<String>("anime_name") ?: ""
         set(value) {
             field = value
-            state.set("anime_name", animeNameText)
+            state["anime_name"] = animeNameText
         }
 
     init {
@@ -56,10 +62,10 @@ class AnimeViewModel @Inject constructor(
         queryMap["Slice Of Life"] = "36"
     }
 
-    val airingAnime = animeRepository.getAiringAnime().cachedIn(viewModelScope)
-    val upcomingAnime = animeRepository.getUpcomingAnime().cachedIn(viewModelScope)
+    val airingAnime = getAiringAnimeUseCase().cachedIn(viewModelScope)
+    val upcomingAnime = getUpcomingAnimeUseCase().cachedIn(viewModelScope)
     val animeByGenre = genreQueryFlow.flatMapLatest {
-        animeRepository.getAnimeByGenres(it)
+        getAnimeByGenreUseCase(it)
     }.cachedIn(viewModelScope)
 
     val animeBySeason = combine(

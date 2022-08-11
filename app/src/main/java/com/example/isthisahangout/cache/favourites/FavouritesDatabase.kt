@@ -2,14 +2,12 @@ package com.example.isthisahangout.cache.favourites
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.example.isthisahangout.models.favourites.FavAnime
-import com.example.isthisahangout.models.favourites.FavGame
-import com.example.isthisahangout.models.favourites.FavPost
-import com.example.isthisahangout.models.favourites.FavVideo
+import com.example.isthisahangout.models.favourites.*
 
 @Database(
     entities = [
         FavAnime::class,
+        FavManga::class,
         FavGame::class,
         FavVideo::class,
         FavPost::class

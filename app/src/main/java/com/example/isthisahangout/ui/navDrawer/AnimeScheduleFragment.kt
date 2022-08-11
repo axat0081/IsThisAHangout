@@ -67,17 +67,7 @@ class AnimeScheduleFragment : Fragment(R.layout.fragment_anime_schedule),
     }
 
     override fun onItemClick(anime: RoomAnimeByDay) {
-        findNavController().navigate(
-            AnimeScheduleFragmentDirections.actionAnimeScheduleFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    id = anime.id,
-                    synopsis = anime.synopsis,
-                    title = anime.title,
-                    imageUrl = anime.imageUrl,
-                    url = anime.url
-                )
-            )
-        )
+
     }
 
     override fun onDestroy() {

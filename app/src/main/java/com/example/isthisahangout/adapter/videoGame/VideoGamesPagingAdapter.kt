@@ -1,4 +1,4 @@
-package com.example.isthisahangout.adapter
+package com.example.isthisahangout.adapter.videoGame
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -12,24 +12,30 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.isthisahangout.adapter.SeparatorViewHolder
 import com.example.isthisahangout.databinding.GamesDisplayLayoutBinding
-import com.example.isthisahangout.models.RoomGames
+import com.example.isthisahangout.ui.models.VideoGameUIModel
 
-class GamesAdapter(private val listener: OnItemClickListener) :
-    PagingDataAdapter<RoomGames, GamesAdapter.GamesViewHolder>(
+class VideoGamesPagingAdapter(private val listener: OnItemClickListener) :
+    PagingDataAdapter<VideoGameUIModel, RecyclerView.ViewHolder>(
         COMPARATOR
     ) {
 
     companion object {
-        val COMPARATOR = object : DiffUtil.ItemCallback<RoomGames>() {
+        val COMPARATOR = object : DiffUtil.ItemCallback<VideoGameUIModel>() {
             override fun areItemsTheSame(
-                oldItem: RoomGames,
-                newItem: RoomGames
-            ) = oldItem.name == newItem.name
+                oldItem: VideoGameUIModel,
+                newItem: VideoGameUIModel
+            ): Boolean {
+                return (oldItem is VideoGameUIModel.VideoGameModel && newItem is VideoGameUIModel.VideoGameModel &&
+                        oldItem.id == newItem.id) ||
+                        (oldItem is VideoGameUIModel.VideoGameSeparator && newItem is VideoGameUIModel.VideoGameSeparator &&
+                                oldItem.desc == newItem.desc)
+            }
 
             override fun areContentsTheSame(
-                oldItem: RoomGames,
-                newItem: RoomGames
+                oldItem: VideoGameUIModel,
+                newItem: VideoGameUIModel
             ) = oldItem == newItem
         }
     }
@@ -37,23 +43,28 @@ class GamesAdapter(private val listener: OnItemClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): GamesViewHolder {
-        return GamesViewHolder(
-            GamesDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    ): PaginatedVideoGameViewHolder {
+        return PaginatedVideoGameViewHolder(
+            GamesDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         )
     }
 
-    override fun onBindViewHolder(holder: GamesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null)
-            holder.bind(item)
+        if (item != null) {
+            when (item) {
+                is VideoGameUIModel.VideoGameModel -> (holder as PaginatedVideoGameViewHolder).bind(item)
+                is VideoGameUIModel.VideoGameSeparator -> (holder as SeparatorViewHolder).bind(item.desc)
+            }
+        }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(games: RoomGames)
+        fun onItemClick(videoGame: VideoGameUIModel.VideoGameModel)
     }
 
-    inner class GamesViewHolder(private val binding: GamesDisplayLayoutBinding) :
+
+    inner class PaginatedVideoGameViewHolder(val binding: GamesDisplayLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -61,14 +72,14 @@ class GamesAdapter(private val listener: OnItemClickListener) :
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val item = getItem(position)
-                    if (item != null) {
+                    if (item != null && item is VideoGameUIModel.VideoGameModel) {
                         listener.onItemClick(item)
                     }
                 }
             }
         }
 
-        fun bind(game: RoomGames) {
+        fun bind(game: VideoGameUIModel.VideoGameModel) {
             binding.apply {
                 Glide.with(itemView)
                     .load(game.imageUrl)

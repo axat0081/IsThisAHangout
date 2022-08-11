@@ -1,4 +1,4 @@
-package com.example.isthisahangout.adapter
+package com.example.isthisahangout.adapter.manga
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -12,24 +12,30 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.isthisahangout.adapter.SeparatorViewHolder
 import com.example.isthisahangout.databinding.AnimeDisplayLayoutBinding
-import com.example.isthisahangout.models.AiringAnimeResponse
+import com.example.isthisahangout.ui.models.MangaUIModel
 
-class AiringAnimeAdapter(private val listener: OnItemClickListener) :
-    PagingDataAdapter<AiringAnimeResponse.AiringAnime, AiringAnimeAdapter.AiringAnimeViewHolder>(
+class MangaPagingAdapter(private val listener: OnItemClickListener) :
+    PagingDataAdapter<MangaUIModel, RecyclerView.ViewHolder>(
         COMPARATOR
     ) {
 
     companion object {
-        val COMPARATOR = object : DiffUtil.ItemCallback<AiringAnimeResponse.AiringAnime>() {
+        val COMPARATOR = object : DiffUtil.ItemCallback<MangaUIModel>() {
             override fun areItemsTheSame(
-                oldItem: AiringAnimeResponse.AiringAnime,
-                newItem: AiringAnimeResponse.AiringAnime
-            ) = oldItem.title == newItem.title
+                oldItem: MangaUIModel,
+                newItem: MangaUIModel
+            ): Boolean {
+                return (oldItem is MangaUIModel.MangaModel && newItem is MangaUIModel.MangaModel &&
+                        oldItem.title == newItem.title) ||
+                        (oldItem is MangaUIModel.MangaSeparator && newItem is MangaUIModel.MangaSeparator &&
+                                oldItem.desc == newItem.desc)
+            }
 
             override fun areContentsTheSame(
-                oldItem: AiringAnimeResponse.AiringAnime,
-                newItem: AiringAnimeResponse.AiringAnime
+                oldItem: MangaUIModel,
+                newItem: MangaUIModel
             ) = oldItem == newItem
         }
     }
@@ -37,23 +43,28 @@ class AiringAnimeAdapter(private val listener: OnItemClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AiringAnimeViewHolder {
-        return AiringAnimeViewHolder(
+    ): PaginatedAnimeViewHolder {
+        return PaginatedAnimeViewHolder(
             AnimeDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: AiringAnimeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null)
-            holder.bind(item)
+        if (item != null) {
+            when (item) {
+                is MangaUIModel.MangaModel -> (holder as PaginatedAnimeViewHolder).bind(item)
+                is MangaUIModel.MangaSeparator -> (holder as SeparatorViewHolder).bind(item.desc)
+            }
+        }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(animeResults: AiringAnimeResponse.AiringAnime)
+        fun onItemClick(mangaResults: MangaUIModel.MangaModel)
     }
 
-    inner class AiringAnimeViewHolder(val binding: AnimeDisplayLayoutBinding) :
+
+    inner class PaginatedAnimeViewHolder(val binding: AnimeDisplayLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -61,17 +72,17 @@ class AiringAnimeAdapter(private val listener: OnItemClickListener) :
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val item = getItem(position)
-                    if (item != null) {
+                    if (item != null && item is MangaUIModel.MangaModel) {
                         listener.onItemClick(item)
                     }
                 }
             }
         }
 
-        fun bind(animeResults: AiringAnimeResponse.AiringAnime) {
+        fun bind(mangaResults: MangaUIModel.MangaModel) {
             binding.apply {
                 Glide.with(itemView)
-                    .load(animeResults.imageUrl)
+                    .load(mangaResults.imageUrl)
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                             e: GlideException?,
@@ -94,7 +105,7 @@ class AiringAnimeAdapter(private val listener: OnItemClickListener) :
                             return false
                         }
                     }).into(animeImageView)
-                animeTitleTextView.text = animeResults.title
+                animeTitleTextView.text = mangaResults.title
             }
         }
     }

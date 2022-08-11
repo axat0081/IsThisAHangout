@@ -32,4 +32,8 @@
     <string name="upload">Upload</string>
     <string name="reminder_title">Reminder Title</string>
     <string name="add_reminder">Add Reminder</string>
+    <string name="poster_image">Poster Image</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="genres">Genres</string>
+    <string name="read_more">Read more</string>
 </resources>

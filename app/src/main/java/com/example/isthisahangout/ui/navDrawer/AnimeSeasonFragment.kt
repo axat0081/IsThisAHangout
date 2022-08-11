@@ -19,7 +19,6 @@ import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.AnimeViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint
 class AnimeSeasonFragment : Fragment(R.layout.fragment_anime_season),
@@ -71,7 +70,8 @@ class AnimeSeasonFragment : Fragment(R.layout.fragment_anime_season),
                         is AnimeViewModel.Event.ShowErrorMessage -> {
                             Snackbar.make(
                                 requireView(),
-                                event.error.localizedMessage,
+                                event.error.localizedMessage
+                                    ?: getString(R.string.aw_snap_an_error_occurred),
                                 Snackbar.LENGTH_SHORT
                             ).show()
                         }
@@ -148,17 +148,7 @@ class AnimeSeasonFragment : Fragment(R.layout.fragment_anime_season),
     }
 
     override fun onItemClick(anime: AnimeSeasonResults.RoomAnimeBySeason) {
-        findNavController().navigate(
-            AnimeSeasonFragmentDirections.actionAnimeSeasonFragment2ToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    title = anime.title,
-                    url = anime.url,
-                    id = anime.id,
-                    synopsis = anime.synopsis,
-                    imageUrl = anime.imageUrl
-                )
-            )
-        )
+
     }
 
     override fun onStart() {

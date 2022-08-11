@@ -4,7 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.isthisahangout.repository.MangaRepository
+import com.example.isthisahangout.usecases.manga.GetMangaByGenreUseCase
+import com.example.isthisahangout.usecases.manga.GetMangaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -13,7 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MangaViewModel @Inject constructor(
     private val state: SavedStateHandle,
-    private val mangaRepository: MangaRepository
+    private val getMangaUseCase: GetMangaUseCase,
+    private val getMangaByGenreUseCase: GetMangaByGenreUseCase
 ) : ViewModel() {
     private val queryMap = HashMap<String, String>()
 
@@ -35,10 +37,10 @@ class MangaViewModel @Inject constructor(
         queryMap["Slice Of Life"] = "36"
     }
 
-    val manga = mangaRepository.getManga().cachedIn(viewModelScope)
+    val manga = getMangaUseCase().cachedIn(viewModelScope)
     private val mangaByGenreQuery = MutableStateFlow("1")
     val mangaByGenre = mangaByGenreQuery.flatMapLatest { genre ->
-        mangaRepository.getMangaByGenre(genre)
+        getMangaByGenreUseCase(genre)
     }.cachedIn(viewModelScope)
 
     fun searchMangaByGenre(query: String) {

@@ -4,22 +4,28 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.isthisahangout.api.AnimeAPI
-import com.example.isthisahangout.models.MangaResults
-import com.example.isthisahangout.models.RoomMangaByGenre
+import com.example.isthisahangout.api.AnimeMangaDetailAPI
 import com.example.isthisahangout.remotemediator.MangaByGenreRemoteMediator
 import com.example.isthisahangout.remotemediator.MangaRemoteMediator
 import com.example.isthisahangout.cache.manga.MangaDatabase
+import com.example.isthisahangout.models.*
+import com.example.isthisahangout.utils.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class MangaRepository @Inject constructor(
     private val animeAPI: AnimeAPI,
-    private val mangaDB: MangaDatabase
+    private val mangaDB: MangaDatabase,
+    private val animeMangaDetailAPI: AnimeMangaDetailAPI
 ) {
     private val mangaDao = mangaDB.getMangaDao()
-
+    private val mangaDetailDao = mangaDB.getMangaDetailDao()
     fun getManga(): Flow<PagingData<MangaResults.Manga>> =
         Pager(
             config = PagingConfig(
@@ -46,4 +52,20 @@ class MangaRepository @Inject constructor(
             ),
             pagingSourceFactory = { mangaDao.getRoomMangaByGenre(genre) }
         ).flow
+
+    fun getMangaDetail(id: String): Flow<Resource<MangaDetail?>> = flow{
+        emit(Resource.Loading())
+        val cachedAnimeDetail = mangaDetailDao.getMangaDetail(id.toInt()).first()
+        emit(Resource.Loading(cachedAnimeDetail))
+        try{
+            val mangaDetailDto = animeMangaDetailAPI.getMangaDetail(id)
+            mangaDetailDao.insertMangaDetail(mangaDetailDto.toMangaDetail())
+            val mangaDetail = mangaDetailDao.getMangaDetail(id.toInt()).first()
+            emit(Resource.Success(mangaDetail))
+        }catch (exception: HttpException){
+            emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
+        } catch (exception: IOException){
+            emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
+        }
+    }
 }

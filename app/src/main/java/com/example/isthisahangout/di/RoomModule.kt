@@ -10,6 +10,8 @@ import com.example.isthisahangout.cache.favourites.FavouritesDatabase
 import com.example.isthisahangout.cache.games.GameDatabase
 import com.example.isthisahangout.cache.games.GamesDao
 import com.example.isthisahangout.cache.games.GamesRemoteKeyDao
+import com.example.isthisahangout.cache.hiddenContent.HiddenContentDao
+import com.example.isthisahangout.cache.hiddenContent.HiddenContentDatabase
 import com.example.isthisahangout.cache.manga.MangaDao
 import com.example.isthisahangout.cache.manga.MangaDatabase
 import com.example.isthisahangout.cache.manga.MangaRemoteKeyDao
@@ -188,5 +190,18 @@ object RoomModule {
     @Singleton
     fun providesStockMarketDao(db: StockMarketDatabase): StockMarketDao =
         db.getStockMarketDao()
+
+    //Hidden Content
+    @Provides
+    @Singleton
+    fun providesHiddenContentDatabase(app: Application): HiddenContentDatabase =
+        Room.databaseBuilder(app, HiddenContentDatabase::class.java, "hidden_content_database")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesHiddenContentDao(hiddenContentDatabase: HiddenContentDatabase): HiddenContentDao =
+        hiddenContentDatabase.getHiddenContentDao()
 
 }

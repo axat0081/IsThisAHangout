@@ -28,19 +28,19 @@ class FavouritesViewModel @Inject constructor(
     val favVideoQuery = state.getLiveData("VideoQuery", "")
 
     val favAnime = favAnimeQuery.asFlow().flatMapLatest {
-        favDoa.getAnime(searchQuery = it, userId = MainActivity.userId!!)
+        favDoa.getAnime(searchQuery = it, userId = MainActivity.userId)
     }
 
     val favGame = favGameQuery.asFlow().flatMapLatest {
-        favDoa.getGames(searchQuery = it, userId = MainActivity.userId!!)
+        favDoa.getGames(searchQuery = it, userId = MainActivity.userId)
     }
 
     val favPost = favPostQuery.asFlow().flatMapLatest {
-        favDoa.getPosts(searchQuery = it, userId = MainActivity.userId!!)
+        favDoa.getPosts(searchQuery = it, userId = MainActivity.userId)
     }
 
     val favVideo = favVideoQuery.asFlow().flatMapLatest {
-        favDoa.getVideos(searchQuery = it, userId = MainActivity.userId!!)
+        favDoa.getVideos(searchQuery = it, userId = MainActivity.userId)
     }
 
     fun addAnime(anime: FavAnime) {

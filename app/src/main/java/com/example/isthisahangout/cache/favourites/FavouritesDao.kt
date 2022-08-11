@@ -19,6 +19,9 @@ interface FavouritesDao {
     @Query("SELECT * FROM anime_favourites WHERE userId = :userId AND title LIKE '%' || :searchQuery || '%'")
     fun getAnime(searchQuery: String, userId: String): Flow<List<FavAnime>>
 
+    @Query("SELECT * FROM manga_favourites WHERE userId = :userId AND title LIKE '%' || :searchQuery || '%'")
+    fun getManga(userId: String,searchQuery: String): Flow<List<FavAnime>>
+
     @Query("DELETE FROM anime_favourites WHERE id = :id AND userId = :userId")
     suspend fun deleteAnime(id: Int, userId: String)
 

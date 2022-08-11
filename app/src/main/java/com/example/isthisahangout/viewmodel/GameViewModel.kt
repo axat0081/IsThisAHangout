@@ -3,13 +3,13 @@ package com.example.isthisahangout.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.isthisahangout.repository.GameRepository
+import com.example.isthisahangout.usecases.videogame.GetVideoGameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    repository: GameRepository
+    videoGameUseCase: GetVideoGameUseCase
 ) : ViewModel() {
-    val games = repository.getGames().cachedIn(viewModelScope)
+    val games = videoGameUseCase().cachedIn(viewModelScope)
 }

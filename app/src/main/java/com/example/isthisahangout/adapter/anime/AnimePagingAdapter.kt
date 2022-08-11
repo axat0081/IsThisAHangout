@@ -1,4 +1,4 @@
-package com.example.isthisahangout.adapter
+package com.example.isthisahangout.adapter.anime
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
@@ -7,29 +7,36 @@ import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.isthisahangout.adapter.SeparatorViewHolder
 import com.example.isthisahangout.databinding.AnimeDisplayLayoutBinding
-import com.example.isthisahangout.models.RoomAnimeByGenres
+import com.example.isthisahangout.ui.models.AnimeUIModel
 
-class AnimeByGenreAdapter(private val listener: OnItemClickListener) :
-    PagingDataAdapter<RoomAnimeByGenres, AnimeByGenreAdapter.AnimeByGenreViewHolder>(
+class AnimePagingAdapter(private val listener: OnItemClickListener) :
+    PagingDataAdapter<AnimeUIModel, ViewHolder>(
         COMPARATOR
     ) {
 
     companion object {
-        val COMPARATOR = object : DiffUtil.ItemCallback<RoomAnimeByGenres>() {
+        val COMPARATOR = object : DiffUtil.ItemCallback<AnimeUIModel>() {
             override fun areItemsTheSame(
-                oldItem: RoomAnimeByGenres,
-                newItem: RoomAnimeByGenres
-            ) = oldItem == newItem
+                oldItem: AnimeUIModel,
+                newItem: AnimeUIModel
+            ): Boolean {
+                return (oldItem is AnimeUIModel.AnimeModel && newItem is AnimeUIModel.AnimeModel &&
+                        oldItem.title == newItem.title) ||
+                        (oldItem is AnimeUIModel.AnimeSeparator && newItem is AnimeUIModel.AnimeSeparator &&
+                                oldItem.desc == newItem.desc)
+            }
 
             override fun areContentsTheSame(
-                oldItem: RoomAnimeByGenres,
-                newItem: RoomAnimeByGenres
+                oldItem: AnimeUIModel,
+                newItem: AnimeUIModel
             ) = oldItem == newItem
         }
     }
@@ -37,38 +44,43 @@ class AnimeByGenreAdapter(private val listener: OnItemClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AnimeByGenreViewHolder {
-        return AnimeByGenreViewHolder(
+    ): PaginatedAnimeViewHolder {
+        return PaginatedAnimeViewHolder(
             AnimeDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: AnimeByGenreViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null)
-            holder.bind(item)
+        if (item != null) {
+            when (item) {
+                is AnimeUIModel.AnimeModel -> (holder as PaginatedAnimeViewHolder).bind(item)
+                is AnimeUIModel.AnimeSeparator -> (holder as SeparatorViewHolder).bind(item.desc)
+            }
+        }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(animeResults: RoomAnimeByGenres)
+        fun onItemClick(animeResults: AnimeUIModel.AnimeModel)
     }
 
-    inner class AnimeByGenreViewHolder(val binding: AnimeDisplayLayoutBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+
+    inner class PaginatedAnimeViewHolder(val binding: AnimeDisplayLayoutBinding) :
+        ViewHolder(binding.root) {
 
         init {
             binding.root.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     val item = getItem(position)
-                    if (item != null) {
+                    if (item != null && item is AnimeUIModel.AnimeModel) {
                         listener.onItemClick(item)
                     }
                 }
             }
         }
 
-        fun bind(animeResults: RoomAnimeByGenres) {
+        fun bind(animeResults: AnimeUIModel.AnimeModel) {
             binding.apply {
                 Glide.with(itemView)
                     .load(animeResults.imageUrl)

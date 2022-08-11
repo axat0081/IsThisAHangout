@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -109,4 +110,18 @@ object APIModule {
     fun provideMusicServiceConnection(
         @ApplicationContext context: Context
     ) = MusicServiceConnection(context)
+
+    //AnimeMangaDetail
+    @Singleton
+    @Provides
+    @Named("AnimeMangaDetailAPI")
+    fun provideAnimeMangaDetailRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(AnimeMangaDetailAPI.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideAnimeMangaDetailAPI(@Named("AnimeMangaDetailAPI") retrofit: Retrofit): AnimeMangaDetailAPI =
+        retrofit.create(AnimeMangaDetailAPI::class.java)
 }

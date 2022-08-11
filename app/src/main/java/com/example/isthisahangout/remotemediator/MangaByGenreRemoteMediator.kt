@@ -48,7 +48,8 @@ class MangaByGenreRemoteMediator(
                         url = it.url,
                         synopsis = it.synopsis,
                         genre = genre,
-                        title = it.title
+                        title = it.title,
+                        startDate = it.startDate
                     )
                 }
                 val keysList = mangaList.map {

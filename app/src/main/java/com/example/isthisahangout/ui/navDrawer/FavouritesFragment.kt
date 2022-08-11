@@ -134,17 +134,7 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites),
     }
 
     override fun onItemClick(anime: FavAnime) {
-        findNavController().navigate(
-            FavouritesFragmentDirections.actionFavouritesFragmentToDetailDisplayFragment(
-                AnimeGenreResults.AnimeByGenres(
-                    id = anime.id.toString(),
-                    title = anime.title,
-                    imageUrl = anime.image,
-                    url = "X",
-                    synopsis = "X"
-                )
-            )
-        )
+
     }
 
     override fun onItemClick(anime: FavVideo) {
