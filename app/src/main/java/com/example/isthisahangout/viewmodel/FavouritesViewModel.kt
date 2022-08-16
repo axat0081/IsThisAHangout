@@ -11,7 +11,9 @@ import com.example.isthisahangout.models.favourites.FavPost
 import com.example.isthisahangout.cache.favourites.FavouritesDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,19 +31,19 @@ class FavouritesViewModel @Inject constructor(
 
     val favAnime = favAnimeQuery.asFlow().flatMapLatest {
         favDoa.getAnime(searchQuery = it, userId = MainActivity.userId)
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val favGame = favGameQuery.asFlow().flatMapLatest {
         favDoa.getGames(searchQuery = it, userId = MainActivity.userId)
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val favPost = favPostQuery.asFlow().flatMapLatest {
         favDoa.getPosts(searchQuery = it, userId = MainActivity.userId)
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val favVideo = favVideoQuery.asFlow().flatMapLatest {
         favDoa.getVideos(searchQuery = it, userId = MainActivity.userId)
-    }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun addAnime(anime: FavAnime) {
         viewModelScope.launch {
@@ -65,7 +67,7 @@ class FavouritesViewModel @Inject constructor(
         viewModelScope.launch {
             favDoa.deleteAnime(
                 id = id,
-                userId = MainActivity.userId!!
+                userId = MainActivity.userId
             )
         }
     }
@@ -74,7 +76,7 @@ class FavouritesViewModel @Inject constructor(
         viewModelScope.launch {
             favDoa.deleteGame(
                 id = id,
-                userId = MainActivity.userId!!
+                userId = MainActivity.userId
             )
         }
     }

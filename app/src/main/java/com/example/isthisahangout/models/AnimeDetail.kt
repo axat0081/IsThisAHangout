@@ -11,14 +11,15 @@ data class AnimeDetail(
     val title: String,
     val rating: String?,
     val image: String,
-    val genres: String
+    val genres: String,
+    val synopsis: String
 )
 
-fun AnimeDetailDto.toAnimeDetail(): AnimeDetail{
+fun AnimeDetailDto.toAnimeDetail(): AnimeDetail {
     var gen = ""
-    for(g in genres){
-        gen +=g.name
-        gen+=","
+    for (g in genres) {
+        gen += g.name
+        gen += ","
     }
     gen.removeSuffix(",")
     return AnimeDetail(
@@ -27,6 +28,7 @@ fun AnimeDetailDto.toAnimeDetail(): AnimeDetail{
         title = title,
         rating = rating,
         image = images.jpg.image,
-        genres = gen
+        genres = gen,
+        synopsis = synopsis?:"NA"
     )
 }

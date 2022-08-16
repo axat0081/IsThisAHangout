@@ -333,6 +333,9 @@
         <argument
             android:name="animeId"
             app:argType="string" />
+        <argument
+            android:name="animeName"
+            app:argType="string" />
     </fragment>
     <dialog
         android:id="@+id/profileImageUpdateFragment"

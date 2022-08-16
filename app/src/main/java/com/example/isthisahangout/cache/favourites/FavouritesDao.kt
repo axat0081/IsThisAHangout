@@ -25,6 +25,9 @@ interface FavouritesDao {
     @Query("DELETE FROM anime_favourites WHERE id = :id AND userId = :userId")
     suspend fun deleteAnime(id: Int, userId: String)
 
+    @Query("DELETE FROM anime_favourites WHERE title = :animeName AND userId = :userId")
+    suspend fun deleteAnimeByName(animeName: String, userId: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGame(game: FavGame)
 
