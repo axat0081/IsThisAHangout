@@ -7,12 +7,15 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -35,7 +38,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.text.DateFormat
 import javax.inject.Inject
@@ -68,7 +70,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 Comments::class.java
             )
             .build()
-        commentsAdapter = CommentsAdapter(options,this)
+        commentsAdapter = CommentsAdapter(options, this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
@@ -93,12 +95,14 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             addCommentImageView.visibility = GONE
             bookmarkImageView.setImageResource(R.drawable.bookmark)
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                favViewModel.favPost.collect { favPost ->
-                    val isFav = favPost.any {
-                        it.id == post.id
-                    }
-                    if (isFav) {
-                        viewModel.isBookMarked.value = true
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    favViewModel.favPost.collect { favPost ->
+                        val isFav = favPost.any {
+                            it.id == post.id
+                        }
+                        if (isFav) {
+                            viewModel.isBookMarked.value = true
+                        }
                     }
                 }
             }
@@ -177,6 +181,43 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 )
             }
 
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.isLiked.collectLatest { isLiked ->
+                        likeButton.isLiked = isLiked
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.likeCount.collectLatest { likeCount ->
+                        likeTextView.text = likeCount.toString()
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.postsEventFlow.collectLatest { event ->
+                        when (event) {
+                            is PostViewModel.PostsEvent.PostLikeError -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    event.message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            else -> Unit
+                        }
+                    }
+                }
+            }
+
+            likeButton.setOnClickListener {
+                viewModel.onLikeClick(post)
+            }
+
             commentEditText.addTextChangedListener { text ->
                 viewModel.commentText = text.toString()
             }
@@ -187,17 +228,6 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 viewModel.onCommentSendClick(post)
                 commentEditText.text.clear()
                 addCommentImageView.isVisible = false
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewModel.likedPost.collectLatest { post ->
-                    viewModel.isLiked.value = post != null
-                }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewModel.isLiked.collectLatest { isLiked ->
-                    likeButton.isLiked = isLiked
-                }
             }
         }
     }
@@ -220,7 +250,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
     private fun showKeyboard(mContext: Context) {
         val imm = mContext
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(requireView(),0)
+        imm.showSoftInput(requireView(), 0)
     }
 
     private fun hideKeyboard(mContext: Context) {

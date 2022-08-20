@@ -14,22 +14,25 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.isthisahangout.MainActivity
+import com.example.isthisahangout.cache.favourites.FavouritesDao
+import com.example.isthisahangout.cache.posts.PostsDao
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.models.FirebasePost
 import com.example.isthisahangout.models.LikedPostId
 import com.example.isthisahangout.models.favourites.FavPost
 import com.example.isthisahangout.pagingsource.PostsPagingSource
-import com.example.isthisahangout.cache.favourites.FavouritesDao
-import com.example.isthisahangout.cache.posts.PostsDao
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
+import com.example.isthisahangout.utils.asFlow
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Named
 
 const val TITLE_EMPTY = "Please give a post title"
 
@@ -39,7 +42,8 @@ class PostViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val favouritesDao: FavouritesDao,
     private val postsDao: PostsDao,
-    private val mAuth: FirebaseAuth
+    private val mAuth: FirebaseAuth,
+    @Named("PostsRef") private val postsRef: CollectionReference
 ) : AndroidViewModel(app) {
 
     private val postChannel = Channel<PostsEvent>()
@@ -49,40 +53,47 @@ class PostViewModel @Inject constructor(
     var postTitle = state.get<String>("post_title") ?: ""
         set(value) {
             field = value
-            state.set("post_title", postTitle)
+            state["post_title"] = postTitle
         }
 
     var postText = state.get<String>("post_text") ?: ""
         set(value) {
             field = value
-            state.set("post_text", postText)
+            state["post_text"] = postText
         }
 
     var postImage: Uri? = state.get<Uri>("postImage")
         set(value) {
             field = value
-            state.set("postImage", postImage)
+            state["postImage"] = postImage
         }
 
     var commentText = state.get<String>("comment_text")
         set(value) {
             field = value
-            state.set("comment_text", commentText)
+            state["comment_text"] = commentText
         }
 
     var commentImage = state.get<Uri>("comment_image")
         set(value) {
             field = value
-            state.set("comment_image", commentImage)
+            state["comment_image"] = commentImage
         }
 
 
     val currentPostId = MutableStateFlow("abc")
+    private val likedPosts = postsDao.getLikesPostsId(MainActivity.userId)
+    val isLiked = combine(currentPostId, likedPosts) { currentPostId, likedPosts ->
+        Pair(currentPostId, likedPosts)
+    }.map { (currentPostId, likedPosts) ->
+        likedPosts.any { it.postId == currentPostId }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
-    val isLiked = MutableStateFlow(false)
-
-    val likedPost = currentPostId.flatMapLatest { postId ->
-        postsDao.getLikesPostsId(mAuth.uid!!, postId)
+    val likeCount = currentPostId.flatMapLatest { postId ->
+        postsRef.document(postId).asFlow().map { snapShot ->
+            val post = snapShot.toObject(FirebasePost::class.java)
+            post?.likes ?: 0
+        }
     }
 
     val broadcastReceiver = object : BroadcastReceiver() {
@@ -128,6 +139,11 @@ class PostViewModel @Inject constructor(
         viewModelScope.launch {
             if (isLiked.value) {
                 postsDao.deleteLikedPostId(mAuth.uid!!, post.id!!)
+                try {
+                    postsRef.document(currentPostId.value).update("likes",FieldValue.increment(-1)).await()
+                } catch (exception: Exception) {
+                    postChannel.send(PostsEvent.PostLikeError())
+                }
             } else {
                 postsDao.insertLikedPostId(
                     LikedPostId(
@@ -135,8 +151,12 @@ class PostViewModel @Inject constructor(
                         userId = mAuth.uid!!
                     )
                 )
+                try {
+                    postsRef.document(currentPostId.value).update("likes",FieldValue.increment(1)).await()
+                } catch (exception: Exception) {
+                    postChannel.send(PostsEvent.PostLikeError())
+                }
             }
-            isLiked.value = !isLiked.value
         }
     }
 
@@ -211,5 +231,6 @@ class PostViewModel @Inject constructor(
     sealed class PostsEvent {
         data class CreatePostSuccess(val message: String) : PostsEvent()
         data class CreatePostError(val message: String) : PostsEvent()
+        data class PostLikeError(val message: String = "Some error occurred in updating likes"): PostsEvent()
     }
 }

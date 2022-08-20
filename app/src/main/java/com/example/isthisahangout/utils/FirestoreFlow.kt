@@ -1,5 +1,7 @@
 package com.example.isthisahangout.utils
 
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.awaitClose
@@ -30,6 +32,17 @@ fun <T> Query.asResourceFlow(
                 val data = parseToObject(snapshots)
                 this.trySend(Resource.Success(data)).isSuccess
             }
+        }
+    }
+    awaitClose { registration.remove() }
+}
+
+fun DocumentReference.asFlow(): Flow<DocumentSnapshot> = callbackFlow {
+    val registration = addSnapshotListener { value, error ->
+        if(error !=null) {
+            close(error)
+        } else if(value != null) {
+            this.trySend(value).isSuccess
         }
     }
     awaitClose { registration.remove() }

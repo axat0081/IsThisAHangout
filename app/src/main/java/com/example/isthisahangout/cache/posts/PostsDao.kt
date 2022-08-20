@@ -13,8 +13,8 @@ interface PostsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLikedPostId(id: LikedPostId)
 
-    @Query("SELECT * FROM liked_posts_ids WHERE userId = :userId AND postId = :postId")
-    fun getLikesPostsId(userId: String, postId: String): Flow<LikedPostId?>
+    @Query("SELECT * FROM liked_posts_ids WHERE userId = :userId")
+    fun getLikesPostsId(userId: String): Flow<List<LikedPostId>>
 
     @Query("DELETE FROM liked_posts_ids WHERE postId = :id AND userId = :userId")
     suspend fun deleteLikedPostId(id: String, userId: String)
