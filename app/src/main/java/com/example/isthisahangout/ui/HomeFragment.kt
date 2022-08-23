@@ -9,9 +9,12 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
@@ -25,7 +28,7 @@ import com.example.isthisahangout.viewmodel.FirebaseAuthViewModel
 import com.example.isthisahangout.viewmodel.GameViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -86,29 +89,111 @@ class HomeFragment : Fragment(R.layout.fragment_home), AnimePagingAdapter.OnItem
                 )
                 itemAnimator = null
             }
-            viewLifecycleOwner.lifecycleScope.launch {
-                animeViewModel.upcomingAnime.collect {
-                    upcomingAnimeErrorTextView.isVisible = false
-                    upcomingAnimeProgressBar.isVisible = false
-                    upcomingAnimeRetryBtn.isVisible = false
-                    upcomingAnimeAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    animeViewModel.upcomingAnime.collectLatest {
+                        upcomingAnimeErrorTextView.isVisible = false
+                        upcomingAnimeProgressBar.isVisible = false
+                        upcomingAnimeRetryBtn.isVisible = false
+                        upcomingAnimeAdapter.submitData(it)
+                    }
                 }
             }
-            viewLifecycleOwner.lifecycleScope.launch {
-                animeViewModel.airingAnime.collect {
-                    airingAnimeProgressBar.isVisible = false
-                    airingAnimeErrorTextView.isVisible = false
-                    airingAnimeRetryButton.isVisible = false
-                    airingAnimeAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    upcomingAnimeAdapter.loadStateFlow.collect { loadState ->
+                        when (loadState.mediator?.refresh) {
+                            is LoadState.Loading -> {
+                                upcomingAnimeProgressBar.isVisible = true
+                                upcomingAnimeRetryBtn.isVisible = false
+                                upcomingAnimeErrorTextView.isVisible = false
+                            }
+                            is LoadState.NotLoading -> {
+                                upcomingAnimeProgressBar.isVisible = false
+                                upcomingAnimeRetryBtn.isVisible = false
+                                upcomingAnimeErrorTextView.isVisible = false
+                                airingAnimeTextView.isVisible
+                            }
+                            is LoadState.Error -> {
+                                upcomingAnimeProgressBar.isVisible = false
+                                upcomingAnimeRetryBtn.isVisible = true
+                                upcomingAnimeErrorTextView.isVisible = true
+                            }
+                            else -> Unit
+                        }
+                    }
                 }
             }
-            viewLifecycleOwner.lifecycleScope.launch {
-                gamesViewModel.games.collect {
-                    videoGamesProgressBar.isVisible = false
-                    videoGamesNoResultsTxt.isVisible = false
-                    videoGamesRetryBtn.isVisible = false
-                    gamesAdapter.submitData(viewLifecycleOwner.lifecycle, it)
+            upcomingAnimeRetryBtn.setOnClickListener {
+                upcomingAnimeAdapter.retry()
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    animeViewModel.airingAnime.collectLatest {
+                        airingAnimeAdapter.submitData(it)
+                    }
                 }
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    airingAnimeAdapter.loadStateFlow.collect { loadState ->
+                        when (loadState.mediator?.refresh) {
+                            is LoadState.Loading -> {
+                                airingAnimeProgressBar.isVisible = true
+                                airingAnimeRetryButton.isVisible = false
+                                airingAnimeErrorTextView.isVisible = false
+                            }
+                            is LoadState.NotLoading -> {
+                                airingAnimeProgressBar.isVisible = false
+                                airingAnimeRetryButton.isVisible = false
+                                airingAnimeErrorTextView.isVisible = false
+                            }
+                            is LoadState.Error -> {
+                                airingAnimeProgressBar.isVisible = false
+                                airingAnimeRetryButton.isVisible = true
+                                airingAnimeErrorTextView.isVisible = true
+                            }
+                            null -> Unit
+                        }
+                    }
+                }
+            }
+            airingAnimeRetryButton.setOnClickListener {
+                airingAnimeAdapter.retry()
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    gamesViewModel.games.collectLatest {
+                        gamesAdapter.submitData(it)
+                    }
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    gamesAdapter.loadStateFlow.collect { loadState ->
+                        when (loadState.mediator?.refresh) {
+                            is LoadState.Loading -> {
+                                videoGamesProgressBar.isVisible = true
+                                videoGamesNoResultsTxt.isVisible = false
+                                videoGamesRetryBtn.isVisible = false
+                            }
+                            is LoadState.NotLoading -> {
+                                videoGamesProgressBar.isVisible = false
+                                videoGamesNoResultsTxt.isVisible = false
+                                videoGamesRetryBtn.isVisible = false
+                            }
+                            is LoadState.Error -> {
+                                videoGamesProgressBar.isVisible = false
+                                videoGamesNoResultsTxt.isVisible = true
+                                videoGamesRetryBtn.isVisible = true
+                            }
+                            null -> Unit
+                        }
+                    }
+                }
+            }
+            videoGamesRetryBtn.setOnClickListener {
+                gamesAdapter.retry()
             }
         }
         setHasOptionsMenu(true)
@@ -140,8 +225,8 @@ class HomeFragment : Fragment(R.layout.fragment_home), AnimePagingAdapter.OnItem
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

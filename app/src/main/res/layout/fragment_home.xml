@@ -23,7 +23,7 @@
                 android:id="@+id/upcoming_anime_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upcoming anime"
+                android:text="@string/upcoming_anime"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Aw snap, an error occurred"
+                    android:text="@string/aw_snap_an_error_occurred"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/mypink" />
@@ -63,7 +63,7 @@
                     android:layout_marginTop="100dp"
                     android:layout_marginEnd="90dp"
                     android:background="@drawable/rounded_button"
-                    android:text="Retry" />
+                    android:text="@string/retry" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/upcoming_anime_recycler_view"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Airing anime"
+                android:text="@string/airing_anime"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textStyle="bold" />
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:text="Aw snap,an error occurred"
+                    android:text="@string/aw_snap_an_error_occurred"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/mypink" />
@@ -118,7 +118,7 @@
                     android:layout_marginTop="100dp"
                     android:layout_marginEnd="90dp"
                     android:background="@drawable/rounded_button"
-                    android:text="Retry" />
+                    android:text="@string/retry" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/airing_anime_recyclerview"
@@ -134,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Video games"
+                android:text="@string/video_games"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textStyle="bold" />
@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Aw snap, an error occurred"
+                    android:text="@string/aw_snap_an_error_occurred"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/mypink" />
@@ -174,7 +174,7 @@
                     android:layout_marginTop="100dp"
                     android:layout_marginEnd="90dp"
                     android:background="@drawable/rounded_button"
-                    android:text="Retry" />
+                    android:text="@string/retry" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/video_games_recyclerview"

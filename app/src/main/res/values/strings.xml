@@ -36,4 +36,7 @@
     <string name="synopsis">Synopsis</string>
     <string name="genres">Genres</string>
     <string name="read_more">Read more</string>
+    <string name="airing_anime">Airing anime</string>
+    <string name="video_games">Video games</string>
+    <string name="upcoming_anime">Upcoming anime</string>
 </resources>
