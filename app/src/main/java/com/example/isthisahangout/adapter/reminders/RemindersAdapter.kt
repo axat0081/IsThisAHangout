@@ -1,13 +1,12 @@
 package com.example.isthisahangout.adapter.reminders
 
+import Reminder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.isthisahangout.databinding.RemindersDisplayLayoutBinding
-import com.example.isthisahangout.models.reminders.Reminder
-import com.google.type.DateTime
 import java.text.DateFormat
 import java.util.*
 
@@ -66,7 +65,7 @@ class RemindersAdapter(private val listener: OnItemClickListener) :
                     textViewName.text = reminder.name
                     val time = DateFormat.getDateTimeInstance().format(Date(reminder.time))
                     val idx = time.lastIndexOf(':')
-                    dateTimeTextView.text = time.substring(startIndex = 0, endIndex = idx - 1)
+                    dateTextView.text = time.substring(startIndex = 0, endIndex = idx - 1)
                 }
             }
         }

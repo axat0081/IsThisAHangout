@@ -1,5 +1,6 @@
 package com.example.isthisahangout.ui.navDrawer
 
+import Reminder
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.reminders.RemindersAdapter
 import com.example.isthisahangout.databinding.FragmentRemindersBinding
-import com.example.isthisahangout.models.reminders.Reminder
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.RemindersViewModel
 import dagger.hilt.android.AndroidEntryPoint
