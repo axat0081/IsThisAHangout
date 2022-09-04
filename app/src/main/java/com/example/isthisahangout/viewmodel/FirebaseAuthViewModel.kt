@@ -72,37 +72,37 @@ class FirebaseAuthViewModel @Inject constructor(
     var loginEmail = state.get<String>("loginEmail") ?: ""
         set(value) {
             field = value
-            state.set("loginEmail", loginEmail)
+            state["loginEmail"] = loginEmail
         }
     var loginPassword = state.get<String>("loginPassword") ?: ""
         set(value) {
             field = value
-            state.set("loginPassword", loginPassword)
+            state["loginPassword"] = loginPassword
         }
     var registrationEmail = state.get<String>("registrationEmail") ?: ""
         set(value) {
             field = value
-            state.set("registrationEmail", registrationEmail)
+            state["registrationEmail"] = registrationEmail
         }
     var registrationPassword = state.get<String>("registrationPassword") ?: ""
         set(value) {
             field = value
-            state.set("registrationPassword", registrationPassword)
+            state["registrationPassword"] = registrationPassword
         }
     var registrationUsername = state.get<String>("registrationUsername") ?: ""
         set(value) {
             field = value
-            state.set("registrationUsername", registrationUsername)
+            state["registrationUsername"] = registrationUsername
         }
     var profilePfp: Uri? = state.get<Uri>("profilePfp")
         set(value) {
             field = value
-            state.set("profilePfp", profilePfp)
+            state["profilePfp"] = profilePfp
         }
     var profileHeader: Uri? = state.get<Uri>("profileHeader")
         set(value) {
             field = value
-            state.set("profileHeader", profileHeader)
+            state["profileHeader"] = profileHeader
         }
     val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {

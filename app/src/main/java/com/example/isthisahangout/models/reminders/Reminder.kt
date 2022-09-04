@@ -1,5 +1,3 @@
-package com.example.isthisahangout.models.reminders
-
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 

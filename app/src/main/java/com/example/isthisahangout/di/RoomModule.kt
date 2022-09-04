@@ -207,13 +207,4 @@ object RoomModule {
     fun providesHiddenContentDao(hiddenContentDatabase: HiddenContentDatabase): HiddenContentDao =
         hiddenContentDatabase.getHiddenContentDao()
 
-    @ApplicationScope
-    @Provides
-    @Singleton
-    fun provideApplicationScope() = CoroutineScope(SupervisorJob())
-
 }
-
-@Retention(AnnotationRetention.RUNTIME)
-@Qualifier
-annotation class ApplicationScope

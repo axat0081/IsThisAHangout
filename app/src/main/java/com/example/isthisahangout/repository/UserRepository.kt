@@ -1,11 +1,12 @@
 package com.example.isthisahangout.repository
 
+import Reminder
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.ComfortCharacter
 import com.example.isthisahangout.models.User
-import com.example.isthisahangout.models.reminders.Reminder
 import com.example.isthisahangout.utils.FirebaseResult
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.utils.asFlow
@@ -13,6 +14,7 @@ import com.example.isthisahangout.utils.asResourceFlow
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -131,6 +133,11 @@ class UserRepository @Inject constructor(
         } catch (exception: Exception) {
             emit(Resource.Error(exception))
         }
+    }
+
+    suspend fun sendTokenToServer(token: String) {
+        FirebaseFirestore.getInstance().collection("Tokens")
+            .document(MainActivity.userId).set(token).await()
     }
 
 }

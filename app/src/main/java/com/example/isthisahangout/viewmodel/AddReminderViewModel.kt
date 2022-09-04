@@ -1,10 +1,10 @@
 package com.example.isthisahangout.viewmodel
 
+import Reminder
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.MainActivity
-import com.example.isthisahangout.models.reminders.Reminder
 import com.example.isthisahangout.repository.UserRepository
 import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
