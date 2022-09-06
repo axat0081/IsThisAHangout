@@ -70,3 +70,5 @@ val newChatMessagesQuery by lazy {
     chatMessagesQuery.whereAfterTimestamp()
 }
 
+val currentUser get() = FirebaseAuth.getInstance().currentUser
+

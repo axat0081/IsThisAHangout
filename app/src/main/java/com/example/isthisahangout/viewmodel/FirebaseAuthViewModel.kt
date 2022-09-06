@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.models.User
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.utils.PreferencesManager
+import com.example.isthisahangout.utils.currentUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.CollectionReference
@@ -302,6 +303,31 @@ class FirebaseAuthViewModel @Inject constructor(
         }
     }
 
+    fun sendEmailVerificationClick() {
+        val user = currentUser
+        if (user == null) {
+            viewModelScope.launch {
+                authChannel.send(AuthEvent.EmailVerificationError("You are not signed in"))
+            }
+        } else {
+            user.sendEmailVerification()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        viewModelScope.launch {
+                            authChannel.send(AuthEvent.EmailVerificationSentSuccess(
+                                "Please check the email sent to your inbox for verification"))
+                        }
+                    } else {
+                        viewModelScope.launch {
+                            authChannel.send(AuthEvent.EmailVerificationSentSuccess(
+                                    "Email could not be sent to you for your account verification. Please check your internet connection"
+                            ))
+                        }
+                    }
+                }
+        }
+    }
+
     sealed class AuthEvent {
         data class LoginSuccess(val message: String) : AuthEvent()
         data class LoginFailure(val message: String) : AuthEvent()
@@ -309,5 +335,7 @@ class FirebaseAuthViewModel @Inject constructor(
         data class RegistrationFailure(val message: String) : AuthEvent()
         data class UpdateProfileSuccess(val message: String, val uri: Uri) : AuthEvent()
         data class UpdateProfileFailure(val message: String) : AuthEvent()
+        data class EmailVerificationSentSuccess(val message: String) : AuthEvent()
+        data class EmailVerificationError(val message: String) : AuthEvent()
     }
 }

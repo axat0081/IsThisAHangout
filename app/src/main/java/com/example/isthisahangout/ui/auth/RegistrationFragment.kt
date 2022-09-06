@@ -2,7 +2,6 @@ package com.example.isthisahangout.ui.auth
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
@@ -17,7 +16,6 @@ import com.example.isthisahangout.viewmodel.FirebaseAuthViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 
@@ -37,7 +35,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
             passwordEditText.editText!!.setText(viewModel.registrationPassword)
             usernameEditText.editText!!.setText(viewModel.registrationUsername)
             emailEditText.editText!!.addTextChangedListener { email ->
-                Log.e("Register", email.toString())
                 viewModel.registrationEmail = email.toString()
             }
             passwordEditText.editText!!.addTextChangedListener { password ->
