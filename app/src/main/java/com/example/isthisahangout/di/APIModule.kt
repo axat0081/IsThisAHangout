@@ -11,7 +11,6 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -124,4 +123,20 @@ object APIModule {
     @Provides
     fun provideAnimeMangaDetailAPI(@Named("AnimeMangaDetailAPI") retrofit: Retrofit): AnimeMangaDetailAPI =
         retrofit.create(AnimeMangaDetailAPI::class.java)
+
+    //Movies
+    @Singleton
+    @Provides
+    @Named("MoviesAPI")
+    fun provideMoviesRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(MoviesAPI.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideMoviesAPI(@Named("MoviesAPI") retrofit: Retrofit): MoviesAPI =
+        retrofit.create(MoviesAPI::class.java)
+
+
 }

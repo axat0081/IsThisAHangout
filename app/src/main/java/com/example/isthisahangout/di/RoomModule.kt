@@ -15,6 +15,7 @@ import com.example.isthisahangout.cache.hiddenContent.HiddenContentDatabase
 import com.example.isthisahangout.cache.manga.MangaDao
 import com.example.isthisahangout.cache.manga.MangaDatabase
 import com.example.isthisahangout.cache.manga.MangaRemoteKeyDao
+import com.example.isthisahangout.cache.movies.MoviesDatabase
 import com.example.isthisahangout.cache.pokemon.PokemonDao
 import com.example.isthisahangout.cache.pokemon.PokemonDatabase
 import com.example.isthisahangout.cache.pokemon.PokemonKeyDao
@@ -207,4 +208,11 @@ object RoomModule {
     fun providesHiddenContentDao(hiddenContentDatabase: HiddenContentDatabase): HiddenContentDao =
         hiddenContentDatabase.getHiddenContentDao()
 
+    // Movies
+    @Provides
+    @Singleton
+    fun providesMoviesDatabase(app: Application): MoviesDatabase =
+        Room.databaseBuilder(app, MoviesDatabase::class.java, "Movies_database")
+            .fallbackToDestructiveMigration()
+            .build()
 }
