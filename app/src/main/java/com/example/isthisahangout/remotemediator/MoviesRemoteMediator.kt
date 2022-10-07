@@ -18,7 +18,6 @@ private const val MOVIES_STARTING_PAGE_NUMBER = 1
 class MoviesRemoteMediator(
     private val moviesAPI: MoviesAPI,
     private val moviesDatabase: MoviesDatabase,
-    private val forceRefresh: Boolean
 ) : RemoteMediator<Int, MovieEntity>() {
     private val moviesDao = moviesDatabase.getMoviesDao()
     override suspend fun load(
@@ -54,9 +53,6 @@ class MoviesRemoteMediator(
     }
 
     override suspend fun initialize(): InitializeAction {
-        if (forceRefresh) {
-            return InitializeAction.LAUNCH_INITIAL_REFRESH
-        }
         val lastUpdatedAt = moviesDao.getLastUpdatedAt()
         return lastUpdatedAt?.let { time ->
             if (System.currentTimeMillis() - time > TimeUnit.MINUTES.toMillis(10))

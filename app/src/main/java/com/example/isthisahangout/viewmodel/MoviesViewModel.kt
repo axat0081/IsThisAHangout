@@ -12,30 +12,12 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MoviesViewModel(
-    private val moviesRepository: MoviesRepository
+    moviesRepository: MoviesRepository
 ) : ViewModel() {
 
-    private val moviesRefreshChannel = Channel<RefreshType>()
-    private val moviesRefreshFlow = moviesRefreshChannel.receiveAsFlow()
+    var refreshInProgress = false
+    var pendingScrollToTop = false
 
-    val movies = moviesRefreshFlow.flatMapLatest { refreshType ->
-        moviesRepository.getMoviesPaged(forceRefresh = refreshType == RefreshType.FORCE_REFRESH)
-    }.cachedIn(viewModelScope)
+    val movies = moviesRepository.getMoviesPaged().cachedIn(viewModelScope)
 
-    fun onForceRefresh() {
-        viewModelScope.launch {
-            moviesRefreshChannel.send(RefreshType.FORCE_REFRESH)
-        }
-    }
-
-    fun onStart() {
-        viewModelScope.launch {
-            moviesRefreshChannel.send(RefreshType.NORMAL_REFRESH)
-        }
-    }
-
-    enum class RefreshType {
-        NORMAL_REFRESH,
-        FORCE_REFRESH
-    }
 }

@@ -20,14 +20,14 @@ class MoviesRepository(
 ) {
     private val moviesDao = moviesDatabase.getMoviesDao()
 
-    fun getMoviesPaged(forceRefresh: Boolean): Flow<PagingData<Movie>> =
+    fun getMoviesPaged(): Flow<PagingData<Movie>> =
         Pager(
             config = PagingConfig(
                 pageSize = 20,
                 maxSize = 100,
                 enablePlaceholders = false
             ),
-            remoteMediator = MoviesRemoteMediator(moviesAPI, moviesDatabase, forceRefresh),
+            remoteMediator = MoviesRemoteMediator(moviesAPI, moviesDatabase),
             pagingSourceFactory = { moviesDao.getMoviesPaged() }
         ).flow.map { pagingData ->
             pagingData.map { movieEntity ->
