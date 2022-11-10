@@ -5,13 +5,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.isthisahangout.repository.MoviesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel(
+class MoviesViewModel @Inject constructor(
     moviesRepository: MoviesRepository
 ) : ViewModel() {
 
