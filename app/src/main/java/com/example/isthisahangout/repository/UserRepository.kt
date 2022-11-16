@@ -3,16 +3,16 @@ package com.example.isthisahangout.repository
 import Reminder
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.ComfortCharacter
-import com.example.isthisahangout.utils.FirebaseResult
-import com.example.isthisahangout.utils.Resource
-import com.example.isthisahangout.utils.asFlow
-import com.example.isthisahangout.utils.asResourceFlow
+import com.example.isthisahangout.models.FirebasePost
+import com.example.isthisahangout.utils.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -58,6 +58,28 @@ class UserRepository @Inject constructor(
     suspend fun sendTokenToServer(token: String) {
         FirebaseFirestore.getInstance().collection("Tokens")
             .document(MainActivity.userId).set(token).await()
+    }
+
+    fun getUserPosts(
+        userName: String,
+        lastRetrievedPost: FirebasePost?
+    ): Flow<Resource<List<FirebasePost>>> = flow {
+        emit(Resource.Loading())
+        try {
+            val posts =
+                postsQuery.whereEqualTo("username", userName)
+                    .orderBy("time")
+                    .startAfter(lastRetrievedPost)
+                    .limit(10)
+                    .get()
+                    .await()
+                    .toObjects(FirebasePost::class.java)
+            emit(Resource.Success(data = posts))
+        } catch (exception: HttpException) {
+            emit(Resource.Error(throwable = exception))
+        } catch (exception: IOException) {
+            emit(Resource.Error(throwable = exception))
+        }
     }
 
 }

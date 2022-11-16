@@ -3,10 +3,22 @@ package com.example.isthisahangout.ui.navDrawer
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
@@ -20,13 +32,12 @@ import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.ComfortCharacterAdapter
 import com.example.isthisahangout.databinding.FragmentProfileBinding
 import com.example.isthisahangout.models.ComfortCharacter
+import com.example.isthisahangout.models.FirebasePost
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
-import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.FirebaseAuthViewModel
 import com.example.isthisahangout.viewmodel.UserViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -64,7 +75,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
             comfortCharacterTextRecyclerview.apply {
                 adapter = comfortCharacterAdapter
                 layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             }
             addComfortCharacterButton.setOnClickListener {
                 findNavController().navigate(
@@ -150,17 +161,61 @@ class ProfileFragment : Fragment(R.layout.fragment_profile),
                 }
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                userViewModel.comfortCharacters.collectLatest { comfortCharacters->
+                userViewModel.comfortCharacters.collectLatest { comfortCharacters ->
                     comfortCharactersProgressBar.isVisible = false
                     comfortCharactersErrorTextView.isVisible = false
                     comfortCharacterAdapter.submitList(comfortCharacters)
 
                 }
             }
+            binding.postsByUserView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            binding.postsByUserView.setContent {
+                val userPosts = userViewModel.userPosts.value
+                val isLoading = userViewModel.isLoading.value
+                val isEndReached = userViewModel.isEndOfUserPostPagination.value
+                LazyColumn {
+                    itemsIndexed(items = userPosts) { index, post ->
+                        if (index >= userPosts.size - 1 && !isLoading && !isEndReached) {
+                            userViewModel.getUserPosts()
+                        }
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(15.dp)
+                                .clickable(
+                                    enabled = true,
+                                    onClick = {
+                                        val clickedPost = userPosts[index]
+                                        onPostClick(clickedPost)
+                                    }
+                                )
+                        ) {
+                            Text(
+                                text = post.title ?: "",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp),
+                                style = MaterialTheme.typography.h3,
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = post.text ?: "",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 
     override fun onItemClick(character: ComfortCharacter) {
+
+    }
+
+    private fun onPostClick(post: FirebasePost) {
 
     }
 
