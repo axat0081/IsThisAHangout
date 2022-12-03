@@ -1,9 +1,9 @@
 package com.example.isthisahangout.repository
 
-import Reminder
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.ComfortCharacter
 import com.example.isthisahangout.models.FirebasePost
+import com.example.isthisahangout.models.reminders.Reminder
 import com.example.isthisahangout.utils.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore

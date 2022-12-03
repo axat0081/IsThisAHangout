@@ -1,6 +1,6 @@
 package com.example.isthisahangout.adapter.reminders
 
-import Reminder
+import com.example.isthisahangout.models.reminders.Reminder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
