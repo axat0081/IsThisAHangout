@@ -21,12 +21,14 @@
             android:textColor="@color/myblack"
             android:textStyle="bold"
             tools:text="Username" />
+
         <RelativeLayout
             android:id="@+id/incoming_message_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="150dp"
             android:background="@drawable/shape_bg_incoming_bubble">
+
             <TextView
                 android:id="@+id/message_received_text_view"
                 android:layout_width="match_parent"
