@@ -29,9 +29,7 @@ class GetVideoGameUseCase @Inject constructor(
                     genres = game.genres,
                     screenshots = game.screenshots
                 )
-            }
-        }.map { pagingData ->
-            pagingData.insertSeparators { before: VideoGameUIModel.VideoGameModel?, after: VideoGameUIModel.VideoGameModel? ->
+            }.insertSeparators { before: VideoGameUIModel.VideoGameModel?, after: VideoGameUIModel.VideoGameModel? ->
                 if (after == null) {
                     return@insertSeparators null
                 }

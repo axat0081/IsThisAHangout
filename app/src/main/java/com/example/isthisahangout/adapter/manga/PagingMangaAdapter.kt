@@ -12,8 +12,10 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.SeparatorViewHolder
 import com.example.isthisahangout.databinding.AnimeDisplayLayoutBinding
+import com.example.isthisahangout.databinding.SeparatorLayoutBinding
 import com.example.isthisahangout.ui.models.MangaUIModel
 
 class MangaPagingAdapter(private val listener: OnItemClickListener) :
@@ -43,18 +45,29 @@ class MangaPagingAdapter(private val listener: OnItemClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PaginatedAnimeViewHolder {
-        return PaginatedAnimeViewHolder(
+    ) = when (viewType) {
+        R.layout.anime_display_layout -> PaginatedAnimeViewHolder(
             AnimeDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
+        else -> SeparatorViewHolder(
+            SeparatorLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (peek(position)) {
+            is MangaUIModel.MangaModel -> R.layout.anime_display_layout
+            is MangaUIModel.MangaSeparator -> R.layout.separator_layout
+            null -> throw IllegalStateException("Unknown view")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            when (item) {
-                is MangaUIModel.MangaModel -> (holder as PaginatedAnimeViewHolder).bind(item)
-                is MangaUIModel.MangaSeparator -> (holder as SeparatorViewHolder).bind(item.desc)
+            when (holder) {
+                is PaginatedAnimeViewHolder -> holder.bind(item as MangaUIModel.MangaModel)
+                is SeparatorViewHolder -> holder.bind((item as MangaUIModel.MangaSeparator).desc)
             }
         }
     }

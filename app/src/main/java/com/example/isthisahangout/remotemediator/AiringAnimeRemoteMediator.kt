@@ -53,10 +53,8 @@ class AiringAnimeRemoteMediator(
                 MediatorResult.Success(endOfPaginationReached = isEndOfList)
             }
         } catch (exception: IOException) {
-            Log.e("Error", exception.message.toString())
             MediatorResult.Error(exception)
         } catch (exception: HttpException) {
-            Log.e("Error", exception.message.toString())
             MediatorResult.Error(exception)
         }
     }

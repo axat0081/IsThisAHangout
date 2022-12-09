@@ -2,6 +2,7 @@ package com.example.isthisahangout.service.music
 
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
@@ -59,8 +60,11 @@ class MusicService : MediaBrowserServiceCompat() {
             firebaseMusicSource.fetchMediaData()
         }
 
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
+        else PendingIntent.FLAG_ONE_SHOT
+
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
+            PendingIntent.getActivity(this, 0, it, flag)
         }
 
         mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {

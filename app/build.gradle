@@ -163,4 +163,7 @@ dependencies {
     // Coil
     implementation "io.coil-kt:coil-compose:1.4.0"
 
+    // required to avoid crash on Android 12 API 31
+    implementation 'androidx.work:work-runtime-ktx:2.7.0'
+
 }

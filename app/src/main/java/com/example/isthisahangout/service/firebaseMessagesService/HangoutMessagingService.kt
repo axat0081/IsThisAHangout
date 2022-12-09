@@ -14,13 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Singleton
 
 const val GENERIC_NOTIFICATION_CHANNEL_ID = 4
 
 @AndroidEntryPoint
-class HangoutMessagingService constructor(
-) : FirebaseMessagingService() {
+class HangoutMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var userRepository: UserRepository

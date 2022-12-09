@@ -12,8 +12,10 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.SeparatorViewHolder
 import com.example.isthisahangout.databinding.GamesDisplayLayoutBinding
+import com.example.isthisahangout.databinding.SeparatorLayoutBinding
 import com.example.isthisahangout.ui.models.VideoGameUIModel
 
 class VideoGamesPagingAdapter(private val listener: OnItemClickListener) :
@@ -43,18 +45,29 @@ class VideoGamesPagingAdapter(private val listener: OnItemClickListener) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PaginatedVideoGameViewHolder {
-        return PaginatedVideoGameViewHolder(
-            GamesDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+    ) = when (viewType) {
+        R.layout.games_display_layout -> PaginatedVideoGameViewHolder(
+            GamesDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
+        else -> SeparatorViewHolder(
+            SeparatorLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (peek(position)) {
+            is VideoGameUIModel.VideoGameModel -> R.layout.games_display_layout
+            is VideoGameUIModel.VideoGameSeparator -> R.layout.separator_layout
+            null -> throw IllegalStateException("Unknown view")
+        }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         if (item != null) {
-            when (item) {
-                is VideoGameUIModel.VideoGameModel -> (holder as PaginatedVideoGameViewHolder).bind(item)
-                is VideoGameUIModel.VideoGameSeparator -> (holder as SeparatorViewHolder).bind(item.desc)
+            when(holder) {
+                is PaginatedVideoGameViewHolder -> holder.bind(item as VideoGameUIModel.VideoGameModel)
+                is SeparatorViewHolder -> holder.bind((item as VideoGameUIModel.VideoGameSeparator).desc)
             }
         }
     }
