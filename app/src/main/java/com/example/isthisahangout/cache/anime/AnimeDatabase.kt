@@ -10,14 +10,15 @@ import com.example.isthisahangout.models.*
         UpcomingAnimeRemoteKey::class,
         RoomAnimeByGenres::class,
         AnimeByGenresRemoteKey::class,
-        AnimeSeasonResults.RoomAnimeBySeason::class,
+        RoomAnimeBySeasons::class,
+        AnimeBySeasonsRemoteKey::class,
         RoomAnimeQuote::class,
         AnimeByNameResults.AnimeByName::class,
         RoomAnimeByDay::class,
         AnimeImage::class,
         AnimeNews::class,
         AnimeDetail::class],
-    version = 12
+    version = 1
 )
 abstract class AnimeDatabase : RoomDatabase() {
     abstract fun getUpcomingAnimeDao(): UpcomingAnimeDao
@@ -27,6 +28,7 @@ abstract class AnimeDatabase : RoomDatabase() {
     abstract fun getAnimeByGenreDao(): AnimeGenreDao
     abstract fun getAnimeByGenreKeyDao(): AnimeGenreKeyDao
     abstract fun getAnimeBySeasonDao(): AnimeBySeasonDao
+    abstract fun getAnimeBySeasonsRemoteKeyDao(): AnimeBySeasonsRemoteKeyDao
     abstract fun getAnimeQuoteDao(): AnimeQuoteDao
     abstract fun getAnimeByNameDao(): AnimeSearchByNameDao
     abstract fun getAnimeByDayDao(): AnimeByDayDao

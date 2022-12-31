@@ -5,22 +5,25 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.isthisahangout.api.AnimeAPI
-import com.example.isthisahangout.models.RoomMangaByGenre
-import com.example.isthisahangout.models.RoomMangaByGenreRemoteKey
-import com.example.isthisahangout.cache.manga.MangaDatabase
+import com.example.isthisahangout.cache.anime.AnimeDatabase
+import com.example.isthisahangout.models.AnimeBySeasonsRemoteKey
+import com.example.isthisahangout.models.RoomAnimeBySeasons
 import retrofit2.HttpException
 import java.io.IOException
 
-class MangaByGenreRemoteMediator(
-    private val genre: String,
-    private val animeAPI: AnimeAPI,
-    private val mangaDb: MangaDatabase
-) : RemoteMediator<Int, RoomMangaByGenre>() {
-    private val mangaDao = mangaDb.getMangaDao()
-    private val mangaRemoteKeyDao = mangaDb.getMangaRemoteKeyDao()
+class AnimeBySeasonsRemoteMediator(
+    private val year: String,
+    private val season: String,
+    private val db: AnimeDatabase,
+    private val api: AnimeAPI
+) : RemoteMediator<Int, RoomAnimeBySeasons>() {
+
+    private val animeDao = db.getAnimeBySeasonDao()
+    private val keyDao = db.getAnimeBySeasonsRemoteKeyDao()
+
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, RoomMangaByGenre>
+        state: PagingState<Int, RoomAnimeBySeasons>
     ): MediatorResult {
         val page = when (val pageKeyData = getKeyPageData(loadType, state)) {
             is MediatorResult.Success -> {
@@ -31,37 +34,39 @@ class MangaByGenreRemoteMediator(
             }
         }
         return try {
-            val response = animeAPI.getMangaByGenre(page = page, genre = genre)
+            val response = api.getAnimeBySeason(season = season, year = year)
             val resultList = response.data
             val isEndOfList = resultList.isEmpty()
-            mangaDb.withTransaction {
+            db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    mangaRemoteKeyDao.deleteMangaByGenreRemoteKey(genre)
-                    mangaDao.deleteMangaByGenre(genre)
+                    keyDao.deleteRemoteKeys(season = season, year = year)
+                    animeDao.deleteAll(season = season, year = year)
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (isEndOfList) null else page + 1
-                val mangaList = resultList.map {
-                    RoomMangaByGenre(
+                val animeList = resultList.map {
+                    RoomAnimeBySeasons(
                         id = it.id,
+                        title = it.title,
                         imageUrl = it.images.jpg.image_url,
                         url = it.url,
                         synopsis = it.synopsis,
-                        genre = genre,
-                        title = it.title,
-                        favorites = it.favorites?:0
+                        favorites = it.favorites ?: 0,
+                        season = season,
+                        year = year
                     )
                 }
-                val keysList = mangaList.map {
-                    RoomMangaByGenreRemoteKey(
+                val keysList = animeList.map {
+                    AnimeBySeasonsRemoteKey(
                         id = it.id,
                         prevKey = prevKey,
                         nextKey = nextKey,
-                        genre = genre
+                        season = season,
+                        year = year
                     )
                 }
-                mangaRemoteKeyDao.insertMangaByGenreRemoteKey(keysList)
-                mangaDao.insertRoomMangaByGenre(mangaList)
+                keyDao.insertAll(keysList)
+                animeDao.insertAll(animeList)
                 MediatorResult.Success(endOfPaginationReached = isEndOfList)
             }
         } catch (exception: IOException) {
@@ -73,7 +78,7 @@ class MangaByGenreRemoteMediator(
 
     private suspend fun getKeyPageData(
         loadType: LoadType,
-        state: PagingState<Int, RoomMangaByGenre>
+        state: PagingState<Int, RoomAnimeBySeasons>
     ): Any? {
         return when (loadType) {
             LoadType.REFRESH -> {
@@ -94,31 +99,32 @@ class MangaByGenreRemoteMediator(
         }
     }
 
-    private suspend fun getLastRemoteKey(state: PagingState<Int, RoomMangaByGenre>): RoomMangaByGenreRemoteKey? {
+    private suspend fun getLastRemoteKey(state: PagingState<Int, RoomAnimeBySeasons>): AnimeBySeasonsRemoteKey? {
         return state.pages
             .lastOrNull { it.data.isNotEmpty() }
             ?.data?.lastOrNull()
             ?.let {
-                mangaRemoteKeyDao.getMangaByGenreRemoteKey(it.id, genre)
+                keyDao.getRemoteKeys(it.id, season = season, year = year)
             }
     }
 
-    private suspend fun getFirstRemoteKey(state: PagingState<Int, RoomMangaByGenre>): RoomMangaByGenreRemoteKey? {
+    private suspend fun getFirstRemoteKey(state: PagingState<Int, RoomAnimeBySeasons>): AnimeBySeasonsRemoteKey? {
         return state.pages
             .firstOrNull {
                 it.data.isNotEmpty()
             }
             ?.data?.firstOrNull()
             ?.let {
-                mangaRemoteKeyDao.getMangaByGenreRemoteKey(it.id, genre)
+                keyDao.getRemoteKeys(it.id, season = season, year = year)
             }
     }
 
-    private suspend fun getClosestRemoteKey(state: PagingState<Int, RoomMangaByGenre>): RoomMangaByGenreRemoteKey? {
+    private suspend fun getClosestRemoteKey(state: PagingState<Int, RoomAnimeBySeasons>): AnimeBySeasonsRemoteKey? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.let {
-                mangaRemoteKeyDao.getMangaByGenreRemoteKey(it.id, genre)
+                keyDao.getRemoteKeys(it.id, season = season, year = year)
             }
         }
     }
+
 }

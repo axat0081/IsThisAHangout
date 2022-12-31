@@ -6,9 +6,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.isthisahangout.api.AnimeAPI
+import com.example.isthisahangout.cache.anime.AnimeDatabase
 import com.example.isthisahangout.models.AnimeByGenresRemoteKey
 import com.example.isthisahangout.models.RoomAnimeByGenres
-import com.example.isthisahangout.cache.anime.AnimeDatabase
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,9 +32,8 @@ class AnimeByGenreRemoteMediator(
             }
         }
         return try {
-            Log.e("Query", query)
             val response = api.getAnimeByGenre(page = page.toString(), genre = query)
-            val resultList = response.results
+            val resultList = response.data
             val isEndOfList = resultList.isEmpty()
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -46,11 +45,12 @@ class AnimeByGenreRemoteMediator(
                 val animeList = resultList.map {
                     RoomAnimeByGenres(
                         id = it.id,
-                        imageUrl = it.imageUrl,
+                        imageUrl = it.images.jpg.image_url,
                         url = it.url,
                         synopsis = it.synopsis,
                         genre = query,
-                        title = it.title
+                        title = it.title,
+                        favorites = it.favorites?:0
                     )
                 }
                 val keysList = animeList.map {

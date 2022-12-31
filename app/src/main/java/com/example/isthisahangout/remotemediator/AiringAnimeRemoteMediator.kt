@@ -1,14 +1,14 @@
 package com.example.isthisahangout.remotemediator
 
-import android.util.Log
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.example.isthisahangout.api.AnimeAPI
+import com.example.isthisahangout.cache.anime.AnimeDatabase
 import com.example.isthisahangout.models.AiringAnimeRemoteKey
 import com.example.isthisahangout.models.AiringAnimeResponse
-import com.example.isthisahangout.cache.anime.AnimeDatabase
+import com.example.isthisahangout.models.toAiringAnime
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,7 +32,7 @@ class AiringAnimeRemoteMediator(
         }
         return try {
             val response = api.getAiringAnime(page.toString())
-            val animeList = response.top
+            val animeList = response.data
             val isEndOfList = animeList.isEmpty()
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -49,7 +49,9 @@ class AiringAnimeRemoteMediator(
                     )
                 }
                 keyDao.insertAll(keysList)
-                animeDao.insertAll(animeList)
+                animeDao.insertAll(animeList.map {
+                    it.toAiringAnime()
+                })
                 MediatorResult.Success(endOfPaginationReached = isEndOfList)
             }
         } catch (exception: IOException) {

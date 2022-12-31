@@ -9,6 +9,7 @@ import com.example.isthisahangout.api.AnimeAPI
 import com.example.isthisahangout.models.MangaRemoteKey
 import com.example.isthisahangout.models.MangaResults
 import com.example.isthisahangout.cache.manga.MangaDatabase
+import com.example.isthisahangout.models.toManga
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,7 +33,7 @@ class MangaRemoteMediator(
         }
         return try {
             val response = api.getManga(page.toString())
-            val mangaList = response.top
+            val mangaList = response.data
             val isEndOfList = mangaList.isEmpty()
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -49,7 +50,9 @@ class MangaRemoteMediator(
                     )
                 }
                 keyDao.insertMangaRemoteKey(keysList)
-                mangaDao.insertManga(mangaList)
+                mangaDao.insertManga(mangaList.map {
+                    it.toManga()
+                })
                 MediatorResult.Success(endOfPaginationReached = isEndOfList)
             }
         } catch (exception: IOException) {

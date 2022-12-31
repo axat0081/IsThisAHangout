@@ -13,9 +13,9 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.isthisahangout.R
-import com.example.isthisahangout.adapter.SeparatorViewHolder
+import com.example.isthisahangout.adapter.AnimeSeparatorViewHolder
 import com.example.isthisahangout.databinding.AnimeDisplayLayoutBinding
-import com.example.isthisahangout.databinding.SeparatorLayoutBinding
+import com.example.isthisahangout.databinding.AnimeSeparatorLayoutBinding
 import com.example.isthisahangout.ui.models.MangaUIModel
 
 class MangaPagingAdapter(private val listener: OnItemClickListener) :
@@ -32,7 +32,7 @@ class MangaPagingAdapter(private val listener: OnItemClickListener) :
                 return (oldItem is MangaUIModel.MangaModel && newItem is MangaUIModel.MangaModel &&
                         oldItem.title == newItem.title) ||
                         (oldItem is MangaUIModel.MangaSeparator && newItem is MangaUIModel.MangaSeparator &&
-                                oldItem.desc == newItem.desc)
+                                oldItem.favorites == newItem.favorites)
             }
 
             override fun areContentsTheSame(
@@ -49,15 +49,15 @@ class MangaPagingAdapter(private val listener: OnItemClickListener) :
         R.layout.anime_display_layout -> PaginatedAnimeViewHolder(
             AnimeDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
-        else -> SeparatorViewHolder(
-            SeparatorLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        else -> AnimeSeparatorViewHolder(
+            AnimeSeparatorLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (peek(position)) {
             is MangaUIModel.MangaModel -> R.layout.anime_display_layout
-            is MangaUIModel.MangaSeparator -> R.layout.separator_layout
+            is MangaUIModel.MangaSeparator -> R.layout.video_game_separator_layout
             null -> throw IllegalStateException("Unknown view")
         }
     }
@@ -67,7 +67,7 @@ class MangaPagingAdapter(private val listener: OnItemClickListener) :
         if (item != null) {
             when (holder) {
                 is PaginatedAnimeViewHolder -> holder.bind(item as MangaUIModel.MangaModel)
-                is SeparatorViewHolder -> holder.bind((item as MangaUIModel.MangaSeparator).desc)
+                is AnimeSeparatorViewHolder -> holder.bind((item as MangaUIModel.MangaSeparator).favorites)
             }
         }
     }

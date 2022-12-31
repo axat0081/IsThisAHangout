@@ -1,5 +1,6 @@
 package com.example.isthisahangout.ui.createContent
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -10,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import com.example.isthisahangout.OnLoadingStateChangeListener
 import com.example.isthisahangout.R
 import com.example.isthisahangout.databinding.FragmentAddReminderBinding
 import com.example.isthisahangout.viewmodel.AddReminderViewModel
@@ -23,6 +25,8 @@ class AddReminderFragment : Fragment(R.layout.fragment_add_reminder) {
     private val binding get() = _binding!!
     private val args by navArgs<AddReminderFragmentArgs>()
     private val viewModel by viewModels<AddReminderViewModel>()
+    private lateinit var loadingStateChangeListener: OnLoadingStateChangeListener
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentAddReminderBinding.bind(view)
@@ -30,20 +34,22 @@ class AddReminderFragment : Fragment(R.layout.fragment_add_reminder) {
         viewModel.setReminderName(reminder.name ?: "")
         viewModel.setReminderDesc(reminder.desc ?: "")
         binding.apply {
-            reminderTitleEditText.editText!!.setText(viewModel.reminderName.value)
-            reminderDescEditText.editText!!.setText(viewModel.reminderDesc.value)
-            reminderTitleEditText.editText!!.addTextChangedListener {
+            reminderTitleEditText.setText(viewModel.reminderName.value)
+            reminderDescEditText.setText(viewModel.reminderDesc.value)
+            reminderTitleEditText.addTextChangedListener {
                 viewModel.setReminderName(it.toString())
             }
-            reminderDescEditText.editText!!.addTextChangedListener {
+            reminderDescEditText.addTextChangedListener {
                 viewModel.setReminderDesc(it.toString())
             }
-            addReminderButton.setOnClickListener {
-                viewModel.onReminderAddClick()
-            }
+//            addReminderButton.setOnClickListener {
+//                viewModel.onReminderAddClick()
+//            }
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.isLoading.collectLatest { isLoading ->
+                        loadingStateChangeListener.toggleLoadingState(isLoading)
                         reminderProgressBar.isVisible = isLoading
                     }
                 }
@@ -71,6 +77,11 @@ class AddReminderFragment : Fragment(R.layout.fragment_add_reminder) {
                 }
             }
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        loadingStateChangeListener = context as OnLoadingStateChangeListener
     }
 
     override fun onDestroyView() {

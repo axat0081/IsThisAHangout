@@ -37,7 +37,7 @@ class GetMangaByGenreUseCase @Inject constructor(
                         id = mangaByGenre.id,
                         title = mangaByGenre.title,
                         imageUrl = mangaByGenre.imageUrl,
-                        startDate = mangaByGenre.startDate,
+                        favorites = mangaByGenre.favorites,
                         isHidden = isHidden,
                         isFav = isFav,
                     )
@@ -49,10 +49,10 @@ class GetMangaByGenreUseCase @Inject constructor(
                     }
                     if (before == null) {
                         return@insertSeparators MangaUIModel.MangaSeparator(
-                            desc = after.startDate ?: ""
+                            favorites = after.favorites
                         )
                     }
-                    MangaUIModel.MangaSeparator(desc = after.startDate ?: "")
+                    MangaUIModel.MangaSeparator(favorites = after.favorites)
                 }
             }
 }

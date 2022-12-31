@@ -35,7 +35,7 @@ class GetUpcomingAnimeUseCase @Inject constructor(
                         id = upcomingAnime.id,
                         title = upcomingAnime.title,
                         imageUrl = upcomingAnime.imageUrl,
-                        startDate = upcomingAnime.startDate,
+                        favorites = upcomingAnime.favorites,
                         isHidden = isHidden && !isFav,
                         isFav = isFav
                     )
@@ -47,10 +47,10 @@ class GetUpcomingAnimeUseCase @Inject constructor(
                     }
                     if (before == null) {
                         return@insertSeparators AnimeUIModel.AnimeSeparator(
-                            desc = after.startDate ?: ""
+                            favorites = after.favorites
                         )
                     }
-                    AnimeUIModel.AnimeSeparator(desc = after.startDate ?: "")
+                    AnimeUIModel.AnimeSeparator(favorites = after.favorites)
                 }
             }
 }

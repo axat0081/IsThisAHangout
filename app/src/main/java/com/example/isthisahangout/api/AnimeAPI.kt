@@ -7,29 +7,43 @@ import retrofit2.http.Query
 
 interface AnimeAPI {
     companion object {
-        const val BASE_URL = "https://api.jikan.moe/v3/"
+        const val BASE_URL = "https://api.jikan.moe/v4/"
     }
 
-    @GET("top/anime/{id}/upcoming")
-    suspend fun getUpcomingAnime(@Path("id") id: String): UpcomingAnimeResponse
+    @GET("anime")
+    suspend fun getUpcomingAnime(
+        @Query("page") id: String,
+        @Query("status") status: String = "upcoming",
+        @Query("order_by") orderBy: String = "favorites",
+        @Query("sort") sort: String = "desc"
+    ): UpcomingAnimeResponse
 
-    @GET("top/anime/{id}/airing")
-    suspend fun getAiringAnime(@Path("id") id: String): AiringAnimeResponse
+    @GET("anime")
+    suspend fun getAiringAnime(
+        @Query("page") id: String,
+        @Query("status") status: String = "airing",
+        @Query("order_by") orderBy: String = "favorites",
+        @Query("sort") sort: String = "desc"
+    ): AiringAnimeResponse
 
-    @GET("search/anime")
+    @GET("anime")
     suspend fun getAnimeByGenre(
         @Query("genre") genre: String,
-        @Query("page") page: String
+        @Query("page") page: String,
+        @Query("order_by") orderBy: String = "favorites",
+        @Query("sort") sort: String = "desc"
     ): AnimeGenreResults
 
-    @GET("season/{year}/{season}")
+    @GET("seasons/{year}/{season}")
     suspend fun getAnimeBySeason(
         @Path("season") season: String,
-        @Path("year") year: String
-    ): AnimeSeasonResults
+        @Path("year") year: String,
+        @Query("order_by") orderBy: String = "favorites",
+        @Query("sort") sort: String = "desc"
+    ): AnimeSeasonsResults
 
     @GET("search/anime")
-    suspend fun getAnimebyName(
+    suspend fun getAnimeByName(
         @Query("q") name: String
     ): AnimeByNameResults
 
@@ -38,14 +52,16 @@ interface AnimeAPI {
         @Path("day") day: String
     ): AnimeByDayResults
 
-    @GET("top/manga/{id}")
+    @GET("manga")
     suspend fun getManga(
-        @Path("id") page: String
+        @Query("page") page: String
     ): MangaResults
 
-    @GET("search/manga")
+    @GET("manga")
     suspend fun getMangaByGenre(
         @Query("page") page: Int,
-        @Query("genre") genre: String
+        @Query("genre") genre: String,
+        @Query("order_by") orderBy: String = "favorites",
+        @Query("sort") sort: String = "desc"
     ): MangaGenreResults
 }

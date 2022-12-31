@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgdetails"
+    tools:context=".ui.navDrawer.AnimeByGenreFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/anime_by_genres_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/search_anime_by_genres"
+                android:textColor="@color/mypink"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:id="@id/chips_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_by_genres_text_view"
+                android:layout_marginTop="5dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/action_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Action"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shoujo_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Shoujo"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/shonen_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Shonen"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/psychological_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Psychological"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/adventure_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Adventure"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/mystery_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Mystery"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fantasy_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Fantasy"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/comedy_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Comedy"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/horror_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Horror"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/magic_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Magic"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/mecha_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Mecha"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/romance_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Romance"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/music_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Music"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/sci_fi_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Sci Fi"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/slice_of_life_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:text="Slice of Life"
+                        android:textColor="@color/mypink" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_below="@id/chips_bar"
+                android:layout_marginTop="20dp"
+                android:background="#26000000" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/anime_by_genre_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/chips_bar"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:id="@+id/anime_by_seasons_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_by_genre_recycler_view"
+                android:layout_marginTop="20dp"
+                android:text="@string/search_anime_by_season"
+                android:textColor="@color/mypink"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:id="@+id/chips_layout_seasons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/anime_by_seasons_text_view">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/summer_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Summer"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/winter_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Winter"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/spring_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Spring"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/fall_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="Fall"
+                        android:textColor="@color/mypink" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <HorizontalScrollView
+                android:id="@+id/chips_layout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chips_layout_seasons">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Zero_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2020"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Nine_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2019"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Eight_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2018"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Seven_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2017"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/Six_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2016"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/five_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2015"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/four_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2014"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/three_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2013"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/two_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2012"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/one_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2011"
+                        android:textColor="@color/mypink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/one_zero_chip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="2010"
+                        android:textColor="@color/mypink" />
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/season_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chips_layout2"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/myblue"
+                tools:text="2020 Fall" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/season_text_view">
+
+                <ProgressBar
+                    android:id="@+id/anime_by_seasons_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <TextView
+                    android:id="@+id/anime_by_seasons_error_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textAlignment="center"
+                    android:textColor="@color/mypink"
+                    tools:text="@string/aw_snap_an_error_occurred" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#26000000" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/anime_by_seasons_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</RelativeLayout>

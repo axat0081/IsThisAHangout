@@ -34,7 +34,7 @@ class GetAiringAnimeUseCase @Inject constructor(
                         id = airingAnime.id,
                         title = airingAnime.title,
                         imageUrl = airingAnime.imageUrl,
-                        startDate = airingAnime.startDate,
+                        favorites = airingAnime.favorites,
                         isHidden = isHidden && !isFav,
                         isFav = isFav
                     )
@@ -46,10 +46,10 @@ class GetAiringAnimeUseCase @Inject constructor(
                     }
                     if (before == null) {
                         return@insertSeparators AnimeUIModel.AnimeSeparator(
-                            desc = after.startDate ?: ""
+                            favorites = after.favorites
                         )
                     }
-                    AnimeUIModel.AnimeSeparator(desc = after.startDate ?: "")
+                    AnimeUIModel.AnimeSeparator(favorites = after.favorites)
                 }
             }
 }

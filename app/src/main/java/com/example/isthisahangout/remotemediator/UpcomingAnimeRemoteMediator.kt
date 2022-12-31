@@ -8,6 +8,7 @@ import com.example.isthisahangout.api.AnimeAPI
 import com.example.isthisahangout.models.UpcomingAnimeRemoteKey
 import com.example.isthisahangout.models.UpcomingAnimeResponse
 import com.example.isthisahangout.cache.anime.AnimeDatabase
+import com.example.isthisahangout.models.toUpcomingAnime
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -31,7 +32,7 @@ class UpcomingAnimeRemoteMediator(
         }
         return try {
             val response = api.getUpcomingAnime(page.toString())
-            val animeList = response.top
+            val animeList = response.data
             val isEndOfList = animeList.isEmpty()
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -48,7 +49,9 @@ class UpcomingAnimeRemoteMediator(
                     )
                 }
                 keyDao.insertAll(keysList)
-                animeDao.insertAll(animeList)
+                animeDao.insertAll(animeList.map {
+                    it.toUpcomingAnime()
+                })
                 MediatorResult.Success(endOfPaginationReached = isEndOfList)
             }
         } catch (exception: IOException) {

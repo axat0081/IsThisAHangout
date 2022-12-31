@@ -22,7 +22,6 @@ import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.viewmodel.PostViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -94,6 +93,7 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
                             )
                                 .show()
                         }
+                        else -> Unit
                     }
                 }
             }

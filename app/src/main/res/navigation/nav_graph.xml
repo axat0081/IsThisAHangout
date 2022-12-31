@@ -46,13 +46,6 @@
             app:popEnterAnim="@anim/from_right"
             app:popExitAnim="@anim/to_left" />
         <action
-            android:id="@+id/action_homeFragment2_to_animeSeasonFragment2"
-            app:destination="@id/animeSeasonFragment2"
-            app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right"
-            app:popEnterAnim="@anim/from_right"
-            app:popExitAnim="@anim/to_left" />
-        <action
             android:id="@+id/action_homeFragment2_to_animeQuoteFragment"
             app:destination="@id/animeQuoteFragment"
             app:enterAnim="@anim/from_left"
@@ -157,7 +150,7 @@
         android:id="@+id/animeByGenreFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.AnimeByGenreFragment"
         android:label="Anime By Genres"
-        tools:layout="@layout/fragment_anime_by_genre" />
+        tools:layout="@layout/fragment_anime_by_genre_season" />
     <fragment
         android:id="@+id/animeScheduleFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.AnimeScheduleFragment"
@@ -267,11 +260,6 @@
         android:name="com.example.isthisahangout.ui.createContent.UploadVideoFragment"
         android:label="Post a video"
         tools:layout="@layout/fragment_upload_video" />
-    <fragment
-        android:id="@+id/animeSeasonFragment2"
-        android:name="com.example.isthisahangout.ui.navDrawer.AnimeSeasonFragment"
-        android:label="Search anime by season"
-        tools:layout="@layout/fragment_anime_season" />
     <fragment
         android:id="@+id/animeQuoteFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.AnimeQuoteFragment"

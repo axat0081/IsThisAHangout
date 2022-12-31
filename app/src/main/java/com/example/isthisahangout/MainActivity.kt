@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -17,18 +19,20 @@ import com.example.isthisahangout.databinding.ActivityMainBinding
 import com.example.isthisahangout.databinding.NavHeaderBinding
 import com.example.isthisahangout.utils.ConnectionLiveData
 import com.example.isthisahangout.viewmodel.FirebaseAuthViewModel
+import com.example.isthisahangout.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnLoadingStateChangeListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var connectionLiveData: ConnectionLiveData
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
     private val viewModel by viewModels<FirebaseAuthViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     companion object {
         var userName: String = "abc"
@@ -122,9 +126,25 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+
+        lifecycleScope.launchWhenStarted {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.showProgressBar.collectLatest {
+                    binding.mainProgressBar.isVisible = it
+                }
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+    override fun toggleLoadingState(state: Boolean) {
+        mainViewModel.toggleProgressBarState(state)
+    }
+}
+
+interface OnLoadingStateChangeListener {
+    fun toggleLoadingState(state: Boolean)
 }

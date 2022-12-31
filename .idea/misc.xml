@@ -20,12 +20,17 @@
         <entry key="..\:/Users/Administrator/Downloads/IsThisAHangoutFinal-master/IsThisAHangoutFinal-master/app/src/main/res/menu/nav_drawer.xml" value="0.1796875" />
         <entry key="..\:/Users/Administrator/Downloads/IsThisAHangoutFinal-master/IsThisAHangoutFinal-master/app/src/main/res/menu/nav_menu.xml" value="0.1796875" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/layout_bg.xml" value="0.1115" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_display_layout.xml" value="0.125" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_add_reminder.xml" value="0.16799999999999998" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_separator_layout.xml" value="0.2" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_add_reminder.xml" value="0.264" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_anime_by_genre.xml" value="0.1403985507246377" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_anime_detail.xml" value="0.1721014492753623" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_anime_season.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_chat.xml" value="0.10973763874873865" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_detail_display.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_home.xml" value="0.11775362318840579" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_manga.xml" value="0.14583333333333334" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_movies.xml" value="0.18206521739130435" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_post_details.xml" value="0.11775362318840579" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_profile.xml" value="0.10973763874873865" />
@@ -33,6 +38,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_stock_market.xml" value="0.16799999999999998" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_upload_video.xml" value="0.10973763874873865" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/games_display_layout.xml" value="0.10973763874873865" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/layout_reminder_detail_toolbar.xml" value="0.1" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/messages_display_layout.xml" value="0.15806159420289856" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/movies_display_layout.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/reminders_display_layout.xml" value="0.264" />
@@ -40,6 +46,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/stock_market_display_layout.xml" value="0.536" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/video_display_layout.xml" value="0.1" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/menu/nav_drawer.xml" value="0.4591078066914498" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/menu/nav_menu.xml" value="0.2265625" />
       </map>
     </option>
   </component>

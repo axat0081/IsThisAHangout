@@ -8,10 +8,7 @@
         android:id="@+id/animeByGenreFragment"
         android:icon="@drawable/search"
         android:title="@string/search_anime_by_genres" />
-    <item
-        android:id="@+id/animeSeasonFragment2"
-        android:icon="@drawable/calender"
-        android:title="@string/search_anime_by_season" />
+
     <item
         android:id="@+id/pokemonFragment"
         android:icon="@drawable/pokemon"

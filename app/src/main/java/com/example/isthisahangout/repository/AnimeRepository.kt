@@ -13,6 +13,7 @@ import com.example.isthisahangout.cache.anime.*
 import com.example.isthisahangout.models.*
 import com.example.isthisahangout.remotemediator.AiringAnimeRemoteMediator
 import com.example.isthisahangout.remotemediator.AnimeByGenreRemoteMediator
+import com.example.isthisahangout.remotemediator.AnimeBySeasonsRemoteMediator
 import com.example.isthisahangout.remotemediator.UpcomingAnimeRemoteMediator
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.utils.networkBoundResource
@@ -82,59 +83,25 @@ class AnimeRepository @Inject constructor(
     fun getAnimeBySeason(
         season: String,
         year: String,
-        forceRefresh: Boolean,
-        onFetchSuccess: () -> Unit,
-        onFetchFailed: (Throwable) -> Unit
-    ): Flow<Resource<List<AnimeSeasonResults.RoomAnimeBySeason>>> =
-        networkBoundResource(
-            query = {
-                animeBySeasonDao.getAnimeBySeason(season, year)
-            },
-            fetch = {
-                val serverList = api.getAnimeBySeason(season, year).anime
-                val animeList = serverList.map {
-                    AnimeSeasonResults.RoomAnimeBySeason(
-                        id = it.id,
-                        imageUrl = it.imageUrl,
-                        title = it.title,
-                        url = it.url,
-                        synopsis = it.synopsis,
-                        season = season,
-                        year = year
-                    )
-                }
-                Log.e("Error", animeList.size.toString())
-                animeList
-            },
-            saveFetchResult = {
-                db.withTransaction {
-                    animeBySeasonDao.deleteAll(season, year)
-                    animeBySeasonDao.insertAll(it)
-                    Log.e("Error1", it.size.toString())
-                }
-            },
-            shouldFetch = { cachedAnime ->
-                if (forceRefresh) {
-                    true
-                } else {
-                    val sortedList = cachedAnime.sortedBy {
-                        it.updatedAt
-                    }
-                    val oldestTimestamp = sortedList.firstOrNull()?.updatedAt
-                    val needsRefresh = oldestTimestamp == null ||
-                            oldestTimestamp < System.currentTimeMillis() -
-                            TimeUnit.MINUTES.toMillis(60)
-                    needsRefresh
-                }
-            },
-            onFetchSuccess = onFetchSuccess,
-            onFetchFailed = { t ->
-                if (t !is HttpException && t !is IOException) {
-                    throw t
-                }
-                onFetchFailed(t)
+    ): Flow<PagingData<RoomAnimeBySeasons>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                maxSize = 200
+            ),
+            remoteMediator = AnimeBySeasonsRemoteMediator(
+                year = year,
+                season = season,
+                db = animeDatabase,
+                api = api
+            ),
+            pagingSourceFactory = {
+                animeBySeasonDao.getAnimeBySeason(
+                    year = year,
+                    season = season
+                )
             }
-        )
+        ).flow
 
     fun getAnimeQuote(
         forceRefresh: Boolean,
@@ -192,7 +159,7 @@ class AnimeRepository @Inject constructor(
             animeByNameDao.getAnimeByName()
         },
         fetch = {
-            api.getAnimebyName(query)
+            api.getAnimeByName(query)
         },
         saveFetchResult = { animeList ->
             db.withTransaction {
@@ -299,18 +266,18 @@ class AnimeRepository @Inject constructor(
         Jsoup.connect("https://www.cbr.com/tag/anime/").get()
     }
 
-    fun getAnimeDetail(id: String): Flow<Resource<AnimeDetail?>> = flow{
+    fun getAnimeDetail(id: String): Flow<Resource<AnimeDetail?>> = flow {
         emit(Resource.Loading())
         val cachedAnimeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
         emit(Resource.Loading(cachedAnimeDetail))
-        try{
+        try {
             val animeDetailDto = animeMangaDetailAPI.getAnimeDetail(id)
             animeDetailDao.insertAnimeDetail(animeDetailDto.toAnimeDetail())
             val animeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
             emit(Resource.Success(animeDetail))
-        }catch (exception: HttpException){
+        } catch (exception: HttpException) {
             emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
-        } catch (exception: IOException){
+        } catch (exception: IOException) {
             emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
         }
     }

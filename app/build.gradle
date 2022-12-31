@@ -166,4 +166,7 @@ dependencies {
     // required to avoid crash on Android 12 API 31
     implementation 'androidx.work:work-runtime-ktx:2.7.0'
 
+    // Markdown edit-text
+    implementation 'io.github.yahiaangelo.markdownedittext:markdownedittext:1.1.3'
+
 }

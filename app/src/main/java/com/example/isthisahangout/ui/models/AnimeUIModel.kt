@@ -5,10 +5,10 @@ sealed class AnimeUIModel {
         val id: String,
         val title: String,
         val imageUrl: String,
-        val startDate: String?,
+        val favorites: Int,
         val isHidden: Boolean,
         val isFav: Boolean
     ) : AnimeUIModel()
 
-    data class AnimeSeparator(val desc: String) : AnimeUIModel()
+    data class AnimeSeparator(val favorites: Int) : AnimeUIModel()
 }

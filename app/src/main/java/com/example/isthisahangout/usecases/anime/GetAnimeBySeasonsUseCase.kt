@@ -15,16 +15,18 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAnimeByGenreUseCase @Inject constructor(
+class GetAnimeBySeasonsUseCase @Inject constructor(
     private val animeRepository: AnimeRepository,
     private val favouritesDao: FavouritesDao,
     private val hiddenContentDao: HiddenContentDao
 ) {
     operator fun invoke(
-        query: String
+        year: String,
+        season: String
     ): Flow<PagingData<AnimeUIModel>> =
-        animeRepository.getAnimeByGenres(
-            query = query
+        animeRepository.getAnimeBySeason(
+            year = year,
+            season = season
         ).map { pagingData ->
             val favAnime = favouritesDao.getAnime("", MainActivity.userId).first()
             val hiddenAnime = hiddenContentDao.getHiddenAnime(MainActivity.userId).first()

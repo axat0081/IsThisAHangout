@@ -5,6 +5,7 @@ import androidx.paging.cachedIn
 import com.example.isthisahangout.repository.AnimeRepository
 import com.example.isthisahangout.usecases.anime.GetAiringAnimeUseCase
 import com.example.isthisahangout.usecases.anime.GetAnimeByGenreUseCase
+import com.example.isthisahangout.usecases.anime.GetAnimeBySeasonsUseCase
 import com.example.isthisahangout.usecases.anime.GetUpcomingAnimeUseCase
 import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,14 +19,13 @@ class AnimeViewModel @Inject constructor(
     getAnimeByGenreUseCase: GetAnimeByGenreUseCase,
     getUpcomingAnimeUseCase: GetUpcomingAnimeUseCase,
     getAiringAnimeUseCase: GetAiringAnimeUseCase,
+    getAnimeBySeasonsUseCase: GetAnimeBySeasonsUseCase,
     animeRepository: AnimeRepository,
     private val state: SavedStateHandle
 ) : ViewModel() {
     private val genreQuery = MutableLiveData("1")
     private val genreQueryFlow = genreQuery.asFlow()
     private val queryMap = HashMap<String, String>()
-    private val refreshTriggerChannel = Channel<Refresh>()
-    private val refreshTrigger = refreshTriggerChannel.receiveAsFlow()
     private val quoteRefreshTrigger = Channel<Refresh>()
     private val quoteRefresh = quoteRefreshTrigger.receiveAsFlow()
     private val eventChannel = Channel<Event>()
@@ -68,23 +68,11 @@ class AnimeViewModel @Inject constructor(
         getAnimeByGenreUseCase(it)
     }.cachedIn(viewModelScope)
 
-    val animeBySeason = combine(
-        season, year, refreshTrigger
-    ) { season, year, refreshTrigger ->
-        Triple(season, year, refreshTrigger)
-    }.flatMapLatest { (season, year, refresh) ->
-        animeRepository.getAnimeBySeason(
-            season = season,
-            year = year,
-            forceRefresh = refresh == Refresh.FORCE,
-            onFetchSuccess = {
-                pendingScrollToTopAfterRefresh = true
-            },
-            onFetchFailed = { t ->
-                viewModelScope.launch { eventChannel.send(Event.ShowErrorMessage(t)) }
-            }
-        )
-    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val animeBySeason = combine(season, year) { season, year ->
+        Pair(season, year)
+    }.flatMapLatest { (season, year) ->
+        getAnimeBySeasonsUseCase.invoke(season = season, year = year).cachedIn(viewModelScope)
+    }
 
     val animeQuotes = quoteRefresh.flatMapLatest { refresh ->
         animeRepository.getAnimeQuote(
@@ -110,26 +98,10 @@ class AnimeViewModel @Inject constructor(
 
     val animeNews = animeRepository.getAnimeNews()
 
-    fun onStart() {
-        if (animeBySeason.value !is Resource.Loading) {
-            viewModelScope.launch {
-                refreshTriggerChannel.send(Refresh.NORMAL)
-            }
-        }
-    }
-
     fun onQuoteStart() {
         if (animeQuotes.value !is Resource.Loading) {
             viewModelScope.launch {
                 quoteRefreshTrigger.send(Refresh.NORMAL)
-            }
-        }
-    }
-
-    fun onManualRefresh() {
-        if (animeBySeason.value !is Resource.Loading) {
-            viewModelScope.launch {
-                refreshTriggerChannel.send(Refresh.FORCE)
             }
         }
     }
@@ -148,16 +120,16 @@ class AnimeViewModel @Inject constructor(
         else genreQuery.value = "1"
     }
 
-    fun searchAnimeBySeason(query: String) {
-        season.value = query
-    }
-
     fun searchAnimeByNameClick() {
         animeName.value = animeNameText
     }
 
     fun searchAnimeByYear(query: String) {
         year.value = query
+    }
+
+    fun searchAnimeBySeason(query: String) {
+        season.value = query
     }
 
     fun searchAnimeByDay(query: String) {

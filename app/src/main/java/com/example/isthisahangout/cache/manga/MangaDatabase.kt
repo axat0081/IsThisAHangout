@@ -11,7 +11,7 @@ import com.example.isthisahangout.models.*
         RoomMangaByGenreRemoteKey::class,
         MangaRemoteKey::class,
         MangaDetail::class
-    ], version = 2
+    ], version = 3
 )
 abstract class MangaDatabase : RoomDatabase() {
     abstract fun getMangaDao(): MangaDao
