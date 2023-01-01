@@ -7,12 +7,8 @@
     <item
         android:id="@+id/animeByGenreFragment"
         android:icon="@drawable/search"
-        android:title="@string/search_anime_by_genres" />
+        android:title="@string/search_anime" />
 
-    <item
-        android:id="@+id/pokemonFragment"
-        android:icon="@drawable/pokemon"
-        android:title="@string/pokemons"/>
     <item
         android:id="@+id/remindersFragment"
         android:icon="@drawable/reminders"
@@ -45,6 +41,12 @@
         android:id="@+id/animeNewsFragment"
         android:icon="@drawable/news"
         android:title="@string/otaku_news" />
+
+    <item
+        android:id="@+id/moviesFragment"
+        android:icon="@drawable/movie"
+        android:title="@string/movies"/>
+
     <item
         android:id="@+id/stockMarketFragment"
         android:icon="@drawable/stock"

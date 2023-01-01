@@ -17,7 +17,6 @@ import com.example.isthisahangout.models.pokemon.Pokemon
 import com.example.isthisahangout.viewmodel.PokemonViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint

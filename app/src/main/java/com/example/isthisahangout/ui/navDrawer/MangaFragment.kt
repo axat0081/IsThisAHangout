@@ -5,7 +5,9 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
@@ -15,12 +17,14 @@ import com.example.isthisahangout.databinding.FragmentMangaBinding
 import com.example.isthisahangout.ui.models.MangaUIModel
 import com.example.isthisahangout.viewmodel.MangaViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.filter
 
 @AndroidEntryPoint
 class MangaFragment : Fragment(R.layout.fragment_manga), MangaPagingAdapter.OnItemClickListener {
     private var _binding: FragmentMangaBinding? = null
     private val binding get() = _binding!!
-    private val mangaViewModel by viewModels<MangaViewModel>()
+    private val viewModel by viewModels<MangaViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMangaBinding.bind(view)
@@ -47,88 +51,157 @@ class MangaFragment : Fragment(R.layout.fragment_manga), MangaPagingAdapter.OnIt
             }
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                mangaViewModel.manga.collect {
+                viewModel.manga.collect {
                     mangaAdapter.submitData(viewLifecycleOwner.lifecycle, it)
                 }
             }
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                mangaViewModel.mangaByGenre.collect {
+                viewModel.mangaByGenre.collect {
                     mangaByGenreAdapter.submitData(viewLifecycleOwner.lifecycle, it)
                 }
             }
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                mangaAdapter.loadStateFlow.collect { loadState ->
-                    mangaProgressBar.isVisible =
-                        loadState.source.refresh is LoadState.Loading
-                    mangaErrorTextView.isVisible =
-                        loadState.source.refresh is LoadState.Error
-                    mangaRetryButton.isVisible = loadState.source.refresh is LoadState.Error
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    mangaAdapter.loadStateFlow
+                        .distinctUntilChangedBy { it.source.refresh }
+                        .filter { it.source.refresh is LoadState.NotLoading }
+                        .collect {
+                            if (viewModel.mangaPendingScrollToTop && it.mediator?.refresh is LoadState.NotLoading) {
+                                mangaRecyclerView.scrollToPosition(0)
+                                viewModel.mangaPendingScrollToTop = false
+                            }
+                        }
                 }
             }
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                mangaByGenreAdapter.loadStateFlow.collect { loadState ->
-                    mangaByGenreProgressBar.isVisible =
-                        loadState.source.refresh is LoadState.Loading
-                    mangaByGenreErrorTextView.isVisible =
-                        loadState.source.refresh is LoadState.Error
-                    mangaByGenreRetryButton.isVisible = loadState.source.refresh is LoadState.Error
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    mangaByGenreAdapter.loadStateFlow
+                        .distinctUntilChangedBy { it.source.refresh }
+                        .filter { it.source.refresh is LoadState.NotLoading }
+                        .collect {
+                            if (viewModel.mangaByGenrePendingScrollToTop && it.mediator?.refresh is LoadState.NotLoading) {
+                                mangaByGenreRecyclerView.scrollToPosition(0)
+                                viewModel.mangaByGenrePendingScrollToTop = false
+                            }
+                        }
                 }
             }
 
-            mangaByGenreRetryButton.setOnClickListener {
-                mangaByGenreAdapter.retry()
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    mangaAdapter.loadStateFlow.collect { combinedLoadState ->
+                        when (val refresh = combinedLoadState.mediator?.refresh) {
+                            is LoadState.Loading -> {
+                                mangaProgressBar.isVisible = true
+                                mangaErrorTextView.isVisible = false
+                                mangaRetryButton.isVisible = false
+                                viewModel.mangaPendingScrollToTop = true
+                            }
+                            is LoadState.NotLoading -> {
+                                mangaProgressBar.isVisible = false
+                                mangaErrorTextView.isVisible = false
+                                mangaRetryButton.isVisible = false
+                            }
+                            is LoadState.Error -> {
+                                mangaProgressBar.isVisible = false
+                                mangaErrorTextView.isVisible = true
+                                mangaRetryButton.isVisible = true
+                                val errorMessage =
+                                    "Aw snap an error occurred $refresh.error.localizedMessage ?:\"\" "
+                                mangaErrorTextView.text = errorMessage
+                                viewModel.mangaPendingScrollToTop = false
+                            }
+                            null -> Unit
+                        }
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    mangaByGenreAdapter.loadStateFlow.collect { combinedLoadState ->
+                        when (val refresh = combinedLoadState.mediator?.refresh) {
+                            is LoadState.Loading -> {
+                                mangaByGenreProgressBar.isVisible = true
+                                mangaByGenreErrorTextView.isVisible = false
+                                mangaByGenreRetryButton.isVisible = false
+                                viewModel.mangaByGenrePendingScrollToTop = true
+                            }
+                            is LoadState.NotLoading -> {
+                                mangaByGenreProgressBar.isVisible = false
+                                mangaByGenreErrorTextView.isVisible = false
+                                mangaByGenreRetryButton.isVisible = false
+                            }
+                            is LoadState.Error -> {
+                                mangaByGenreProgressBar.isVisible = false
+                                mangaByGenreErrorTextView.isVisible = true
+                                mangaByGenreRetryButton.isVisible = true
+                                val errorMessage =
+                                    "Aw snap an error occurred $refresh.error.localizedMessage ?:\"\" "
+                                mangaByGenreErrorTextView.text = errorMessage
+                                viewModel.mangaByGenrePendingScrollToTop = false
+                            }
+                            null -> Unit
+                        }
+                    }
+                }
             }
 
             mangaRetryButton.setOnClickListener {
                 mangaAdapter.retry()
             }
 
+            mangaByGenreRetryButton.setOnClickListener {
+                mangaByGenreAdapter.retry()
+            }
+
             actionChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("action")
+                viewModel.searchMangaByGenre("action")
             }
             shoujoChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Shoujo")
+                viewModel.searchMangaByGenre("Shoujo")
             }
             shonenChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Shounen")
+                viewModel.searchMangaByGenre("Shounen")
             }
             adventureChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Adventure")
+                viewModel.searchMangaByGenre("Adventure")
             }
             mysteryChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Mystery")
+                viewModel.searchMangaByGenre("Mystery")
             }
             fantasyChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Fantasy")
+                viewModel.searchMangaByGenre("Fantasy")
             }
             comedyChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Comedy")
+                viewModel.searchMangaByGenre("Comedy")
             }
             horrorChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Horror")
+                viewModel.searchMangaByGenre("Horror")
             }
             magicChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Magic")
+                viewModel.searchMangaByGenre("Magic")
             }
             mechaChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Mecha")
+                viewModel.searchMangaByGenre("Mecha")
             }
             romanceChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Romance")
+                viewModel.searchMangaByGenre("Romance")
             }
             musicChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Music")
+                viewModel.searchMangaByGenre("Music")
             }
             sciFiChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Sci Fi")
+                viewModel.searchMangaByGenre("Sci Fi")
             }
             psychologicalChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Psychological")
+                viewModel.searchMangaByGenre("Psychological")
             }
             sliceOfLifeChip.setOnClickListener {
-                mangaViewModel.searchMangaByGenre("Slice Of Life")
+                viewModel.searchMangaByGenre("Slice Of Life")
             }
         }
     }

@@ -1,11 +1,11 @@
 package com.example.isthisahangout.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.isthisahangout.repository.AnimeRepository
 import com.example.isthisahangout.usecases.anime.GetAiringAnimeUseCase
-import com.example.isthisahangout.usecases.anime.GetAnimeByGenreUseCase
-import com.example.isthisahangout.usecases.anime.GetAnimeBySeasonsUseCase
 import com.example.isthisahangout.usecases.anime.GetUpcomingAnimeUseCase
 import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,25 +16,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnimeViewModel @Inject constructor(
-    getAnimeByGenreUseCase: GetAnimeByGenreUseCase,
     getUpcomingAnimeUseCase: GetUpcomingAnimeUseCase,
     getAiringAnimeUseCase: GetAiringAnimeUseCase,
-    getAnimeBySeasonsUseCase: GetAnimeBySeasonsUseCase,
     animeRepository: AnimeRepository,
     private val state: SavedStateHandle
 ) : ViewModel() {
-    private val genreQuery = MutableLiveData("1")
-    private val genreQueryFlow = genreQuery.asFlow()
-    private val queryMap = HashMap<String, String>()
+
     private val quoteRefreshTrigger = Channel<Refresh>()
     private val quoteRefresh = quoteRefreshTrigger.receiveAsFlow()
-    private val eventChannel = Channel<Event>()
-    val seasonEvents = eventChannel.receiveAsFlow()
     private val quoteEventChannel = Channel<QuoteEvent>()
     val quoteEventFlow = quoteEventChannel.receiveAsFlow()
-    val year = MutableStateFlow("2020")
-    val season = MutableStateFlow("summer")
-    var pendingScrollToTopAfterRefresh = false
     var quotePendingScrollToTopAfterRefresh = false
     private val animeName = MutableStateFlow("dragon ball")
     private val animeDayQuery = MutableStateFlow("Sunday")
@@ -44,35 +35,9 @@ class AnimeViewModel @Inject constructor(
             state["anime_name"] = animeNameText
         }
 
-    init {
-        queryMap["Action"] = "1"
-        queryMap["Adventure"] = "2"
-        queryMap["Mystery"] = "7"
-        queryMap["Fantasy"] = "10"
-        queryMap["Comedy"] = "4"
-        queryMap["Horror"] = "14"
-        queryMap["Magic"] = "16"
-        queryMap["Mecha"] = "18"
-        queryMap["Romance"] = "22"
-        queryMap["Music"] = "19"
-        queryMap["Shoujo"] = "25"
-        queryMap["Sci Fi"] = "24"
-        queryMap["Shounen"] = "27"
-        queryMap["Psychological"] = "40"
-        queryMap["Slice Of Life"] = "36"
-    }
-
     val airingAnime = getAiringAnimeUseCase().cachedIn(viewModelScope)
     val upcomingAnime = getUpcomingAnimeUseCase().cachedIn(viewModelScope)
-    val animeByGenre = genreQueryFlow.flatMapLatest {
-        getAnimeByGenreUseCase(it)
-    }.cachedIn(viewModelScope)
 
-    val animeBySeason = combine(season, year) { season, year ->
-        Pair(season, year)
-    }.flatMapLatest { (season, year) ->
-        getAnimeBySeasonsUseCase.invoke(season = season, year = year).cachedIn(viewModelScope)
-    }
 
     val animeQuotes = quoteRefresh.flatMapLatest { refresh ->
         animeRepository.getAnimeQuote(
@@ -114,23 +79,11 @@ class AnimeViewModel @Inject constructor(
         }
     }
 
-    fun searchAnimeByGenre(query: String) {
-        if (queryMap.containsKey(query))
-            genreQuery.value = queryMap[query]
-        else genreQuery.value = "1"
-    }
 
     fun searchAnimeByNameClick() {
         animeName.value = animeNameText
     }
 
-    fun searchAnimeByYear(query: String) {
-        year.value = query
-    }
-
-    fun searchAnimeBySeason(query: String) {
-        season.value = query
-    }
 
     fun searchAnimeByDay(query: String) {
         animeDayQuery.value = query
@@ -140,11 +93,8 @@ class AnimeViewModel @Inject constructor(
         FORCE, NORMAL
     }
 
-    sealed class Event {
-        data class ShowErrorMessage(val error: Throwable) : Event()
-    }
-
     sealed class QuoteEvent {
         data class ShowErrorMessage(val error: Throwable) : QuoteEvent()
     }
+
 }

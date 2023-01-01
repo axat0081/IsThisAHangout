@@ -95,6 +95,9 @@
         <action
             android:id="@+id/action_homeFragment2_to_remindersFragment2"
             app:destination="@id/remindersFragment2" />
+        <action
+            android:id="@+id/action_homeFragment2_to_moviesFragment"
+            app:destination="@id/moviesFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment2"
@@ -148,8 +151,8 @@
     </fragment>
     <fragment
         android:id="@+id/animeByGenreFragment"
-        android:name="com.example.isthisahangout.ui.navDrawer.AnimeByGenreFragment"
-        android:label="Anime By Genres"
+        android:name="com.example.isthisahangout.ui.navDrawer.AnimeByGenreSeasonFragment"
+        android:label="Search Anime "
         tools:layout="@layout/fragment_anime_by_genre_season" />
     <fragment
         android:id="@+id/animeScheduleFragment"
@@ -319,10 +322,10 @@
         android:label="Details"
         tools:layout="@layout/fragment_detail_display">
         <argument
-            android:name="animeId"
+            android:name="detailType "
             app:argType="string" />
         <argument
-            android:name="animeName"
+            android:name="id"
             app:argType="string" />
     </fragment>
     <dialog
@@ -374,4 +377,9 @@
             android:name="reminder"
             app:argType="com.example.isthisahangout.models.reminders.Reminder" />
     </fragment><action android:id="@+id/action_global_detailDisplayFragment" app:destination="@id/detailDisplayFragment"/>
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.MoviesFragment"
+        android:label="Movies"
+        tools:layout="@layout/fragment_movies" />
 </navigation>

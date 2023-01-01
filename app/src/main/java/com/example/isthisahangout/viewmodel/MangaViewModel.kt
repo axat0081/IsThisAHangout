@@ -37,6 +37,9 @@ class MangaViewModel @Inject constructor(
         queryMap["Slice Of Life"] = "36"
     }
 
+    var mangaPendingScrollToTop = false
+    var mangaByGenrePendingScrollToTop = false
+
     val manga = getMangaUseCase().cachedIn(viewModelScope)
     private val mangaByGenreQuery = MutableStateFlow("1")
     val mangaByGenre = mangaByGenreQuery.flatMapLatest { genre ->

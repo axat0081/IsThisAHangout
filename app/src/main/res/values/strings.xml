@@ -15,7 +15,7 @@
     <string name="posts">Posts</string>
     <string name="lists">Lists</string>
     <string name="profile">Profile</string>
-    <string name="search_anime_by_genres">Search anime by genres or seasons</string>
+    <string name="search_anime_by_genres">Search anime by genres</string>
     <string name="search_anime_by_season">Search anime by season</string>
     <string name="pokemons">Pokemons</string>
     <string name="reminders">Reminders</string>
@@ -41,4 +41,7 @@
     <string name="upcoming_anime">Upcoming anime</string>
     <string name="about">About</string>
     <string name="due_date">Due Date....</string>
+    <string name="search_manga_by_genre">Search manga by genre</string>
+    <string name="search_anime">Search Anime</string>
+    <string name="movies">Movies</string>
 </resources>
