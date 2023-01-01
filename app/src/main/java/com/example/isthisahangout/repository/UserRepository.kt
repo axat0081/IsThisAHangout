@@ -61,16 +61,13 @@ class UserRepository @Inject constructor(
     }
 
     fun getUserPosts(
-        userName: String,
-        lastRetrievedPost: FirebasePost?
+        userId: String,
     ): Flow<Resource<List<FirebasePost>>> = flow {
         emit(Resource.Loading())
         try {
             val posts =
-                postsQuery.whereEqualTo("username", userName)
+                postsQuery.whereEqualTo("userId", userId)
                     .orderBy("time")
-                    .startAfter(lastRetrievedPost)
-                    .limit(10)
                     .get()
                     .await()
                     .toObjects(FirebasePost::class.java)

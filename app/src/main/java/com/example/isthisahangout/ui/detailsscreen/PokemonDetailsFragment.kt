@@ -28,58 +28,7 @@ class PokemonDetailsFragment : Fragment(R.layout.fragment_pokemon_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPokemonDetailsBinding.bind(view)
-        viewModel.setPokemonName(args.pokemon.name)
-        binding.apply {
-            val pokemonMovesAdapter = PokemonMovesAdapter()
-            movesRecyclerView.apply {
-                adapter = pokemonMovesAdapter
-                layoutManager = LinearLayoutManager(requireContext())
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewModel.pokemonDetailsResult.collectLatest { result ->
-                    if (result == null) return@collectLatest
-                    when (result) {
-                        is Resource.Error -> {
-                            pokemonDetailsLayout.isVisible = false
-                            progressBar.isVisible = false
-                            errorTextView.isVisible = true
-                            errorTextView.text = result.error?.localizedMessage
-                                ?: getString(R.string.aw_snap_an_error_occurred)
-                        }
-                        is Resource.Loading -> {
-                            pokemonDetailsLayout.isVisible = false
-                            progressBar.isVisible = true
-                            errorTextView.isVisible = false
-                        }
-                        is Resource.Success -> {
-                            pokemonDetailsLayout.isVisible = true
-                            progressBar.isVisible = false
-                            errorTextView.isVisible = false
-                            val pokemon = result.data
-                            if (pokemon == null) {
-                                pokemonDetailsLayout.isVisible = false
-                                errorTextView.isVisible = true
-                                errorTextView.text = getString(R.string.aw_snap_an_error_occurred)
-                            } else {
-                                nameTextView.text = pokemon.name.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.getDefault()
-                                    ) else it.toString()
-                                }
-                                weightTextView.text = "Weight - ${pokemon.weight / 10} kg"
-                                val moves = pokemon.moves.map {
-                                    it.move.name
-                                }
-                                pokemonMovesAdapter.submitList(moves)
-                                Glide.with(requireContext())
-                                    .load(args.pokemon.image)
-                                    .into(imageView)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+
     }
 
     override fun onDestroyView() {

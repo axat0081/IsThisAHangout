@@ -6,17 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.ComfortCharacter
-import com.example.isthisahangout.models.FirebasePost
 import com.example.isthisahangout.repository.UserRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
-import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -29,10 +25,6 @@ class UserViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private val userRepository: UserRepository
 ) : AndroidViewModel(app) {
-
-    init {
-        getUserPosts()
-    }
 
     var comfortCharacterName = state.get<String>("comfort_character_name")
         set(value) {
@@ -77,40 +69,9 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    var isEndOfUserPostPagination = mutableStateOf(false)
-    val userPosts: MutableState<List<FirebasePost>> = mutableStateOf(ArrayList())
-    var lastRetrievedPost: FirebasePost? = null
-    val isLoading = mutableStateOf(false)
-    val error = mutableStateOf<String?>(null)
+    val userPosts = userRepository.getUserPosts(MainActivity.userId)
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    fun getUserPosts() {
-        userRepository.getUserPosts(MainActivity.userName, lastRetrievedPost)
-            .onEach { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        isLoading.value = false
-                        error.value = null
-                        val posts = result.data
-                        if (posts.isNullOrEmpty()) {
-                            isEndOfUserPostPagination.value = true
-                        } else {
-                            val currentRetrievedPosts = ArrayList(userPosts.value)
-                            currentRetrievedPosts.addAll(posts)
-                            userPosts.value = currentRetrievedPosts
-                            lastRetrievedPost = posts.last()
-                        }
-                    }
-                    is Resource.Loading -> {
-                        isLoading.value = true
-                        error.value = null
-                    }
-                    is Resource.Error -> {
-                        isLoading.value = false
-                        error.value = result.error?.localizedMessage?:"An unknown error occurred"
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
 
     fun onAddComfortCharacterClick() {
         if (comfortCharacterName.isNullOrBlank()) {

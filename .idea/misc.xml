@@ -20,6 +20,7 @@
         <entry key="..\:/Users/Administrator/Downloads/IsThisAHangoutFinal-master/IsThisAHangoutFinal-master/app/src/main/res/menu/nav_drawer.xml" value="0.1796875" />
         <entry key="..\:/Users/Administrator/Downloads/IsThisAHangoutFinal-master/IsThisAHangoutFinal-master/app/src/main/res/menu/nav_menu.xml" value="0.1796875" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/layout_bg.xml" value="0.1115" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/layout_profile_background.xml" value="0.1115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/news.xml" value="0.1115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_display_layout.xml" value="0.125" />
@@ -35,7 +36,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_manga.xml" value="0.14583333333333334" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_movies.xml" value="0.18206521739130435" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_post_details.xml" value="0.11775362318840579" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_profile.xml" value="0.10973763874873865" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_reminders.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_stock_market.xml" value="0.16799999999999998" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_upload_video.xml" value="0.10973763874873865" />

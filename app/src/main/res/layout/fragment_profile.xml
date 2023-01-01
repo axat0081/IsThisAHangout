@@ -113,7 +113,7 @@
                 android:layout_below="@id/bio_text_view"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
-                android:text="Comfort Characters"
+                android:text="@string/comfort_characters"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textSize="22sp" />
@@ -153,25 +153,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal" />
+                    android:orientation="vertical" />
 
-                <TextView
-                    android:id="@+id/posts_heading_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/comfort_character_text_recyclerview"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/posts"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/mypink" />
-
-                <androidx.compose.ui.platform.ComposeView
-                    android:id="@+id/posts_by_user_view"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/posts_heading_text_view" />
             </RelativeLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
