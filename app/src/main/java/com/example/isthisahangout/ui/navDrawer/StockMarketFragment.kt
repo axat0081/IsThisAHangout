@@ -1,6 +1,7 @@
 package com.example.isthisahangout.ui.navDrawer
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.stockMarket.StockMarketAdapter
 import com.example.isthisahangout.databinding.FragmentStockMarketBinding
@@ -30,6 +32,10 @@ class StockMarketFragment : Fragment(R.layout.fragment_stock_market),
         _binding = FragmentStockMarketBinding.bind(view)
         val stockMarketAdapter = StockMarketAdapter(this)
         binding.apply {
+            stockMarketRecyclerview.apply {
+                adapter = stockMarketAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.stockMarket.collectLatest { result ->
