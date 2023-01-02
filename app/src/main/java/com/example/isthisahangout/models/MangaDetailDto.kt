@@ -12,7 +12,8 @@ data class MangaDetailDto(
     val rating: String?,
     val synopsis: String?,
     val images: AnimeDetailDto.Images,
-    val genres: List<AnimeDetailDto.Genres>
+    val genres: List<AnimeDetailDto.Genres>,
+    val favorites: Int?
 )
 
 @Entity(tableName = "manga_detail")
@@ -23,14 +24,15 @@ data class MangaDetail(
     val title: String,
     val rating: String?,
     val image: String,
-    val genres: String
+    val genres: String,
+    val favorites: Int
 )
 
-fun MangaDetailDto.toMangaDetail(): MangaDetail{
+fun MangaDetailDto.toMangaDetail(): MangaDetail {
     var gen = ""
-    for(g in genres){
-        gen +=g.name
-        gen+=","
+    for (g in genres) {
+        gen += g.name
+        gen += ","
     }
     return MangaDetail(
         id = id,
@@ -38,6 +40,7 @@ fun MangaDetailDto.toMangaDetail(): MangaDetail{
         title = title,
         rating = rating,
         image = images.jpg.image,
-        genres = gen
+        genres = gen,
+        favorites = favorites ?: 0
     )
 }

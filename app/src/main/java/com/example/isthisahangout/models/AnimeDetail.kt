@@ -9,10 +9,13 @@ data class AnimeDetail(
     val id: Int,
     val url: String,
     val title: String,
-    val rating: String?,
+    val rating: String,
     val image: String,
     val genres: String,
-    val synopsis: String
+    val synopsis: String,
+    val trailerId: String?,
+    val trailerUrl: String?,
+    val favorites: Int
 )
 
 fun AnimeDetailDto.toAnimeDetail(): AnimeDetail {
@@ -26,9 +29,12 @@ fun AnimeDetailDto.toAnimeDetail(): AnimeDetail {
         id = id,
         url = url,
         title = title,
-        rating = rating,
+        rating = rating ?: "NA",
         image = images.jpg.image,
         genres = gen,
-        synopsis = synopsis?:"NA"
+        synopsis = synopsis ?: "NA",
+        trailerId = trailer?.youtubeId,
+        trailerUrl = trailer?.url,
+        favorites = favorites?:0,
     )
 }

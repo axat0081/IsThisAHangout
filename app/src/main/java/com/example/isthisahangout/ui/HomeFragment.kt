@@ -21,6 +21,7 @@ import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
 import com.example.isthisahangout.adapter.anime.AnimePagingAdapter
 import com.example.isthisahangout.adapter.videoGame.VideoGamesPagingAdapter
 import com.example.isthisahangout.databinding.FragmentHomeBinding
+import com.example.isthisahangout.ui.detailsscreen.AnimeDetailFragmentDirections
 import com.example.isthisahangout.ui.models.AnimeUIModel
 import com.example.isthisahangout.ui.models.VideoGameUIModel
 import com.example.isthisahangout.viewmodel.AnimeViewModel
@@ -217,7 +218,11 @@ class HomeFragment : Fragment(R.layout.fragment_home), AnimePagingAdapter.OnItem
     }
 
     override fun onItemClick(animeResults: AnimeUIModel.AnimeModel) {
-
+        val action = AnimeDetailFragmentDirections.actionGlobalAnimeDetailFragment(
+            animeResults.id,
+            animeResults.title
+        )
+        findNavController().navigate(action)
     }
 
     override fun onItemClick(videoGame: VideoGameUIModel.VideoGameModel) {

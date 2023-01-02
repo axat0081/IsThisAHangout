@@ -1,6 +1,7 @@
 package com.example.isthisahangout.api
 
 import com.example.isthisahangout.models.AnimeDetailDto
+import com.example.isthisahangout.models.AnimeDetailResponse
 import com.example.isthisahangout.models.MangaDetailDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -13,7 +14,7 @@ interface AnimeMangaDetailAPI {
     @GET("anime/{id}/full")
     suspend fun getAnimeDetail(
         @Path("id")id: String
-    ): AnimeDetailDto
+    ): AnimeDetailResponse
 
     @GET("manga/{id}/full")
     suspend fun getMangaDetail(

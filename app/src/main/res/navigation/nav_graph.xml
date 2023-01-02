@@ -316,18 +316,6 @@
         android:name="com.example.isthisahangout.ui.navDrawer.AnimeNewsFragment"
         android:label="Otaku News"
         tools:layout="@layout/fragment_anime_news" />
-    <fragment
-        android:id="@+id/detailDisplayFragment"
-        android:name="com.example.isthisahangout.ui.detailsscreen.DetailDisplayFragment"
-        android:label="Details"
-        tools:layout="@layout/fragment_detail_display">
-        <argument
-            android:name="detailType "
-            app:argType="string" />
-        <argument
-            android:name="id"
-            app:argType="string" />
-    </fragment>
     <dialog
         android:id="@+id/profileImageUpdateFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.ProfileImageUpdateFragment"
@@ -376,10 +364,23 @@
         <argument
             android:name="reminder"
             app:argType="com.example.isthisahangout.models.reminders.Reminder" />
-    </fragment><action android:id="@+id/action_global_detailDisplayFragment" app:destination="@id/detailDisplayFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/moviesFragment"
         android:name="com.example.isthisahangout.ui.navDrawer.MoviesFragment"
         android:label="Movies"
         tools:layout="@layout/fragment_movies" />
+    <fragment
+        android:id="@+id/animeDetailFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.AnimeDetailFragment"
+        android:label="Anime Detail"
+        tools:layout="@layout/fragment_anime_detail">
+        <argument
+            android:name="animeId"
+            app:argType="string" />
+        <argument
+            android:name="animeName"
+            app:argType="string" />
+    </fragment>
+    <action android:id="@+id/action_global_animeDetailFragment" app:destination="@id/animeDetailFragment" />
 </navigation>

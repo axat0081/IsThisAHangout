@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bgdetails"
-    tools:context=".ui.detailsscreen.DetailDisplayFragment">
+    tools:context=".ui.detailsscreen.AnimeDetailFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -146,20 +146,45 @@
                 android:layout_below="@id/synopsis_text_view"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:padding="2dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
+                android:textSize="18sp"
+                app:drawableEndCompat="@drawable/star"
                 tools:text="Rating - 7.80" />
 
             <TextView
-                android:id="@+id/see_more_text_view"
+                android:id="@+id/favorites_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rating_text_view"
+                android:layout_below="@+id/rating_text_view"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:text="@string/read_more"
+                android:layout_marginEnd="30dp"
+                android:padding="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/mypink"
+                android:textSize="18sp"
+                app:drawableEndCompat="@drawable/favorite"
+                tools:text="Favorites - 100" />
+
+            <TextView
+                android:id="@+id/trailer_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/favorites_text_view"
+                android:layout_marginStart="30dp"
+                android:text="@string/trailer"
                 android:textColor="@color/mypink"
                 android:textSize="20sp" />
+
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                android:id="@+id/trailer_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/trailer_text_view"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp" />
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 

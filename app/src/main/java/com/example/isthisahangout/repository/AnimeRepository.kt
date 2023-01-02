@@ -271,7 +271,9 @@ class AnimeRepository @Inject constructor(
         val cachedAnimeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
         emit(Resource.Loading(cachedAnimeDetail))
         try {
-            val animeDetailDto = animeMangaDetailAPI.getAnimeDetail(id)
+            Log.e("anime", id)
+            val animeDetailDto = animeMangaDetailAPI.getAnimeDetail(id).data
+            Log.e("anime", animeDetailDto.toString())
             animeDetailDao.insertAnimeDetail(animeDetailDto.toAnimeDetail())
             val animeDetail = animeDetailDao.getAnimeDetail(id.toInt()).first()
             emit(Resource.Success(animeDetail))
