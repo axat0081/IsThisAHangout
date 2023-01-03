@@ -8,12 +8,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
 import com.example.isthisahangout.adapter.manga.MangaPagingAdapter
 import com.example.isthisahangout.databinding.FragmentMangaBinding
+import com.example.isthisahangout.ui.detailsscreen.MangaDetailFragmentDirections
 import com.example.isthisahangout.ui.models.MangaUIModel
 import com.example.isthisahangout.viewmodel.MangaViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -207,6 +209,11 @@ class MangaFragment : Fragment(R.layout.fragment_manga), MangaPagingAdapter.OnIt
     }
 
     override fun onItemClick(mangaResults: MangaUIModel.MangaModel) {
+        val action = MangaDetailFragmentDirections.actionGlobalMangaDetailFragment(
+            mangaId = mangaResults.id,
+            mangaName = mangaResults.title
+        )
+        findNavController().navigate(action)
     }
 
 

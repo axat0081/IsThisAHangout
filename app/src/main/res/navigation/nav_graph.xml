@@ -383,4 +383,16 @@
             app:argType="string" />
     </fragment>
     <action android:id="@+id/action_global_animeDetailFragment" app:destination="@id/animeDetailFragment" />
+    <fragment
+        android:id="@+id/mangaDetailFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.MangaDetailFragment"
+        android:label="Manga Detail "
+        tools:layout="@layout/fragment_manga_detail" >
+        <argument
+            android:name="mangaId"
+            app:argType="string" />
+        <argument
+            android:name="mangaName"
+            app:argType="string" />
+    </fragment><action android:id="@+id/action_global_mangaDetailFragment" app:destination="@id/mangaDetailFragment"/>
 </navigation>

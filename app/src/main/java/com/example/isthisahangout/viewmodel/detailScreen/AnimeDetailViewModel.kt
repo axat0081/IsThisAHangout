@@ -36,13 +36,13 @@ class AnimeDetailViewModel @Inject constructor(
         animeRepository.getAnimeDetail(animeId).stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val isFavAnime = favDoa.getAnime("", MainActivity.userId).map { favAnime ->
-        favAnime.any { it.title == animeTitle }
+        favAnime.any { it.id == animeId }
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
     fun onBookMarkClick() {
         if (isFavAnime.value) {
             viewModelScope.launch {
-                favDoa.deleteAnimeByName(animeTitle, MainActivity.userId)
+                favDoa.deleteAnimeByName(animeId, MainActivity.userId)
                 bookMarkEventChannel.send(AnimeBookMarkEvent.RemovedFromBookMarks)
             }
         } else {
@@ -50,6 +50,7 @@ class AnimeDetailViewModel @Inject constructor(
                 val anime = animeDetail.value?.data ?: return@launch
                 favDoa.insertAnime(
                     FavAnime(
+                        id = animeId,
                         userId = MainActivity.userId,
                         title = animeTitle,
                         image = anime.image

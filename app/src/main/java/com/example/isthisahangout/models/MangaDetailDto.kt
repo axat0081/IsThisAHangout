@@ -4,6 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+data class MangaDetailResponse(
+    val data: MangaDetailDto
+)
+
 data class MangaDetailDto(
     @SerializedName("mal_id")
     val id: Int,
@@ -25,7 +29,8 @@ data class MangaDetail(
     val rating: String?,
     val image: String,
     val genres: String,
-    val favorites: Int
+    val favorites: Int,
+    val synopsis: String
 )
 
 fun MangaDetailDto.toMangaDetail(): MangaDetail {
@@ -41,6 +46,7 @@ fun MangaDetailDto.toMangaDetail(): MangaDetail {
         rating = rating,
         image = images.jpg.image,
         genres = gen,
-        favorites = favorites ?: 0
+        favorites = favorites ?: 0,
+        synopsis = synopsis ?: "NA"
     )
 }

@@ -19,6 +19,7 @@ import com.example.isthisahangout.models.favourites.FavAnime
 import com.example.isthisahangout.models.favourites.FavGame
 import com.example.isthisahangout.models.favourites.FavPost
 import com.example.isthisahangout.models.favourites.FavVideo
+import com.example.isthisahangout.ui.detailsscreen.AnimeDetailFragmentDirections
 import com.example.isthisahangout.utils.onQueryTextChanged
 import com.example.isthisahangout.viewmodel.FavouritesViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -134,7 +135,11 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites),
     }
 
     override fun onItemClick(anime: FavAnime) {
-
+        val action = AnimeDetailFragmentDirections.actionGlobalAnimeDetailFragment(
+            animeId = anime.id,
+            animeName = anime.title
+        )
+        findNavController().navigate(action)
     }
 
     override fun onItemClick(anime: FavVideo) {

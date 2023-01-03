@@ -9,12 +9,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.GeneralLoadStateAdapter
 import com.example.isthisahangout.adapter.anime.AnimePagingAdapter
 import com.example.isthisahangout.databinding.FragmentAnimeByGenreSeasonBinding
+import com.example.isthisahangout.ui.detailsscreen.AnimeDetailFragmentDirections
 import com.example.isthisahangout.ui.models.AnimeUIModel
 import com.example.isthisahangout.viewmodel.AnimeBySeasonGenreViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -296,7 +298,11 @@ class AnimeByGenreSeasonFragment : Fragment(R.layout.fragment_anime_by_genre_sea
     }
 
     override fun onItemClick(animeResults: AnimeUIModel.AnimeModel) {
-
+        val action = AnimeDetailFragmentDirections.actionGlobalAnimeDetailFragment(
+            animeId = animeResults.id,
+            animeName = animeResults.title
+        )
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

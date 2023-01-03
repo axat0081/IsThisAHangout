@@ -99,6 +99,7 @@ class GameDetailsFragment : Fragment(R.layout.fragment_game_details) {
             addGameToFavButton.setOnClickListener {
                 viewModel.addGame(
                     FavGame(
+                        id = game.id,
                         title = game.name!!,
                         image = game.imageUrl!!,
                         userId = mAuth.currentUser!!.uid

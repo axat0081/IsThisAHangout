@@ -11,7 +11,7 @@ import com.example.isthisahangout.models.favourites.*
         FavGame::class,
         FavVideo::class,
         FavPost::class
-    ], version = 3
+    ], version = 1
 )
 abstract class FavouritesDatabase : RoomDatabase() {
     abstract fun getFavouritesDao(): FavouritesDao

@@ -53,18 +53,18 @@ class MangaRepository @Inject constructor(
             pagingSourceFactory = { mangaDao.getRoomMangaByGenre(genre) }
         ).flow
 
-    fun getMangaDetail(id: String): Flow<Resource<MangaDetail?>> = flow{
+    fun getMangaDetail(id: String): Flow<Resource<MangaDetail?>> = flow {
         emit(Resource.Loading())
         val cachedAnimeDetail = mangaDetailDao.getMangaDetail(id.toInt()).first()
         emit(Resource.Loading(cachedAnimeDetail))
-        try{
-            val mangaDetailDto = animeMangaDetailAPI.getMangaDetail(id)
+        try {
+            val mangaDetailDto = animeMangaDetailAPI.getMangaDetail(id).data
             mangaDetailDao.insertMangaDetail(mangaDetailDto.toMangaDetail())
             val mangaDetail = mangaDetailDao.getMangaDetail(id.toInt()).first()
             emit(Resource.Success(mangaDetail))
-        }catch (exception: HttpException){
+        } catch (exception: HttpException) {
             emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
-        } catch (exception: IOException){
+        } catch (exception: IOException) {
             emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
         }
     }
