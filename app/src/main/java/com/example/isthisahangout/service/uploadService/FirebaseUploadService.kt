@@ -44,7 +44,7 @@ class FirebaseUploadService : BaseService() {
 
     @Inject
     @Named("VideoUrlRef")
-    lateinit var videoUrleRef: StorageReference
+    lateinit var videoUrlRef: StorageReference
 
     @Inject
     @Named("SongUrlRef")
@@ -136,7 +136,7 @@ class FirebaseUploadService : BaseService() {
                 }
                 "song" -> {
                     val song = intent.getParcelableExtra<Song>(FIREBASE_SONG)!!
-                    Log.e("Music", song.title!!)
+                    Log.e("Music", song.title)
                     uploadSong(song)
                 }
                 "video" -> {
@@ -199,7 +199,7 @@ class FirebaseUploadService : BaseService() {
                                 taskCompleted()
                             }
                         }
-                }.addOnFailureListener { exception ->
+                }.addOnFailureListener {
                     broadcastUploadFinished(null, fileUri, "pfp")
                     showUploadFinishedNotification(null, fileUri)
                     taskCompleted()
@@ -240,7 +240,7 @@ class FirebaseUploadService : BaseService() {
                                 taskCompleted()
                             }
                         }
-                }.addOnFailureListener { exception ->
+                }.addOnFailureListener {
                     broadcastUploadFinished(null, fileUri, "header")
                     showUploadFinishedNotification(null, fileUri)
                     taskCompleted()
@@ -273,12 +273,19 @@ class FirebaseUploadService : BaseService() {
                         val id = commentsRef.document().id
                         commentsRef.document(id).set(
                             Comments(
+                                commentId = id,
                                 contentId = comments.contentId,
                                 pfp = comments.pfp,
                                 username = comments.username,
                                 time = comments.time,
                                 text = comments.text,
-                                image = downloadUri.toString()
+                                image = downloadUri.toString(),
+                                userId = comments.userId,
+                                replyingToCommentId = comments.replyingToCommentId,
+                                replyingToUserId = comments.replyingToUserId,
+                                replyingToUserName = comments.replyingToUserName,
+                                replyingToPfp = comments.replyingToPfp,
+                                replyingToText = comments.replyingToText,
                             )
                         ).addOnSuccessListener {
                             broadcastUploadFinished(downloadUri, image)
@@ -310,12 +317,19 @@ class FirebaseUploadService : BaseService() {
             val id = commentsRef.document().id
             commentsRef.document(id).set(
                 Comments(
+                    commentId = id,
                     contentId = comments.contentId,
                     pfp = comments.pfp,
                     username = comments.username,
                     time = comments.time,
                     text = comments.text,
-                    image = null
+                    image = null,
+                    userId = comments.userId,
+                    replyingToCommentId = comments.replyingToCommentId,
+                    replyingToUserId = comments.replyingToUserId,
+                    replyingToUserName = comments.replyingToUserName,
+                    replyingToPfp = comments.replyingToPfp,
+                    replyingToText = comments.replyingToText,
                 )
             ).addOnSuccessListener {
                 broadcastUploadFinished(Uri.parse(defaultImage), Uri.parse(defaultImage))
@@ -433,8 +447,8 @@ class FirebaseUploadService : BaseService() {
         showProgressNotification(UPLOAD_SONG_CAPTION, 0, 0, true)
         val songUrl: Uri = Uri.parse(song.url)
         Log.e("Music", songUrl.toString())
-        songUrl.lastPathSegment?.let {
-            songUrlRef.child(it).putFile(songUrl)
+        songUrl.lastPathSegment?.let { path ->
+            songUrlRef.child(path).putFile(songUrl)
                 .addOnProgressListener { (bytesTransferred, totalByteCount) ->
                     showProgressNotification(
                         UPLOAD_SONG_CAPTION,
@@ -446,7 +460,7 @@ class FirebaseUploadService : BaseService() {
                     if (!task.isSuccessful) {
                         throw task.exception!!
                     }
-                    songUrlRef.child(it).downloadUrl
+                    songUrlRef.child(path).downloadUrl
                 }.addOnFailureListener { songUploadException ->
                     Log.w(TAG, "uploadFromUri:onFailure", songUploadException)
                     // [START_EXCLUDE]
@@ -514,8 +528,8 @@ class FirebaseUploadService : BaseService() {
         taskStarted()
         showProgressNotification(UPLOAD_VIDEO_CAPTION, 0, 0, true)
         val videoUrl: Uri = Uri.parse(video.url)
-        videoUrl.lastPathSegment?.let {
-            videoUrleRef.child(it).putFile(videoUrl)
+        videoUrl.lastPathSegment?.let { path ->
+            videoUrlRef.child(path).putFile(videoUrl)
                 .addOnProgressListener { (bytesTransferred, totalByteCount) ->
                     showProgressNotification(
                         UPLOAD_VIDEO_CAPTION,
@@ -527,7 +541,7 @@ class FirebaseUploadService : BaseService() {
                     if (!task.isSuccessful) {
                         throw task.exception!!
                     }
-                    videoUrleRef.child(it).downloadUrl
+                    videoUrlRef.child(path).downloadUrl
                 }.addOnFailureListener { songUploadException ->
                     Log.w(TAG, "uploadFromUri:onFailure", songUploadException)
                     // [START_EXCLUDE]
@@ -626,8 +640,8 @@ class FirebaseUploadService : BaseService() {
                                 image = imageUri.toString(),
                                 priority = character.priority
                             )
-                        ).addOnCompleteListener { comfortCharaterUpload ->
-                            if (comfortCharaterUpload.isSuccessful) {
+                        ).addOnCompleteListener { comfortCharacterUpload ->
+                            if (comfortCharacterUpload.isSuccessful) {
                                 Log.d(TAG, "uploadFromUri: getDownloadUri success")
                                 // [START_EXCLUDE]
                                 broadcastUploadFinished(imageUri, imageUri, "comfortCharacter")
@@ -637,7 +651,7 @@ class FirebaseUploadService : BaseService() {
                                 Log.w(
                                     TAG,
                                     "uploadFromUri:onFailure",
-                                    comfortCharaterUpload.exception
+                                    comfortCharacterUpload.exception
                                 )
                                 // [START_EXCLUDE]
                                 broadcastUploadFinished(null, imageUri, "comfortCharacter")

@@ -38,17 +38,18 @@ import java.text.DateFormat
 
 @AndroidEntryPoint
 class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
-    CommentsAdapter.OnItemLongClickListener {
+    CommentsAdapter.OnItemLongClickListener, CommentsAdapter.OnReplyingToClickListener {
     private var _binding: FragmentPostDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<PostDetailsViewModel>()
     private lateinit var cropImage: ActivityResultLauncher<CropImageContractOptions>
+    private lateinit var commentsAdapter: CommentsAdapter
     private val args by navArgs<PostsDetailsFragmentArgs>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val post: FirebasePost = args.post
         _binding = FragmentPostDetailsBinding.bind(view)
-        val commentsAdapter = CommentsAdapter(this)
+        commentsAdapter = CommentsAdapter(this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
@@ -179,6 +180,15 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 addCommentImageView.isVisible = false
             }
 
+            cancelReplyingToImageButton.setOnClickListener {
+                replyingToLayout.isVisible = false
+                viewModel.replyingToUserName = null
+                viewModel.replyingToPfp = null
+                viewModel.replyingToCommentId = null
+                viewModel.replyingToText = null
+                viewModel.replyingToUserId = null
+            }
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.postsCommentEventFlow.collect { event ->
@@ -221,11 +231,6 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
     }
 
 
-    override fun onItemLongClick(comment: Comments) {
-        showKeyboard(requireContext())
-        binding.commentEditText.setText("Replying To: ${comment.text}")
-    }
-
     private fun showKeyboard(mContext: Context) {
         val imm = mContext
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -239,6 +244,38 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             requireActivity().window
                 .currentFocus!!.windowToken, 0
         )
+    }
+
+    override fun onItemLongClick(comment: Comments) {
+        showKeyboard(requireContext())
+        binding.commentsRecyclerview.scrollToPosition(0)
+        viewModel.replyingToCommentId = comment.commentId
+        viewModel.replyingToUserId = comment.userId
+        viewModel.replyingToPfp = comment.pfp
+        viewModel.replyingToText = comment.text
+        viewModel.replyingToUserName = comment.username
+        binding.apply {
+            replyingToLayout.isVisible = true
+            replyingToTextView.text = comment.text
+            replyingToUsernameTextView.text = comment.username
+            Glide.with(requireContext())
+                .load(comment.pfp)
+                .into(replyingToPfpImageView)
+        }
+    }
+
+    override fun onReplyingToClick(replyingToCommentId: String) {
+        val comments = commentsAdapter.currentList
+        var position = -1
+        for (i in 0 until comments.size) {
+            if (comments[i].commentId == replyingToCommentId) {
+                position = i
+                break
+            }
+        }
+        if (position != -1) {
+            binding.commentsRecyclerview.scrollToPosition(position)
+        }
     }
 
     override fun onDestroyView() {

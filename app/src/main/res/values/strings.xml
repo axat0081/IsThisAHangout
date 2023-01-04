@@ -54,4 +54,5 @@
     <string name="send_comment">Send comment</string>
     <string name="comment_attached_image">Comment attached Image</string>
     <string name="comments">Comments</string>
+    <string name="replying_to">Replying To:</string>
 </resources>

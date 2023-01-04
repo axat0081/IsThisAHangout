@@ -42,6 +42,7 @@ class CommentsAdapter(
             )
         )
 
+
     override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
@@ -50,6 +51,10 @@ class CommentsAdapter(
 
     interface OnItemLongClickListener {
         fun onItemLongClick(comment: Comments)
+    }
+
+    interface OnReplyingToClickListener {
+        fun onReplyingToClick(replyingToCommentId: String)
     }
 
     inner class CommentsViewHolder(private val binding: CommentsDisplayLayoutBinding) :
@@ -101,6 +106,15 @@ class CommentsAdapter(
                                 return false
                             }
                         }).into(commentImageView)
+                }
+                if (comment.replyingToCommentId == null) {
+                    replyingToLayout.isVisible = false
+                } else {
+                    replyingToTextView.text = comment.replyingToText ?: "Tap to see attachment"
+                    replyingToUsernameTextView.text = comment.replyingToUserName
+                    Glide.with(itemView)
+                        .load(comment.replyingToPfp)
+                        .into(replyingToPfpImageView)
                 }
             }
         }

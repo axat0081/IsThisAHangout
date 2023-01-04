@@ -20,17 +20,24 @@ data class FirebasePost(
 
 @Entity(tableName = "liked_posts_ids")
 data class LikedPostId(
-    @PrimaryKey(autoGenerate = true) val id:Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val postId: String,
-    val userId:String
+    val userId: String
 )
 
 @Parcelize
 data class Comments(
+    val commentId: String? = null,
+    val userId: String? = null,
     val username: String? = null,
     val contentId: String? = null,
     val pfp: String? = null,
     val text: String? = null,
     val time: Long? = null,
-    val image: String? = null
+    val image: String? = null,
+    val replyingToCommentId: String? = null,
+    val replyingToUserId: String? = null,
+    val replyingToUserName: String? = null,
+    val replyingToPfp: String? = null,
+    val replyingToText: String? = null
 ) : Parcelable

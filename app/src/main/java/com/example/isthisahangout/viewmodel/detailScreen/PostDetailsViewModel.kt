@@ -42,6 +42,37 @@ class PostDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val post = savedStateHandle.get<FirebasePost>(POST) ?: FirebasePost(id = "123")
+
+    var replyingToCommentId = savedStateHandle.get<String>("replying_to_comment_id")
+        set(value) {
+            field = value
+            savedStateHandle["replying_to_comment_id"] = replyingToCommentId
+        }
+
+    var replyingToUserId = savedStateHandle.get<String>("replying_to_user_id")
+        set(value) {
+            field = value
+            savedStateHandle["replying_to_user_id"] = replyingToUserId
+        }
+
+    var replyingToUserName = savedStateHandle.get<String>("replying_to_user_name")
+        set(value) {
+            field = value
+            savedStateHandle["replying_to_user_name"] = replyingToUserName
+        }
+
+    var replyingToPfp = savedStateHandle.get<String>("replying_to_user_pfp")
+        set(value) {
+            field = value
+            savedStateHandle["replying_to_user_pfp"] = replyingToPfp
+        }
+
+    var replyingToText = savedStateHandle.get<String>("replying_to_user_text")
+        set(value) {
+            field = value
+            savedStateHandle["replying_to_user_text"] = replyingToText
+        }
+
     var commentText = savedStateHandle.get<String>("comment_text")
         set(value) {
             field = value
@@ -146,12 +177,18 @@ class PostDetailsViewModel @Inject constructor(
             }
         } else {
             val comment = Comments(
+                userId = MainActivity.userId,
                 username = MainActivity.userName,
                 text = commentText,
                 pfp = MainActivity.userPfp,
                 time = System.currentTimeMillis(),
                 image = if (commentImage == null) null else commentImage.toString(),
-                contentId = post.id
+                contentId = post.id,
+                replyingToCommentId = replyingToCommentId,
+                replyingToUserId = replyingToUserId,
+                replyingToUserName = replyingToUserName,
+                replyingToPfp = replyingToPfp,
+                replyingToText = replyingToText,
             )
             app.startService(
                 Intent(app, FirebaseUploadService::class.java)

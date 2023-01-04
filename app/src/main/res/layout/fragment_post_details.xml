@@ -18,9 +18,9 @@
 
             <RelativeLayout
                 android:id="@+id/layout1"
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/poster_pfp_image_view"
@@ -30,10 +30,11 @@
                     tools:src="@mipmap/ic_launcher_round" />
 
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_toEndOf="@id/poster_pfp_image_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/poster_pfp_image_view"
+                    android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/post_title_text_view"
                         android:layout_width="match_parent"
@@ -53,10 +54,10 @@
                         android:id="@+id/poster_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="30dp"
                         android:layout_marginEnd="30dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:layout_marginStart="30dp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/myblue"
                         android:textSize="18sp"
@@ -172,48 +173,125 @@
                 android:textColor="@color/mypink"
                 android:textSize="25sp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_comment_image_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:contentDescription="@string/add_image_to_comment"
-                android:src="@drawable/upload" />
-
-            <EditText
-                android:id="@+id/comment_edit_text"
+            <RelativeLayout
+                android:id="@+id/add_comment_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@id/comment_send_button"
-                android:layout_toEndOf="@id/add_comment_image_button"
-                android:backgroundTint="@color/myblue"
-                android:hint="@string/comment_here"
-                android:inputType="text"
-                android:textColor="@color/myblue"
-                android:textColorHint="@color/mypink" />
+                android:layout_below="@id/comment_text_view">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/comment_send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="@string/send_comment"
-                android:src="@drawable/send" />
+                <RelativeLayout
+                    android:id="@+id/replying_to_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <RelativeLayout
+                        android:id="@+id/replying_to_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/replying_to"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/replying_to"
+                            android:textColor="@color/mypink" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/replying_to_pfp_image_view"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/replying_to"
+                            tools:src="@mipmap/ic_launcher_round" />
+
+                        <TextView
+                            android:id="@+id/replying_to_username_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_toStartOf="@+id/cancel_replying_to_image_button"
+                            android:layout_toEndOf="@id/replying_to_pfp_image_view"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/myblue"
+                            android:textSize="14sp"
+                            tools:text="UserName here" />
+
+                        <ImageButton
+                            android:id="@+id/cancel_replying_to_image_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/cancel" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/replying_to_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/replying_to_header"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="30dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        tools:text="@string/test_text" />
+                </RelativeLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_comment_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/add_image_to_comment"
+                    android:src="@drawable/upload" />
+
+                <EditText
+                    android:id="@+id/comment_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toStartOf="@id/comment_send_button"
+                    android:layout_toEndOf="@id/add_comment_image_button"
+                    android:backgroundTint="@color/myblue"
+                    android:hint="@string/comment_here"
+                    android:inputType="text"
+                    android:textColor="@color/myblue"
+                    android:textColorHint="@color/mypink" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/comment_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/send_comment"
+                    android:src="@drawable/send" />
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/add_comment_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_below="@id/comment_send_button"
+                android:layout_below="@id/add_comment_layout"
                 android:layout_marginTop="10dp"
                 android:contentDescription="@string/comment_attached_image"
                 android:visibility="invisible"
@@ -226,7 +304,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/add_comment_image_view"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/comments_display_layout" />
 
