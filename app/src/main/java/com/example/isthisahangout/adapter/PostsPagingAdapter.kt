@@ -32,11 +32,6 @@ class PostsPagingAdapter(private val listener: OnItemClickListener) :
         }
     }
 
-    override fun onViewAttachedToWindow(holder: PostPagingViewHolder) {
-        super.onViewAttachedToWindow(holder)
-
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostPagingViewHolder =
         PostPagingViewHolder(
             PostDisplayLayoutBinding.inflate(
@@ -73,7 +68,6 @@ class PostsPagingAdapter(private val listener: OnItemClickListener) :
         }
 
         fun bind(post: FirebasePost) {
-            val imageAdapter = ScreenshotAdapter()
             binding.apply {
                 Glide.with(itemView)
                     .load(post.pfp)
@@ -109,7 +103,7 @@ class PostsPagingAdapter(private val listener: OnItemClickListener) :
                         })
                         .into(postImageView)
                 }
-                timeTextView.text = DateFormat.getDateTimeInstance().format(post.time)
+                timeTextView.text = DateFormat.getDateTimeInstance().format(post.time).dropLast(3)
             }
         }
     }

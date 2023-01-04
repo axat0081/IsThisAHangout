@@ -1,77 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipe_refresh_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/posts_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bgdetails"
-    tools:context=".ui.PostsFragment">
-
-    <ProgressBar
-        android:id="@+id/posts_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/posts_error_text_view"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/posts_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:text="Aw snap, an error occurred"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/mypink"
-        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:background="@drawable/bgdetails"
+        tools:context=".ui.PostsFragment">
 
-        />
+        <ProgressBar
+            android:id="@+id/posts_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Posts"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/posts_error_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="@string/aw_snap_an_error_occurred"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/mypink"
+            android:visibility="gone"
 
-    <Button
-        android:id="@+id/posts_retry_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/posts_error_text_view"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="100dp"
-        android:layout_marginEnd="100dp"
-        android:background="@drawable/rounded_button"
-        android:text="Retry"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/posts_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <Button
+            android:id="@+id/posts_retry_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/posts_error_text_view"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:background="@drawable/rounded_button"
+            android:text="@string/retry"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/create_posts_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
-        android:backgroundTint="@color/mypink"
-        android:src="@drawable/create_posts" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/posts_recyclerview"
+            android:layout_width="match_parent"
+            tools:listitem="@layout/post_display_layout"
+            android:layout_height="match_parent" />
 
-    <View
-        android:id="@+id/circle_background"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/fab_explosion"
-        android:visibility="invisible" />
-</RelativeLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/create_posts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="@color/mypink"
+            android:src="@drawable/create_posts"
+            android:contentDescription="@string/create_new_post" />
+
+        <View
+            android:id="@+id/circle_background"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/fab_explosion"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

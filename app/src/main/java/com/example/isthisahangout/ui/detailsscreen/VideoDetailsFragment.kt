@@ -68,7 +68,7 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                 Comments::class.java
             )
             .build()
-        commentsAdapter = CommentsAdapter(options,this)
+        commentsAdapter = CommentsAdapter(this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
@@ -216,16 +216,6 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
         } else {
             (requireActivity() as MainActivity).supportActionBar!!.show()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        commentsAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        commentsAdapter.stopListening()
     }
 
     override fun onItemLongClick(comment: Comments) {

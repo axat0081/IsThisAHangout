@@ -7,7 +7,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -31,17 +30,10 @@ import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentPostDetailsBinding
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.models.FirebasePost
-import com.example.isthisahangout.viewmodel.FavouritesViewModel
-import com.example.isthisahangout.viewmodel.PostViewModel
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.example.isthisahangout.viewmodel.detailScreen.PostDetailsViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.Query
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import java.text.DateFormat
-import javax.inject.Inject
-import javax.inject.Named
 
 
 @AndroidEntryPoint
@@ -49,28 +41,14 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
     CommentsAdapter.OnItemLongClickListener {
     private var _binding: FragmentPostDetailsBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<PostsDetailsFragmentArgs>()
-    private val viewModel by viewModels<PostViewModel>()
-    private val favViewModel by viewModels<FavouritesViewModel>()
+    private val viewModel by viewModels<PostDetailsViewModel>()
     private lateinit var cropImage: ActivityResultLauncher<CropImageContractOptions>
-
-    @Inject
-    @Named("CommentsRef")
-    lateinit var commentsRef: CollectionReference
-    private lateinit var commentsAdapter: CommentsAdapter
+    private val args by navArgs<PostsDetailsFragmentArgs>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val post: FirebasePost = args.post
         _binding = FragmentPostDetailsBinding.bind(view)
-        val query = commentsRef.document(post.id!!).collection("comments")
-            .orderBy("time", Query.Direction.ASCENDING)
-        val options = FirestoreRecyclerOptions.Builder<Comments>()
-            .setQuery(
-                query,
-                Comments::class.java
-            )
-            .build()
-        commentsAdapter = CommentsAdapter(options, this)
+        val commentsAdapter = CommentsAdapter(this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
@@ -91,27 +69,40 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             }
         }
         binding.apply {
-            viewModel.currentPostId.value = post.id
             addCommentImageView.visibility = GONE
             bookmarkImageView.setImageResource(R.drawable.bookmark)
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    favViewModel.favPost.collect { favPost ->
-                        val isFav = favPost.any {
-                            it.id == post.id
-                        }
-                        if (isFav) {
-                            viewModel.isBookMarked.value = true
-                        }
+                    viewModel.isLiked.collect {
+                        likeButton.isLiked = it
                     }
                 }
             }
-
-            viewModel.isBookMarked.observe(viewLifecycleOwner) { isBookmarked ->
-                if (isBookmarked) {
-                    bookmarkImageView.setImageResource(R.drawable.bookmarked)
-                } else {
-                    bookmarkImageView.setImageResource(R.drawable.bookmark)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.currentPost.collect { post ->
+                        likeTextView.text = (post?.likes ?: 0).toString()
+                    }
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.isBookMarked.collect {
+                        bookmarkImageView.setImageResource(
+                            if (it)
+                                R.drawable.bookmarked
+                            else R.drawable.bookmark
+                        )
+                    }
+                }
+            }
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.comments.collect { result ->
+                        if (result == null) return@collect
+                        commentsAdapter.submitList(result.data)
+                    }
                 }
             }
 
@@ -127,11 +118,10 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 .load(post.pfp)
                 .placeholder(R.drawable.click_to_add_image)
                 .into(posterPfpImageView)
-            likeTextView.text = post.likes.toString()
             postTitleTextView.text = post.title!!
             postBody.text = post.text
             posterUsername.text = post.username
-            timeTextView.text = DateFormat.getDateTimeInstance().format(post.time)
+            timeTextView.text = DateFormat.getDateTimeInstance().format(post.time).dropLast(3)
             postImageView.isClickable = false
             Glide.with(requireContext())
                 .load(post.image)
@@ -159,16 +149,8 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                     }
                 }).into(postImageView)
 
-            postImageView.setOnClickListener {
-                postImageView.animate()
-                    .setDuration(1000)
-                    .scaleX(20F)
-                    .scaleY(20F)
-                    .alpha(0F)
-            }
-
             bookmarkImageView.setOnClickListener {
-                viewModel.onBookMarkClick(post)
+                viewModel.onBookMarkClick()
             }
 
             addCommentImageButton.setOnClickListener {
@@ -181,41 +163,8 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 )
             }
 
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.isLiked.collectLatest { isLiked ->
-                        likeButton.isLiked = isLiked
-                    }
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.likeCount.collectLatest { likeCount ->
-                        likeTextView.text = likeCount.toString()
-                    }
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.postsEventFlow.collectLatest { event ->
-                        when (event) {
-                            is PostViewModel.PostsEvent.PostLikeError -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    event.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            else -> Unit
-                        }
-                    }
-                }
-            }
-
             likeButton.setOnClickListener {
-                viewModel.onLikeClick(post)
+                viewModel.onLikeClick()
             }
 
             commentEditText.addTextChangedListener { text ->
@@ -229,18 +178,48 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                 commentEditText.text.clear()
                 addCommentImageView.isVisible = false
             }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.postsCommentEventFlow.collect { event ->
+                        when (event) {
+                            is PostDetailsViewModel.PostsCommentEvent.CommentSendFailure -> {
+                                Snackbar.make(
+                                    requireView(), event.message, Snackbar.LENGTH_SHORT
+                                )
+                            }
+                            is PostDetailsViewModel.PostsCommentEvent.CommentSentSuccess -> Unit
+                        }
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.postsLikeBookMarkEventFlow.collect { event ->
+                        when (event) {
+                            is PostDetailsViewModel.PostsLikeBookMarkEvent.AddedToBookMarks -> {
+                                Snackbar.make(
+                                    requireView(), "Added to bookmarks", Snackbar.LENGTH_SHORT
+                                )
+                            }
+                            is PostDetailsViewModel.PostsLikeBookMarkEvent.RemovedFromBookMarks -> {
+                                Snackbar.make(
+                                    requireView(), "Removed from bookmarks", Snackbar.LENGTH_SHORT
+                                )
+                            }
+                            is PostDetailsViewModel.PostsLikeBookMarkEvent.PostsLikeError -> {
+                                Snackbar.make(
+                                    requireView(), event.message, Snackbar.LENGTH_SHORT
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        commentsAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        commentsAdapter.stopListening()
-    }
 
     override fun onItemLongClick(comment: Comments) {
         showKeyboard(requireContext())

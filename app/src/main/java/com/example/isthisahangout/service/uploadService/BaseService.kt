@@ -81,7 +81,9 @@ abstract class BaseService : Service() {
     protected fun showFinishedNotification(caption: String, intent: Intent, success: Boolean) {
         val pendingIntent = PendingIntent.getActivity(
             this, 0 /* requestCode */, intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                PendingIntent.FLAG_MUTABLE
+            else PendingIntent.FLAG_ONE_SHOT
         )
 
         val icon = if (success) R.drawable.success else R.drawable.error

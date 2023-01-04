@@ -46,4 +46,12 @@
     <string name="movies">Movies</string>
     <string name="comfort_characters">Comfort Characters</string>
     <string name="trailer">Trailer</string>
+    <string name="post_image">Post Image</string>
+    <string name="create_new_post">Create new post</string>
+    <string name="add_to_bookmarks">Add to bookmarks</string>
+    <string name="add_image_to_comment">Add image to comment</string>
+    <string name="comment_here">Comment here...</string>
+    <string name="send_comment">Send comment</string>
+    <string name="comment_attached_image">Comment attached Image</string>
+    <string name="comments">Comments</string>
 </resources>

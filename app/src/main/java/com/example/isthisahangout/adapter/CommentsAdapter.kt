@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -13,17 +15,23 @@ import com.bumptech.glide.request.target.Target
 import com.example.isthisahangout.R
 import com.example.isthisahangout.databinding.CommentsDisplayLayoutBinding
 import com.example.isthisahangout.models.Comments
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import java.text.DateFormat
 
 class CommentsAdapter(
-    options: FirestoreRecyclerOptions<Comments>,
     private val listener: OnItemLongClickListener
 ) :
-    FirestoreRecyclerAdapter<Comments, CommentsAdapter.CommentsViewHolder>(
-        options
-    ) {
+    ListAdapter<Comments, CommentsAdapter.CommentsViewHolder>(COMPARATOR) {
+
+    companion object {
+        val COMPARATOR = object : DiffUtil.ItemCallback<Comments>() {
+            override fun areItemsTheSame(oldItem: Comments, newItem: Comments): Boolean =
+                oldItem == newItem
+
+            override fun areContentsTheSame(oldItem: Comments, newItem: Comments): Boolean =
+                oldItem == newItem
+
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsViewHolder =
         CommentsViewHolder(
@@ -34,10 +42,11 @@ class CommentsAdapter(
             )
         )
 
-    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int, model: Comments) {
+    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
     }
+
 
     interface OnItemLongClickListener {
         fun onItemLongClick(comment: Comments)
@@ -48,8 +57,8 @@ class CommentsAdapter(
 
         init {
             binding.root.setOnLongClickListener {
-              listener.onItemLongClick(getItem(bindingAdapterPosition))
-              true
+                listener.onItemLongClick(getItem(bindingAdapterPosition))
+                true
             }
         }
 
@@ -61,7 +70,8 @@ class CommentsAdapter(
                     .into(commenterPfpImageView)
                 commentTextTextView.text = comment.text
                 commenterUsername.text = comment.username
-                commentTimeTextView.text = DateFormat.getDateTimeInstance().format(comment.time)
+                commentTimeTextView.text =
+                    DateFormat.getDateTimeInstance().format(comment.time).dropLast(3)
                 if (comment.image == null) {
                     commentImageView.isVisible = false
                     commentImageProgressBar.isVisible = false

@@ -60,15 +60,14 @@ class MusicService : MediaBrowserServiceCompat() {
             firebaseMusicSource.fetchMediaData()
         }
 
-        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
-        else PendingIntent.FLAG_ONE_SHOT
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_IMMUTABLE
+        else PendingIntent.FLAG_UPDATE_CURRENT
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
             PendingIntent.getActivity(this, 0, it, flag)
         }
 
-        mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
-            setSessionActivity(activityIntent)
+        mediaSession = MediaSessionCompat(this, SERVICE_TAG, null, activityIntent).apply {
             isActive = true
         }
 

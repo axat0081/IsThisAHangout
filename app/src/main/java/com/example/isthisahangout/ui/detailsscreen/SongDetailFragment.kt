@@ -72,7 +72,7 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                 Comments::class.java
             )
             .build()
-        commentsAdapter = CommentsAdapter(options,this)
+        commentsAdapter = CommentsAdapter(this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
@@ -210,15 +210,6 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
             .createMediaSource(MediaItem.fromUri(uri))
     }
 
-    override fun onStart() {
-        super.onStart()
-        commentsAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        commentsAdapter.stopListening()
-    }
 
     override fun onItemLongClick(comment: Comments) {
         showKeyboard(requireContext())

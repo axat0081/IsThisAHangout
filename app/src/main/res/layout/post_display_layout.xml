@@ -2,27 +2,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#66000000">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/poster_pfp_image_view"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        tools:src="@mipmap/ic_launcher_round" />
 
     <TextView
         android:id="@+id/post_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="30dp"
         android:layout_toEndOf="@id/poster_pfp_image_view"
-        android:text="Poster Title"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/mypink"
         android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="Poster Title" />
 
     <TextView
         android:id="@+id/poster_username"
@@ -31,10 +36,13 @@
         android:layout_below="@id/post_title_text_view"
         android:layout_alignStart="@id/post_title_text_view"
         android:layout_marginTop="3dp"
+        android:layout_marginEnd="30dp"
         android:layout_toEndOf="@id/poster_pfp_image_view"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/mypink"
-        android:textSize="20sp"
+        android:textColor="@color/myblue"
+        android:textSize="18sp"
         android:textStyle="bold"
         tools:text="Poster name" />
 
@@ -45,8 +53,8 @@
         android:layout_below="@id/poster_username"
         android:layout_marginStart="30dp"
         android:layout_toEndOf="@id/poster_pfp_image_view"
-        android:text="26th jan 1222"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        tools:text="26th jan 1222" />
 
     <TextView
         android:id="@+id/postBody"
@@ -61,29 +69,37 @@
         android:textColor="@color/myblue"
         android:textSize="17sp" />
 
-    <ProgressBar
-        android:id="@+id/post_image_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp" />
-
-    <ImageView
-        android:id="@+id/post_image_view"
+    <RelativeLayout
+        android:id="@+id/post_image_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/postBody"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp"
-        android:adjustViewBounds="true"
-        android:maxHeight="500dp"
-        android:scaleType="fitCenter"
-        tools:src="@mipmap/ic_launcher" />
+        android:layout_marginTop="10dp">
+
+        <ProgressBar
+            android:id="@+id/post_image_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="#26000000" />
+
+        <ImageView
+            android:id="@+id/post_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/post_image"
+            android:scaleType="fitCenter"
+            tools:src="@mipmap/ic_launcher" />
+    </RelativeLayout>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:layout_below="@+id/post_image_view"
+        android:layout_below="@+id/post_image_view_layout"
         android:layout_marginTop="20dp" />
 </RelativeLayout>
