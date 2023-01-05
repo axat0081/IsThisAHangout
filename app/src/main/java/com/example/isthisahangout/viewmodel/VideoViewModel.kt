@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -30,9 +29,6 @@ class VideoViewModel @Inject constructor(
 
     private val videoEventChannel = Channel<VideoEvent>()
     val videoEventFlow = videoEventChannel.receiveAsFlow()
-
-    val showDetails = MutableLiveData(false)
-
     var videoTitle = state.get<String>("video_title") ?: ""
         set(value) {
             field = value
@@ -57,7 +53,6 @@ class VideoViewModel @Inject constructor(
         }
 
 
-
     val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             videoUploadResult(intent)
@@ -67,11 +62,6 @@ class VideoViewModel @Inject constructor(
     val videos = Pager(PagingConfig(10)) {
         VideosPagingSource()
     }.flow.cachedIn(viewModelScope)
-
-    fun onShowDetailsClick() {
-        showDetails.value = !showDetails.value!!
-    }
-
 
     fun onUploadClick() {
         when {

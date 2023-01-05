@@ -19,6 +19,9 @@ import com.example.isthisahangout.databinding.FragmentVideosBinding
 import com.example.isthisahangout.models.FirebaseVideo
 import com.example.isthisahangout.utils.startAnimation
 import com.example.isthisahangout.viewmodel.VideoViewModel
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.master.exoplayer.MasterExoPlayerHelper
+import com.master.exoplayer.MuteStrategy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
@@ -38,6 +41,13 @@ class VideosFragment : Fragment(R.layout.fragment_videos), VideosPagingAdapter.O
                 duration = 1000
                 interpolator = AccelerateDecelerateInterpolator()
             }
+        val videoPlayerHelper = MasterExoPlayerHelper(
+            mContext = requireContext(),
+            id = R.id.masterExoPlayer,
+            defaultMute = true,
+            muteStrategy = MuteStrategy.ALL
+        )
+        videoPlayerHelper.makeLifeCycleAware(this)
         binding.apply {
             postVideoButton.setOnClickListener {
                 binding.postVideoButton.isVisible = false
@@ -53,6 +63,19 @@ class VideosFragment : Fragment(R.layout.fragment_videos), VideosPagingAdapter.O
             videosRecyclerview.apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = videosPagingAdapter
+            }
+            videoPlayerHelper.attachToRecyclerView(videosRecyclerview)
+            videoPlayerHelper.getPlayerView().apply {
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            }
+            parentFragmentManager.addOnBackStackChangedListener {
+                if (parentFragmentManager.fragments.last() == this@VideosFragment) {
+                    //resume
+                    videoPlayerHelper.exoPlayerHelper.play()
+                } else {
+                    //pause
+                    videoPlayerHelper.exoPlayerHelper.pause()
+                }
             }
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {

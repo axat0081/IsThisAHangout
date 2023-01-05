@@ -171,4 +171,6 @@ dependencies {
 
     // Youtube player
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:11.1.0'
+
+    implementation 'com.github.pankaj89:MasterExoPlayer:1.4.5'
 }

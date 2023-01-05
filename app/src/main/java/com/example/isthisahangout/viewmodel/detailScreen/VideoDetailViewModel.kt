@@ -3,6 +3,7 @@ package com.example.isthisahangout.viewmodel.detailScreen
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,8 +16,11 @@ import com.example.isthisahangout.models.LikedVideoId
 import com.example.isthisahangout.models.favourites.FavVideo
 import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
+import com.example.isthisahangout.utils.VideoCache
 import com.example.isthisahangout.utils.asFlow
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,9 +43,20 @@ class VideoDetailViewModel @Inject constructor(
     private val videosRef: CollectionReference,
     commentsRepository: CommentsRepository
 ) : ViewModel() {
-    var simpleExoPlayer: SimpleExoPlayer? = null
-
     val video = savedStateHandle.get<FirebaseVideo>(VIDEO)!!
+    var simpleExoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(app.applicationContext).build()
+
+    init {
+        val mediaSource = ProgressiveMediaSource.Factory(
+            VideoCache(
+                app.applicationContext,
+                100 * 1024 * 1024,
+                10 * 1024 * 1024
+            )
+        ).createMediaSource(MediaItem.fromUri(Uri.parse(video.url!!)))
+        simpleExoPlayer.setMediaSource(mediaSource)
+        simpleExoPlayer.prepare()
+    }
 
     var replyingToCommentId = savedStateHandle.get<String>("replying_to_comment_id")
         set(value) {
@@ -87,7 +102,7 @@ class VideoDetailViewModel @Inject constructor(
     val comments = commentsRepository.getVideosComments(video.id)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    val currentVideo = videosRef.document(video.id?:"ABC").asFlow().map {
+    val currentVideo = videosRef.document(video.id ?: "ABC").asFlow().map {
         it.toObject(FirebaseVideo::class.java)
     }.stateIn(viewModelScope, SharingStarted.Lazily, FirebaseVideo())
 

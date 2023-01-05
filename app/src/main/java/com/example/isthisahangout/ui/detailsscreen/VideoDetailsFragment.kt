@@ -2,7 +2,6 @@ package com.example.isthisahangout.ui.detailsscreen
 
 import android.content.Context
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -29,11 +28,7 @@ import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentVideoDetailsBinding
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.utils.Resource
-import com.example.isthisahangout.utils.VideoCache
 import com.example.isthisahangout.viewmodel.detailScreen.VideoDetailViewModel
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.Integer.min
@@ -82,19 +77,7 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                 isVisible = true
             }
             addCommentImageView.visibility = GONE
-            if (viewModel.simpleExoPlayer == null) {
-                viewModel.simpleExoPlayer =
-                    SimpleExoPlayer.Builder(requireActivity().applicationContext).build()
-                playerView.player = viewModel.simpleExoPlayer
-                val mediaSource = ProgressiveMediaSource.Factory(
-                    VideoCache(
-                        requireContext(),
-                        100 * 1024 * 1024,
-                        10 * 1024 * 1024
-                    )
-                ).createMediaSource(MediaItem.fromUri(Uri.parse(video.url!!)))
-                viewModel.simpleExoPlayer!!.prepare(mediaSource)
-            }
+            playerView.player = viewModel.simpleExoPlayer
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -322,7 +305,6 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        viewModel.simpleExoPlayer?.release()
-        viewModel.simpleExoPlayer = null
+        viewModel.simpleExoPlayer.release()
     }
 }

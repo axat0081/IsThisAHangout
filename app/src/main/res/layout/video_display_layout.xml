@@ -22,6 +22,11 @@
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true" />
 
+        <com.master.exoplayer.MasterExoPlayer
+            android:id="@+id/masterExoPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
         <ImageView
             android:id="@+id/video_thumbnail_image_view"
             android:layout_width="match_parent"
@@ -33,13 +38,13 @@
     <LinearLayout
         android:id="@+id/video_meta_data_layout"
         android:layout_width="match_parent"
-        android:padding="10dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/thumbnail_layout"
         android:layout_marginTop="10dp"
         android:background="@color/myblack"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/video_uploader_pfp_imageview"
