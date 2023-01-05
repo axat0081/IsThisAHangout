@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nestedScrollView"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.VideosFragment">
@@ -10,12 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bgdetails">
-
-        <ProgressBar
-            android:id="@+id/videos_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/videos_recyclerview"
@@ -33,7 +28,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="70dp"
-            android:text="Aw snap, an error occurred"
+            android:text="@string/aw_snap_an_error_occurred"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/mypink"
@@ -48,7 +43,7 @@
             android:layout_marginStart="100dp"
             android:layout_marginEnd="100dp"
             android:background="@drawable/rounded_button"
-            android:text="Retry"
+            android:text="@string/retry"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:visibility="gone" />
 
@@ -74,4 +69,4 @@
             android:background="@drawable/fab_explosion"
             android:visibility="invisible" />
     </RelativeLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -23,6 +23,8 @@ import com.example.isthisahangout.cache.posts.PostDatabase
 import com.example.isthisahangout.cache.posts.PostsDao
 import com.example.isthisahangout.cache.stockMarket.StockMarketDao
 import com.example.isthisahangout.cache.stockMarket.StockMarketDatabase
+import com.example.isthisahangout.cache.videos.VideosDao
+import com.example.isthisahangout.cache.videos.VideosDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -155,6 +157,18 @@ object RoomModule {
     ///Posts
     @Provides
     @Singleton
+    fun providesVideosDatabase(app: Application): VideosDatabase =
+        Room.databaseBuilder(app, VideosDatabase::class.java, "posts_database")
+            .fallbackToDestructiveMigration()
+            .build()
+
+    @Provides
+    @Singleton
+    fun providesVideosDao(db: VideosDatabase): VideosDao = db.getVideosDao()
+
+    ///Videos
+    @Provides
+    @Singleton
     fun providesPostsDatabase(app: Application): PostDatabase =
         Room.databaseBuilder(app, PostDatabase::class.java, "posts_database")
             .fallbackToDestructiveMigration()
@@ -164,7 +178,7 @@ object RoomModule {
     @Singleton
     fun providesPostsDao(db: PostDatabase): PostsDao = db.getPostsDao()
 
-    //Favourites
+    ///Favourites
     @Provides
     @Singleton
     fun providesPFavDoa(db: FavouritesDatabase): FavouritesDao = db.getFavouritesDao()

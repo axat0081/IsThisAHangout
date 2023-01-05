@@ -40,7 +40,8 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginStart="30dp"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                tools:src="@mipmap/ic_launcher_round" />
 
             <TextView
                 android:id="@+id/video_title_text_view"
@@ -49,11 +50,11 @@
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/uploader_pfp_image_view"
-                android:text="Poster Title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textSize="25sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Poster Title" />
 
             <TextView
                 android:id="@+id/uploader_username"
@@ -76,8 +77,8 @@
                 android:layout_below="@id/uploader_username"
                 android:layout_marginStart="30dp"
                 android:layout_toEndOf="@id/uploader_pfp_image_view"
-                android:text="26th jan 1222"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                tools:text="26th jan 1222" />
 
             <TextView
                 android:id="@+id/desc_text_view"
@@ -99,43 +100,57 @@
                 android:layout_below="@id/time_text_view"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
-                android:src="@drawable/show_details" />
+                android:src="@drawable/expand" />
 
-            <TextView
-                android:id="@+id/show_details_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/show_details_button"
-                android:layout_marginEnd="10dp"
-                android:layout_toEndOf="@id/desc_text_view"
-                android:text="Show Details"
-                android:textColor="@color/mypink"
-                android:textSize="7sp" />
 
-            <ImageView
-                android:id="@+id/bookmark_image_view"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_below="@id/desc_text_view"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="30dp"
-                android:src="@drawable/bookmark" />
-
-            <com.like.LikeButton
-                android:id="@+id/video_like_button"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/layout2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/desc_text_view"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="20dp"
-                android:layout_toStartOf="@id/bookmark_image_view" />
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <com.like.LikeButton
+                    android:id="@+id/like_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="20dp"
+                    app:icon_size="10dp"
+                    app:icon_type="heart" />
+
+                <TextView
+                    android:id="@+id/like_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_toEndOf="@id/like_button"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/mypink"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="0" />
+
+                <ImageView
+                    android:id="@+id/bookmark_image_view"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:contentDescription="@string/add_to_bookmarks"
+                    android:src="@drawable/bookmark" />
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
-                android:layout_below="@id/video_like_button"
+                android:layout_below="@id/layout2"
                 android:layout_marginTop="30dp" />
 
             <TextView
@@ -145,62 +160,169 @@
                 android:layout_below="@id/divider"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="10dp"
-                android:text="Comments"
+                android:text="@string/comments"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
                 android:textSize="25sp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_comment_image_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/upload" />
-
-            <EditText
-                android:id="@+id/comment_edit_text"
+            <RelativeLayout
+                android:id="@+id/add_comment_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@id/comment_send_button"
-                android:layout_toEndOf="@id/add_comment_image_button"
-                android:backgroundTint="@color/myblue"
-                android:hint="Comment here..."
-                android:textColor="@color/myblue"
-                android:textColorHint="@color/mypink" />
+                android:layout_below="@id/comment_text_view">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/comment_send_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/comment_text_view"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/send" />
+                <RelativeLayout
+                    android:id="@+id/replying_to_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-            <ImageView
-                android:id="@+id/add_comment_image_view"
+                    <RelativeLayout
+                        android:id="@+id/replying_to_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/replying_to"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:text="@string/replying_to"
+                            android:textColor="@color/mypink" />
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/replying_to_pfp_image_view"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/replying_to"
+                            tools:src="@mipmap/ic_launcher_round" />
+
+                        <TextView
+                            android:id="@+id/replying_to_username_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_toStartOf="@+id/cancel_replying_to_image_button"
+                            android:layout_toEndOf="@id/replying_to_pfp_image_view"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:textColor="@color/myblue"
+                            android:textSize="14sp"
+                            tools:text="UserName here" />
+
+                        <ImageButton
+                            android:id="@+id/cancel_replying_to_image_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/cancel" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/replying_to_text_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/replying_to_header"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="30dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="italic"
+                        tools:text="@string/test_text" />
+                </RelativeLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_comment_image_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:contentDescription="@string/add_image_to_comment"
+                    android:src="@drawable/upload" />
+
+                <EditText
+                    android:id="@+id/comment_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_toStartOf="@id/comment_send_button"
+                    android:layout_toEndOf="@id/add_comment_image_button"
+                    android:backgroundTint="@color/myblue"
+                    android:hint="@string/comment_here"
+                    android:inputType="text"
+                    android:textColor="@color/myblue"
+                    android:textColorHint="@color/mypink" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/comment_send_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/replying_to_layout"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/send_comment"
+                    android:src="@drawable/send" />
+
+                <ImageView
+                    android:id="@+id/add_comment_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_below="@id/comment_edit_text"
+                    android:layout_marginTop="10dp"
+                    android:visibility="invisible"
+                    tools:src="@mipmap/ic_launcher"
+                    tools:visibility="visible" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_below="@id/comment_send_button"
-                android:layout_marginTop="10dp"
-                android:visibility="invisible"
-                tools:src="@mipmap/ic_launcher"
-                tools:visibility="visible" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comment_recycler_view"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/add_comment_image_view"
-                android:layout_marginTop="10dp"
-                tools:listitem="@layout/comments_display_layout" />
+                android:layout_below="@+id/add_comment_layout"
+                android:layout_marginTop="8dp">
+
+                <ProgressBar
+                    android:id="@+id/comments_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/comments_error_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/mypink"
+                    android:visibility="gone"
+                    tools:text="@string/aw_snap_an_error_occurred" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comment_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    tools:listitem="@layout/comments_display_layout" />
+            </RelativeLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.example.isthisahangout.viewmodel.detailScreen
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +14,7 @@ import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.models.FirebasePost
 import com.example.isthisahangout.models.LikedPostId
 import com.example.isthisahangout.models.favourites.FavPost
-import com.example.isthisahangout.repository.PostsRepository
+import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.utils.asFlow
 import com.google.firebase.firestore.CollectionReference
@@ -38,7 +39,7 @@ class PostDetailsViewModel @Inject constructor(
     private val postsDao: PostsDao,
     private val savedStateHandle: SavedStateHandle,
     @Named("PostsRef") private val postsRef: CollectionReference,
-    postsRepository: PostsRepository
+    postsRepository: CommentsRepository
 ) : ViewModel() {
 
     val post = savedStateHandle.get<FirebasePost>(POST) ?: FirebasePost(id = "123")
@@ -101,6 +102,8 @@ class PostDetailsViewModel @Inject constructor(
         favPosts.any { it.id == post.id }
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
     val isLiked = postsDao.getLikesPostsId(MainActivity.userId).map { likedPosts ->
+        Log.e("likes", likedPosts.toString())
+        Log.e("likes", MainActivity.userId + " " + post.id!!)
         likedPosts.any { it.postId == post.id }
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
@@ -137,11 +140,10 @@ class PostDetailsViewModel @Inject constructor(
     }
 
     fun onLikeClick() {
-        if (post.id == null) return
         viewModelScope.launch {
             if (isLiked.value) {
                 try {
-                    postsRef.document(post.id).update("likes", FieldValue.increment(-1))
+                    postsRef.document(post.id!!).update("likes", FieldValue.increment(-1))
                         .await()
                     postsDao.deleteLikedPostId(userId = MainActivity.userId, id = post.id)
                 } catch (exception: Exception) {
@@ -152,7 +154,7 @@ class PostDetailsViewModel @Inject constructor(
                 }
             } else {
                 try {
-                    postsRef.document(post.id).update("likes", FieldValue.increment(1))
+                    postsRef.document(post.id!!).update("likes", FieldValue.increment(1))
                         .await()
                     postsDao.insertLikedPostId(
                         LikedPostId(
@@ -171,7 +173,7 @@ class PostDetailsViewModel @Inject constructor(
     }
 
     fun onCommentSendClick(post: FirebasePost) {
-        if (commentText.isNullOrBlank()) {
+        if (commentText.isNullOrBlank() && commentImage == null) {
             viewModelScope.launch {
                 postCommentEventChannel.send(PostsCommentEvent.CommentSendFailure("Comment cannot be blank"))
             }

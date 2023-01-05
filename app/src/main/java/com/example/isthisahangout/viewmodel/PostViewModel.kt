@@ -15,7 +15,7 @@ import androidx.paging.cachedIn
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.FirebasePost
 import com.example.isthisahangout.pagingsource.PostsPagingSource
-import com.example.isthisahangout.repository.PostsRepository
+import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -29,7 +29,7 @@ const val TITLE_EMPTY = "Please give a post title"
 class PostViewModel @Inject constructor(
     private val app: Application,
     private val state: SavedStateHandle,
-    postsRepository: PostsRepository
+    postsRepository: CommentsRepository
 ) : AndroidViewModel(app) {
 
     private val postChannel = Channel<PostsEvent>()

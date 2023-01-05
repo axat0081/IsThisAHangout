@@ -3,6 +3,7 @@ package com.example.isthisahangout.ui.detailsscreen
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -30,6 +31,7 @@ import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentPostDetailsBinding
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.models.FirebasePost
+import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.detailScreen.PostDetailsViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,6 +78,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.isLiked.collect {
+                        Log.e("post", it.toString())
                         likeButton.isLiked = it
                     }
                 }
@@ -103,11 +106,25 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
                     viewModel.comments.collect { result ->
                         if (result == null) return@collect
                         commentsAdapter.submitList(result.data)
+                        when (result) {
+                            is Resource.Loading -> {
+                                commentsProgressBar.isVisible = true
+                                commentsErrorTextView.isVisible = false
+                            }
+                            is Resource.Error -> {
+                                commentsProgressBar.isVisible = false
+                                commentsErrorTextView.isVisible = true
+                            }
+                            is Resource.Success -> {
+                                commentsProgressBar.isVisible = false
+                                commentsErrorTextView.isVisible = false
+                            }
+                        }
                     }
                 }
             }
 
-            commentsRecyclerview.apply {
+            commentRecyclerview.apply {
                 isVisible = true
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -248,7 +265,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
 
     override fun onItemLongClick(comment: Comments) {
         showKeyboard(requireContext())
-        binding.commentsRecyclerview.scrollToPosition(0)
+        binding.commentRecyclerview.scrollToPosition(0)
         viewModel.replyingToCommentId = comment.commentId
         viewModel.replyingToUserId = comment.userId
         viewModel.replyingToPfp = comment.pfp
@@ -274,7 +291,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             }
         }
         if (position != -1) {
-            binding.commentsRecyclerview.scrollToPosition(position)
+            binding.commentRecyclerview.scrollToPosition(position)
         }
     }
 

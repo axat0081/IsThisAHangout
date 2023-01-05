@@ -1,6 +1,8 @@
 package com.example.isthisahangout.models
 
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -18,3 +20,9 @@ data class FirebaseVideo(
     val thumbnail: String? = null
 ):Parcelable
 
+@Entity(tableName = "liked_videos_ids")
+data class LikedVideoId(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val videoId: String,
+    val userId: String
+)
