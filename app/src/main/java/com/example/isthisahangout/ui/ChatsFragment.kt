@@ -11,25 +11,22 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.chat.LoadingState
 import com.example.isthisahangout.databinding.FragmentChatBinding
 import com.example.isthisahangout.viewmodel.ChatViewModel
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class
 ChatsFragment : Fragment(R.layout.fragment_chat) {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
-
-    @Inject
-    lateinit var mAuth: FirebaseAuth
 
     private val viewModel by viewModels<ChatViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,31 +49,48 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
                 }
                 hideKeyboard(requireContext())
             }
-            viewModel.chatAdapter.loadingState.observe(viewLifecycleOwner) { loadState ->
-                headerProgressBar.isVisible =
-                    loadState == LoadingState.LOADING_MORE
-                messagesProgressBar.isVisible =
-                    loadState == LoadingState.LOADING_INITIAL
-                messagesErrorTextView.isVisible =
-                    loadState == LoadingState.ERROR
-                if (loadState == LoadingState.INITIAL_LOADED || loadState == LoadingState.NEW_ITEM)
-                    messagesRecyclerview.scrollToPosition(viewModel.chatAdapter.itemCount - 1)
-            }
+
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewModel.messageEventFlow.collectLatest { event ->
-                    when (event) {
-                        is ChatViewModel.MessagingEvent.MessageError -> {
-                            Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        is ChatViewModel.MessagingEvent.SmartReplySuccess -> {
-                            val smartRepliesAdapter = ArrayAdapter(
-                                requireContext(),
-                                android.R.layout.simple_dropdown_item_1line,
-                                event.replies
-                            )
-                            Log.e("replies",event.replies.toString())
-                            messageEditText.setAdapter(smartRepliesAdapter)
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.chatAdapter.loadingState.collect { loadState->
+                        headerProgressBar.isVisible =
+                            loadState == LoadingState.LOADING_MORE
+                        messagesProgressBar.isVisible =
+                            loadState == LoadingState.LOADING_INITIAL
+                        messagesErrorTextView.isVisible =
+                            loadState == LoadingState.ERROR
+                        if (loadState == LoadingState.INITIAL_LOADED || loadState == LoadingState.NEW_ITEM)
+                            messagesRecyclerview.scrollToPosition(viewModel.chatAdapter.itemCount.value - 1)
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.chatAdapter.itemCount.collect { messagesCount->
+                        messageEditText.isVisible = messagesCount > 0
+                        sendButton.isVisible = messagesCount > 0
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.messageEventFlow.collectLatest { event ->
+                        when (event) {
+                            is ChatViewModel.MessagingEvent.MessageError -> {
+                                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            is ChatViewModel.MessagingEvent.SmartReplySuccess -> {
+                                val smartRepliesAdapter = ArrayAdapter(
+                                    requireContext(),
+                                    android.R.layout.simple_dropdown_item_1line,
+                                    event.replies
+                                )
+                                Log.e("replies", event.replies.toString())
+                                messageEditText.setAdapter(smartRepliesAdapter)
+                            }
                         }
                     }
                 }

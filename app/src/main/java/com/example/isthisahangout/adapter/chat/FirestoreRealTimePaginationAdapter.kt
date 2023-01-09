@@ -2,10 +2,11 @@ package com.example.isthisahangout.adapter.chat
 
 import androidx.annotation.CallSuper
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import com.google.firebase.firestore.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 
 enum class LoadingState {
@@ -29,8 +30,10 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
     val pageSize: Int
 ) : RecyclerView.Adapter<VH>(), LifecycleObserver {
     abstract val data: SortedList<T>
-    val loadingState = MutableLiveData<LoadingState>()
-
+    val _loadingState = MutableStateFlow(LoadingState.LOADING_INITIAL)
+    val loadingState = _loadingState.asStateFlow()
+    private val _itemCount = MutableStateFlow(0)
+    val itemCount = _itemCount.asStateFlow()
     private val dataSource = FirestorePaginationDataSource(paginationQuery)
 
     private var newMessagesListenerRegistration: ListenerRegistration? = null
@@ -51,7 +54,7 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
         newMessagesListenerRegistration = realTimeQuery
             .addSnapshotListener { snapshots: QuerySnapshot?, error: FirebaseFirestoreException? ->
                 if (error != null) {
-                    loadingState.postValue(LoadingState.ERROR)
+                    _loadingState.value = LoadingState.ERROR
                     return@addSnapshotListener
                 }
 
@@ -61,7 +64,7 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
                             DocumentChange.Type.ADDED -> {
                                 val item = parser(documentChange.document)
                                 data.add(item)
-                                loadingState.postValue(LoadingState.NEW_ITEM)
+                                _loadingState.value = LoadingState.NEW_ITEM
                                 notifyDataSetChanged()
                             }
                             DocumentChange.Type.REMOVED -> {
@@ -74,12 +77,13 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
     }
 
     private fun loadInitial() {
-        loadingState.postValue(LoadingState.LOADING_INITIAL)
+        _loadingState.value = LoadingState.LOADING_INITIAL
         dataSource.loadInitial(
             pageSize
         ) { querySnapshot: QuerySnapshot ->
             data.addAll(querySnapshot.documents.map(parser))
-            loadingState.value = if (querySnapshot.isEmpty)
+            _itemCount.value = data.size()
+            _loadingState.value = if (querySnapshot.isEmpty)
                 LoadingState.EMPTY
             else
                 LoadingState.INITIAL_LOADED
@@ -88,16 +92,16 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
 
     private fun loadMore() {
         if (dataSource.canLoadMore()) {
-            loadingState.postValue(LoadingState.LOADING_MORE)
-
+            _loadingState.value = LoadingState.LOADING_MORE
             dataSource.loadMore(
                 pageSize
             ) { querySnapshot: QuerySnapshot ->
                 if (querySnapshot.documents.isEmpty()) {
-                    loadingState.postValue(LoadingState.FINISHED)
+                    _loadingState.value = LoadingState.FINISHED
                 } else {
                     data.addAll(querySnapshot.documents.map(parser))
-                    loadingState.postValue(LoadingState.MORE_LOADED)
+                    _itemCount.value = data.size()
+                    _loadingState.value = LoadingState.MORE_LOADED
                 }
             }
         }

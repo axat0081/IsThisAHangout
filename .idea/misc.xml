@@ -25,6 +25,9 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/layout_profile_background.xml" value="0.1115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/music.xml" value="0.1115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/news.xml" value="0.1115" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/rounded_edittext.xml" value="0.1325" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/shape_bg_incoming_bubble.xml" value="0.1115" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/shape_bg_outgoing_bubble.xml" value="0.1325" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/drawable/shrink.xml" value="0.1115" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_display_layout.xml" value="0.125" />
@@ -52,7 +55,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_videos.xml" value="0.13858695652173914" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/games_display_layout.xml" value="0.10973763874873865" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/layout_reminder_detail_toolbar.xml" value="0.1" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/messages_display_layout.xml" value="0.15806159420289856" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/messages_display_layout.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/movies_display_layout.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/post_display_layout.xml" value="0.136" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/reminders_display_layout.xml" value="0.264" />

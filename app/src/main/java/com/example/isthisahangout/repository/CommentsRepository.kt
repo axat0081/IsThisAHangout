@@ -4,6 +4,7 @@ import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.utils.asResourceFlow
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import javax.inject.Inject
@@ -17,14 +18,16 @@ class CommentsRepository @Inject constructor(
 
     fun getPostComments(postId: String?): Flow<Resource<List<Comments>>> =
         postId?.let {
-            commentsRef.document(postId).collection("comments").asResourceFlow {
-                it.toObjects(Comments::class.java)
-            }
+            commentsRef.document(postId).collection("comments")
+                .orderBy("time", Query.Direction.DESCENDING).asResourceFlow {
+                    it.toObjects(Comments::class.java)
+                }
         } ?: emptyFlow()
 
     fun getVideosComments(videotId: String?): Flow<Resource<List<Comments>>> =
         videotId?.let {
-            commentsRef.document(videotId).collection("comments").asResourceFlow {
+            commentsRef.document(videotId).collection("comments")
+                .orderBy("time", Query.Direction.DESCENDING).asResourceFlow {
                 it.toObjects(Comments::class.java)
             }
         } ?: emptyFlow()

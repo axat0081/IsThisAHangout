@@ -29,7 +29,7 @@ class ChatAdapter(
     }
 ) {
 
-    override val data: SortedList<FirebaseMessage> = SortedList<FirebaseMessage>(
+    override val data: SortedList<FirebaseMessage> = SortedList(
         FirebaseMessage::class.java,
         object : SortedListAdapterCallback<FirebaseMessage>(this) {
             override fun compare(a: FirebaseMessage, b: FirebaseMessage): Int =
