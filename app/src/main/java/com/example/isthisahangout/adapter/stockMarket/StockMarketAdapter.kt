@@ -1,5 +1,6 @@
 package com.example.isthisahangout.adapter.stockMarket
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -56,11 +57,12 @@ class StockMarketAdapter(private val listener: OnItemClickListener) :
             }
         }
 
+        @SuppressLint("SetTextI18n")
         fun bind(stockCompany: StockCompany) {
             binding.apply {
                 companyNameTextView.text = stockCompany.name
-                symbolTextView.text = stockCompany.symbol
-                industryTextView.text = stockCompany.industry
+                symbolTextView.text = "Symbol - ${stockCompany.symbol}"
+                industryTextView.text = "Industry - ${stockCompany.industry}"
             }
         }
     }

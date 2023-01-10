@@ -150,7 +150,7 @@
                 android:padding="2dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 app:drawableEndCompat="@drawable/star"
                 tools:text="Rating - 7.80" />
 
@@ -165,7 +165,7 @@
                 android:layout_marginBottom="20dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/mypink"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 app:drawableEndCompat="@drawable/favorite"
                 tools:text="Favorites - 100" />
 
