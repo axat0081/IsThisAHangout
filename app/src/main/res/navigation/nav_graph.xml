@@ -395,4 +395,14 @@
             android:name="mangaName"
             app:argType="string" />
     </fragment><action android:id="@+id/action_global_mangaDetailFragment" app:destination="@id/mangaDetailFragment"/>
+    <fragment
+        android:id="@+id/stockMarketCompanyDetailFragment2"
+        android:name="com.example.isthisahangout.ui.detailsscreen.StockMarketCompanyDetailFragment"
+        android:label="Stock Company Detail"
+        tools:layout="@layout/fragment_stock_market_company_detail">
+        <argument
+            android:name="symbol"
+            app:argType="string" />
+    </fragment>
+    <action android:id="@+id/action_global_stockMarketCompanyDetailFragment2" app:destination="@id/stockMarketCompanyDetailFragment2" />
 </navigation>

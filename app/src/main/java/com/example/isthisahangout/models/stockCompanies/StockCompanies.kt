@@ -30,6 +30,7 @@ data class StockCompanyDetail(
     val industry: String,
 )
 
+
 fun StockCompanyDto.toStockCompany(): StockCompany =
     StockCompany(
         symbol = symbol ?: "",

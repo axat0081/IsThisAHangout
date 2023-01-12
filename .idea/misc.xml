@@ -32,6 +32,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_display_layout.xml" value="0.125" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/anime_separator_layout.xml" value="0.2" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/coin_display_layout.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/comments_display_layout.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_add_reminder.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_anime_by_genre.xml" value="0.1403985507246377" />
@@ -49,7 +50,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_posts.xml" value="0.15489130434782608" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_reminders.xml" value="0.2" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_stock_market.xml" value="0.16799999999999998" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_stock_market.xml" value="0.2" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_upload_video.xml" value="0.10973763874873865" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_video_details.xml" value="0.1" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/IsThisAHangout/app/src/main/res/layout/fragment_videos.xml" value="0.13858695652173914" />

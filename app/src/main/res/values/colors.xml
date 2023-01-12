@@ -11,4 +11,5 @@
     <color name="myblue">#66D9EF</color>
     <color name="myblack">#272822</color>
     <color name="comment_section_bg">#36393F</color>
+    <color name="transparent_dark">#99000000</color>
 </resources>

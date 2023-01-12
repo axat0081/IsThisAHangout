@@ -11,13 +11,13 @@ data class IntradayInfo(
     val close: Double
 )
 
-data class IntradayInfoDto(
+data class IntraDayInfoDto(
     val timestamp: String,
     val close: Double
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun IntradayInfoDto.toIntradayInfo(): IntradayInfo {
+fun IntraDayInfoDto.toIntraDayInfo(): IntradayInfo {
     val pattern = "yyyy-MM-dd HH:mm:ss"
     val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
     val localDateTime = LocalDateTime.parse(timestamp, formatter)

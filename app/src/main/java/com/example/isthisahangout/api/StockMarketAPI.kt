@@ -18,7 +18,7 @@ interface StockMarketAPI {
     ): ResponseBody
 
     @GET("query?function=TIME_SERIES_INTRADAY&interval=60min&datatype=csv")
-    suspend fun getIntradayInfo(
+    suspend fun getIntraDayInfo(
         @Query("symbol") symbol: String,
         @Query("apikey") apiKey: String = API_KEY
     ): ResponseBody

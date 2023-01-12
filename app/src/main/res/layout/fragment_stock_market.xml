@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,10 +16,61 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:id="@+id/coins_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="115dp"
+                    android:background="#26000000" />
+
+                <TextView
+                    android:id="@+id/coins_error_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/mypink"
+                    android:visibility="gone"
+                    tools:text="@string/aw_snap_an_error_occurred"
+                    tools:visibility="visible" />
+
+                <ProgressBar
+                    android:id="@+id/coins_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/coin_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/coin_display_layout" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/organisations_heading_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/coins_layout"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/organisations"
+                android:textColor="@color/mypink"
+                android:textSize="18sp" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/stock_market_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_below="@id/organisations_heading_text_view"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 tools:listitem="@layout/stock_market_display_layout" />

@@ -12,13 +12,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StockMarketViewModel @Inject constructor(
-    private val stockMarketRepository: StockMarketRepository
+    private val stockMarketRepository: StockMarketRepository,
 ) : ViewModel() {
     var pendingScrollToTop = false
     private val stockEvenChannel = Channel<StockEvent>()
     val stockEventFlow = stockEvenChannel.receiveAsFlow()
     private val stockMarketRefreshTriggerChannel = Channel<Refresh>()
     private val stockMarketRefreshTrigger = stockMarketRefreshTriggerChannel.receiveAsFlow()
+    private val coinsRetryChannel = Channel<Unit>()
+    private val coinsRetryFlow = coinsRetryChannel.receiveAsFlow()
+    init {
+        viewModelScope.launch {
+            coinsRetryChannel.send(Unit)
+        }
+    }
 
     val stockMarket = stockMarketRefreshTrigger.flatMapLatest { refresh ->
         stockMarketRepository.getStockMarkets(
@@ -31,11 +38,19 @@ class StockMarketViewModel @Inject constructor(
             }
         )
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
+    val coins = coinsRetryFlow.flatMapLatest {
+        stockMarketRepository.getCoins()
+    }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun onManualRefresh() {
         if (stockMarket.value !is Resource.Loading) {
             viewModelScope.launch {
                 stockMarketRefreshTriggerChannel.send(Refresh.FORCE)
+            }
+        }
+        if (coins.value !is Resource.Loading) {
+            viewModelScope.launch {
+                coinsRetryChannel.send(Unit)
             }
         }
     }

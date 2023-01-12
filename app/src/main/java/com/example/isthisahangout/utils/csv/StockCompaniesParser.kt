@@ -1,4 +1,4 @@
-package com.example.isthisahangout.utils
+package com.example.isthisahangout.utils.csv
 
 import com.example.isthisahangout.models.stockCompanies.StockCompany
 import com.opencsv.CSVReader
@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CSVParser @Inject constructor() {
+class StockCompaniesParser @Inject constructor() {
     suspend fun parse(stream: InputStream): List<StockCompany> = withContext(Dispatchers.IO) {
         val csvReader = CSVReader(InputStreamReader(stream))
         csvReader

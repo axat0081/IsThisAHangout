@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -138,5 +139,18 @@ object APIModule {
     fun provideMoviesAPI(@Named("MoviesAPI") retrofit: Retrofit): MoviesAPI =
         retrofit.create(MoviesAPI::class.java)
 
+    //CryptoCoins
+    @Singleton
+    @Provides
+    @Named("CryptoCoinAPI")
+    fun provideCryptoCoinRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl(CryptoCoinAPI.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    @Singleton
+    @Provides
+    fun providesCryptoCoinAPI(@Named("CryptoCoinAPI") retrofit: Retrofit): CryptoCoinAPI =
+        retrofit.create(CryptoCoinAPI::class.java)
 
 }
