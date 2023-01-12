@@ -9,7 +9,7 @@ interface StockMarketAPI {
 
     companion object {
         const val API_KEY = "G1USXWKX272RK4BP"
-        const val BASE_URL = "https://alphavantage.co"
+        const val BASE_URL = "https://alphavantage.co/"
     }
 
     @GET("query?function=LISTING_STATUS")

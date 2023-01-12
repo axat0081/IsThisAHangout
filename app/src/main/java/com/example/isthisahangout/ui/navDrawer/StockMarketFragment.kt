@@ -17,6 +17,7 @@ import com.example.isthisahangout.adapter.stockMarket.StockMarketAdapter
 import com.example.isthisahangout.databinding.FragmentStockMarketBinding
 import com.example.isthisahangout.models.cryptocoin.Coin
 import com.example.isthisahangout.models.stockCompanies.StockCompany
+import com.example.isthisahangout.ui.detailsscreen.CoinDetailFragmentDirections
 import com.example.isthisahangout.ui.detailsscreen.StockMarketCompanyDetailFragmentDirections
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.StockMarketViewModel
@@ -133,7 +134,9 @@ class StockMarketFragment : Fragment(R.layout.fragment_stock_market),
     }
 
     override fun onItemClick(coin: Coin) {
-        TODO("Not yet implemented")
+        findNavController().navigate(
+            CoinDetailFragmentDirections.actionGlobalCoinDetailFragment(coin.id)
+        )
     }
 
     override fun onDestroyView() {

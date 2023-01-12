@@ -2,7 +2,6 @@ package com.example.isthisahangout.ui.detailsscreen
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -50,7 +49,6 @@ class StockMarketCompanyDetailFragment : Fragment(R.layout.fragment_stock_market
                             .background(Color(0xFF060D2E))
                             .padding(16.dp)
                     ) {
-                        Log.e("company", state.company.toString())
                         state.company?.let { company ->
                             Text(
                                 text = company.name,

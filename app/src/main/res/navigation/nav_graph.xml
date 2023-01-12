@@ -405,4 +405,14 @@
             app:argType="string" />
     </fragment>
     <action android:id="@+id/action_global_stockMarketCompanyDetailFragment2" app:destination="@id/stockMarketCompanyDetailFragment2" />
+    <fragment
+        android:id="@+id/coinDetailFragment"
+        android:name="com.example.isthisahangout.ui.detailsscreen.CoinDetailFragment"
+        android:label="Coin Detail "
+        tools:layout="@layout/fragment_coin_detail">
+        <argument
+            android:name="coinId"
+            app:argType="string" />
+    </fragment>
+    <action android:id="@+id/action_global_coinDetailFragment" app:destination="@id/coinDetailFragment" />
 </navigation>
