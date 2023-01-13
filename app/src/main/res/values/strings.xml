@@ -56,4 +56,7 @@
     <string name="comments">Comments</string>
     <string name="replying_to">Replying To:</string>
     <string name="organisations">Organisations</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password....</string>
 </resources>

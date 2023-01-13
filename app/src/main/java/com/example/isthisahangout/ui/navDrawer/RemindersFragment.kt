@@ -18,6 +18,7 @@ import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.RemindersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 
 @AndroidEntryPoint
 class RemindersFragment : Fragment(R.layout.fragment_reminders),
@@ -36,14 +37,16 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
                     LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             }
             addReminderButton.setOnClickListener {
-                findNavController().navigate(RemindersFragmentDirections.actionRemindersFragment2ToAddReminderFragment(Reminder()))
+                findNavController().navigate(
+                    RemindersFragmentDirections.actionRemindersFragment2ToAddReminderFragment()
+                )
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.reminders.collectLatest { result ->
                         if (result == null) return@collectLatest
                         remindersAdapter.submitList(result.data)
-                        remindersProgressBar.isVisible = false
+                        remindersProgressBar.isVisible = result is Resource.Loading
                         if (result is Resource.Error) {
                             remindersErrorTextView.isVisible = true
                             remindersErrorTextView.text = result.error?.localizedMessage
@@ -58,7 +61,19 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
     }
 
     override fun onItemClick(reminder: Reminder) {
-
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = reminder.time
+        findNavController().navigate(
+            RemindersFragmentDirections.actionRemindersFragment2ToAddReminderFragment(
+                reminderDesc = reminder.desc!!,
+                reminderName = reminder.name!!,
+                reminderDay = calendar.get(Calendar.DAY_OF_MONTH),
+                reminderMonth = calendar.get(Calendar.MONTH),
+                reminderYear = calendar.get(Calendar.YEAR),
+                reminderHour = calendar.get(Calendar.HOUR),
+                reminderMinute = calendar.get(Calendar.MINUTE)
+            )
+        )
     }
 
     override fun onDestroyView() {

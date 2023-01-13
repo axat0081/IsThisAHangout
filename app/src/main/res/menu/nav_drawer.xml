@@ -10,7 +10,7 @@
         android:title="@string/search_anime" />
 
     <item
-        android:id="@+id/remindersFragment"
+        android:id="@+id/remindersFragment2"
         android:icon="@drawable/reminders"
         android:title="@string/reminders" />
     <item

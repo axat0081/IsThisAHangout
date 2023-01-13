@@ -362,8 +362,33 @@
         android:label="Add Reminder"
         tools:layout="@layout/fragment_add_reminder" >
         <argument
-            android:name="reminder"
-            app:argType="com.example.isthisahangout.models.reminders.Reminder" />
+            android:name="reminder_desc"
+            app:argType="string"
+            android:defaultValue='""' />
+        <argument
+            android:name="reminder_name"
+            app:argType="string"
+            android:defaultValue='""' />
+        <argument
+            android:name="reminder_day"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="reminder_month"
+            app:argType="integer"
+            android:defaultValue="1" />
+        <argument
+            android:name="reminder_year"
+            app:argType="integer"
+            android:defaultValue="1970" />
+        <argument
+            android:name="reminder_hour"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="reminder_minute"
+            app:argType="integer"
+            android:defaultValue="30" />
     </fragment>
     <fragment
         android:id="@+id/moviesFragment"
