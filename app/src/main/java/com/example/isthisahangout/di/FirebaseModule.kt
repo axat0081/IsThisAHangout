@@ -25,8 +25,9 @@ object FirebaseModule {
     @Provides
     @Singleton
     @Named("UserDataRef")
-    fun providesFirebaseRDUserRef(): DatabaseReference = FirebaseDatabase.getInstance().getReference()
-        .child("Users")
+    fun providesFirebaseRDUserRef(): DatabaseReference =
+        FirebaseDatabase.getInstance().getReference()
+            .child("Users")
 
     @Provides
     @Singleton
@@ -124,4 +125,10 @@ object FirebaseModule {
     @Named("RemindersRef")
     fun providesRemindersRef(): CollectionReference =
         FirebaseFirestore.getInstance().collection("Reminders")
+
+    @Provides
+    @Singleton
+    @Named("OpenAIRef")
+    fun providesOpenAIRef(): CollectionReference =
+        FirebaseFirestore.getInstance().collection("OpenAI")
 }

@@ -175,4 +175,7 @@ dependencies {
     //Playing videos in recyclerview
     implementation 'com.github.pankaj89:MasterExoPlayer:1.4.5'
 
+    //OpenAI
+    implementation 'com.github.DeimosHall:OpenAI-API-Kotlin:1.0.3'
+
 }

@@ -1,6 +1,7 @@
 package com.example.isthisahangout.di
 
 import android.content.Context
+import com.deimos.openaiapi.OpenAI
 import com.example.isthisahangout.api.*
 import com.example.isthisahangout.service.music.MusicServiceConnection
 import dagger.Module
@@ -152,5 +153,9 @@ object APIModule {
     @Provides
     fun providesCryptoCoinAPI(@Named("CryptoCoinAPI") retrofit: Retrofit): CryptoCoinAPI =
         retrofit.create(CryptoCoinAPI::class.java)
+
+    @Singleton
+    @Provides
+    fun providesOpenAIAPI(): OpenAI = OpenAI("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")
 
 }
