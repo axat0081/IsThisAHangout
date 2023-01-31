@@ -16,6 +16,7 @@
         android:id="@+id/openai_chat_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/send_message_layout"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/comments_display_layout" />
 
@@ -28,16 +29,18 @@
         android:textColor="@color/mypink"
         tools:text="@string/aw_snap_an_error_occurred" />
 
-    <TableRow
-        android:orientation="horizontal"
+    <LinearLayout
         android:id="@+id/send_message_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
         <EditText
-            android:layout_width="match_parent"
+            android:id="@+id/open_ai_message_edit_text"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"
             android:background="@drawable/rounded_edittext"
             android:padding="10dp" />
@@ -46,8 +49,9 @@
             android:id="@+id/openai_chat_send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_margin="20dp"
             android:contentDescription="@string/send_message"
             android:src="@drawable/send" />
-    </TableRow>
+    </LinearLayout>
 </RelativeLayout>

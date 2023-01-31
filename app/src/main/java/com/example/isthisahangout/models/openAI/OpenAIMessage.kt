@@ -6,7 +6,7 @@ data class OpenAIMessageDto(
     val userName: String? = null,
     val pfp: String? = null,
     val message: String? = null,
-    val time: Long = 0
+    val time: Long = 0,
 )
 
 
@@ -16,7 +16,7 @@ data class OpenAIMessage(
     val userName: String,
     val pfp: String,
     val message: String,
-    val time: Long
+    val time: Long,
 )
 
 fun OpenAIMessageDto.toOpenAIMessage(): OpenAIMessage =
@@ -26,5 +26,15 @@ fun OpenAIMessageDto.toOpenAIMessage(): OpenAIMessage =
         userName = userName ?: "NA",
         pfp = pfp ?: "NA",
         message = message ?: "NA",
+        time = time
+    )
+
+fun OpenAIMessage.toOpenAIMessageDto(): OpenAIMessageDto =
+    OpenAIMessageDto(
+        id = id,
+        userId = userId,
+        userName = userName,
+        pfp = pfp,
+        message = message,
         time = time
     )
