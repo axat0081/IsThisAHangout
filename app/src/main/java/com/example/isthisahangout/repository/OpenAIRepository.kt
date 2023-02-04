@@ -48,7 +48,7 @@ class OpenAIRepository @Inject constructor(
             )
             if (response.isSuccessful) {
                 if (response.body() == null) {
-                    Resource.Error(throwable = Exception(message = "Aw snap an error occurred"))
+                    Resource.Error(throwable = OpenAIException(msg = "Aw snap an error occurred"))
                 } else {
                     val answer = response.body()!!.choices.first().text.trim()
                     sendMessage(
@@ -60,7 +60,7 @@ class OpenAIRepository @Inject constructor(
                     Resource.Success(Unit)
                 }
             } else {
-                Resource.Error(throwable = Exception(message = response.message()))
+                Resource.Error(throwable = OpenAIException(msg = response.message()))
             }
         } catch (exception: Exception) {
             Resource.Error(throwable = exception)
@@ -94,4 +94,6 @@ class OpenAIRepository @Inject constructor(
                     it?.toOpenAIMessage()
                 }
         }
+
+    data class OpenAIException(val msg: String): Exception(msg)
 }
