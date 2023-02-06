@@ -41,20 +41,18 @@ class VideoDetailViewModel @Inject constructor(
     private val videosDao: VideosDao,
     @Named("VideoRef")
     private val videosRef: CollectionReference,
-    commentsRepository: CommentsRepository
+    commentsRepository: CommentsRepository,
 ) : ViewModel() {
     val video = savedStateHandle.get<FirebaseVideo>(VIDEO)!!
     var simpleExoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(app.applicationContext).build()
+    private val videoCache = VideoCache(app.applicationContext)
 
     init {
         val mediaSource = ProgressiveMediaSource.Factory(
-            VideoCache(
-                app.applicationContext,
-                100 * 1024 * 1024,
-                10 * 1024 * 1024
-            )
+            videoCache
         ).createMediaSource(MediaItem.fromUri(Uri.parse(video.url!!)))
         simpleExoPlayer.setMediaSource(mediaSource)
+        Log.e("video", "Preparing")
         simpleExoPlayer.prepare()
     }
 
@@ -209,6 +207,12 @@ class VideoDetailViewModel @Inject constructor(
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        simpleExoPlayer.release()
+        videoCache.release()
+    }
+
     sealed class VideoLikeBookMarkEvent {
         object AddedToBookMarks : VideoLikeBookMarkEvent()
         object RemovedFromBookMarks : VideoLikeBookMarkEvent()
@@ -219,5 +223,4 @@ class VideoDetailViewModel @Inject constructor(
         data class CommentSentSuccess(val message: String) : VideosCommentEvent()
         data class CommentSendFailure(val message: String) : VideosCommentEvent()
     }
-
 }

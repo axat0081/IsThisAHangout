@@ -51,4 +51,9 @@
         android:id="@+id/stockMarketFragment"
         android:icon="@drawable/stock"
         android:title="@string/stock_market"/>
+
+    <item
+        android:id="@+id/openAIFragment"
+        android:icon="@drawable/open_ai"
+        android:title="@string/openai"/>
 </menu>

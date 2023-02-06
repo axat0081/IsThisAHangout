@@ -239,7 +239,6 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                             }
                             is VideoDetailViewModel.VideosCommentEvent.CommentSentSuccess -> Unit
                         }
-
                     }
                 }
             }

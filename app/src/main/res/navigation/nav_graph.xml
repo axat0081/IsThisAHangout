@@ -98,6 +98,9 @@
         <action
             android:id="@+id/action_homeFragment2_to_moviesFragment"
             app:destination="@id/moviesFragment" />
+        <action
+            android:id="@+id/action_homeFragment2_to_openAIFragment"
+            app:destination="@id/openAIFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatsFragment2"
@@ -440,4 +443,9 @@
             app:argType="string" />
     </fragment>
     <action android:id="@+id/action_global_coinDetailFragment" app:destination="@id/coinDetailFragment" />
+    <fragment
+        android:id="@+id/openAIFragment"
+        android:name="com.example.isthisahangout.ui.navDrawer.OpenAIFragment"
+        android:label="Open AI"
+        tools:layout="@layout/fragment_open_ai" />
 </navigation>
