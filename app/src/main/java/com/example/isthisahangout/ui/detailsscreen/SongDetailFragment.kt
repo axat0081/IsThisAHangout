@@ -2,24 +2,21 @@ package com.example.isthisahangout.ui.detailsscreen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageView
@@ -27,51 +24,27 @@ import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentSongDetailBinding
 import com.example.isthisahangout.models.Comments
-import com.example.isthisahangout.viewmodel.SongDetailViewModel
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
+import com.example.isthisahangout.utils.Resource
+import com.example.isthisahangout.viewmodel.detailScreen.SongDetailViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.Query
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import java.text.DateFormat
-import javax.inject.Inject
-import javax.inject.Named
 
 
 @AndroidEntryPoint
 class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
-    CommentsAdapter.OnItemLongClickListener{
+    CommentsAdapter.OnItemLongClickListener, CommentsAdapter.OnReplyingToClickListener {
     private var _binding: FragmentSongDetailBinding? = null
     private val binding get() = _binding!!
-    private lateinit var commentsAdapter: CommentsAdapter
-
-    @Inject
-    @Named("CommentsRef")
-    lateinit var commentsRef: CollectionReference
     private val args by navArgs<SongDetailFragmentArgs>()
     private lateinit var cropImage: ActivityResultLauncher<CropImageContractOptions>
     private val viewModel by viewModels<SongDetailViewModel>()
-    private val songDetailViewModel by viewModels<SongDetailViewModel>()
-
+    private lateinit var commentsAdapter: CommentsAdapter
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentSongDetailBinding.bind(view)
         val song = args.song
-        val query = commentsRef.document(song.id!!).collection("comments")
-            .orderBy("time", Query.Direction.ASCENDING)
-        val options = FirestoreRecyclerOptions.Builder<Comments>()
-            .setQuery(
-                query,
-                Comments::class.java
-            )
-            .build()
         commentsAdapter = CommentsAdapter(this)
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
@@ -83,8 +56,8 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
             } else {
                 val error = result.error
                 error?.let { exception ->
-                    Snackbar.make(
-                        requireView(),
+                    Toast.makeText(
+                        requireContext(),
                         exception.localizedMessage!!.toString(),
                         Snackbar.LENGTH_SHORT
                     ).show()
@@ -99,85 +72,68 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                 itemAnimator = null
                 isVisible = true
             }
-            viewModel.isBookMarked.observe(viewLifecycleOwner) { bookMarked ->
-                if (bookMarked) {
-                    bookmarkImageView.setImageResource(R.drawable.bookmarked)
-                } else {
-                    bookmarkImageView.setImageResource(R.drawable.bookmark)
-                }
-            }
-            if (song.text == null) {
-                showDetailsButton.isClickable = false
-                showDetailsTextView.isVisible = false
-                showDetailsButton.isVisible = false
-            }
-            viewModel.showDetails.observe(viewLifecycleOwner) {
-                if (song.text != null) {
-                    if (it) {
-                        showDetailsButton.setImageResource(R.drawable.hide_details)
-                        showDetailsTextView.text = "Hide Details"
-                        descTextView.text = song.text
-                    } else {
-                        showDetailsButton.setImageResource(R.drawable.show_details)
-                        showDetailsTextView.text = "Show Details"
-                        descTextView.text =
-                            song.text.subSequence(0, Integer.min(10, song.text.length - 1))
+            addCommentImageView.visibility = View.GONE
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.comments.collect { result ->
+                        if (result == null) return@collect
+                        commentsAdapter.submitList(result.data)
+                        when (result) {
+                            is Resource.Loading -> {
+                                commentsProgressBar.isVisible = true
+                                commentsErrorTextView.isVisible = false
+                            }
+                            is Resource.Error -> {
+                                commentsProgressBar.isVisible = false
+                                commentsErrorTextView.isVisible = true
+                            }
+                            is Resource.Success -> {
+                                commentsProgressBar.isVisible = false
+                                commentsErrorTextView.isVisible = false
+                            }
+                        }
                     }
                 }
-            }
-            showDetailsButton.setOnClickListener {
-                viewModel.onShowDetailsClick()
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                songDetailViewModel.songPlayState.collect { playState ->
-                    if (playState) {
-                        playImageView.setImageResource(R.drawable.pause)
-                    } else {
-                        playImageView.setImageResource(R.drawable.play)
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.showDetails.collect {
+                        if (it) {
+                            showDetailsButton.setImageResource(R.drawable.shrink)
+                            descTextView.text = song.text
+                        } else {
+                            showDetailsButton.setImageResource(R.drawable.expand)
+                            descTextView.text =
+                                song.text.subSequence(0, Integer.min(40, song.text.length - 1))
+                        }
                     }
                 }
             }
-            if (songDetailViewModel.simpleExoPlayer == null) {
-                songDetailViewModel.simpleExoPlayer =
-                    SimpleExoPlayer.Builder(requireActivity().applicationContext).build()
-                songDetailViewModel.simpleExoPlayer!!.prepare(
-                    extractMediaSourceFromUri(
-                        Uri.parse(
-                            song.url!!
-                        )
-                    )
-                )
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.songEventFlow.collect { event ->
+                        when (event) {
+                            is SongDetailViewModel.SongEvent.SongError -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Error: ${event.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
             }
-            Glide.with(requireContext())
-                .load(song.thumbnail)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        thumbnailProgressBar.isVisible = false
-                        return false
-                    }
 
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        thumbnailProgressBar.isVisible = false
-                        return false
-                    }
-                }).into(thumbnailImageView)
             songTitleTextView.text = song.title
+            uploaderUsername.text = song.username
+            timeTextView.text = DateFormat.getDateTimeInstance().format(song.time).dropLast(3)
+
             Glide.with(requireContext())
                 .load(song.pfp)
+                .placeholder(R.drawable.click_to_add_image)
                 .into(uploaderPfpImageView)
-            uploaderUsername.text = song.username
-            timeTextView.text = DateFormat.getDateTimeInstance().format(song.time)
 
             addCommentImageButton.setOnClickListener {
                 cropImage.launch(
@@ -189,37 +145,67 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                 )
             }
 
+            showDetailsButton.setOnClickListener {
+                viewModel.onShowDetailsClick()
+            }
             commentEditText.addTextChangedListener { text ->
                 viewModel.commentText = text.toString()
             }
 
-            commentSendButton.setOnClickListener {
-                hideKeyboard(requireContext())
-                addCommentImageView.isVisible = false
-                viewModel.onCommentSendClick(song)
-                commentEditText.text.clear()
-                addCommentImageView.isVisible = false
+            cancelReplyingToImageButton.setOnClickListener {
+                replyingToLayout.isVisible = false
+                viewModel.replyingToUserName = null
+                viewModel.replyingToPfp = null
+                viewModel.replyingToCommentId = null
+                viewModel.replyingToText = null
+                viewModel.replyingToUserId = null
             }
 
+            commentSendButton.setOnClickListener {
+                hideKeyboard(requireContext())
+                viewModel.onCommentSendClick(song)
+                commentEditText.text.clear()
+                addCommentImageView.visibility = View.GONE
+            }
         }
     }
 
-    private fun extractMediaSourceFromUri(uri: Uri): MediaSource {
-        val dataSourceFactory = DefaultHttpDataSource.Factory()
-        return ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(uri))
-    }
-
-
     override fun onItemLongClick(comment: Comments) {
         showKeyboard(requireContext())
-        binding.commentEditText.setText("Replying To: ${comment.text}")
+        viewModel.replyingToCommentId = comment.commentId
+        viewModel.replyingToUserId = comment.userId
+        viewModel.replyingToPfp = comment.pfp
+        viewModel.replyingToText = comment.text
+        viewModel.replyingToUserName = comment.username
+        binding.apply {
+            replyingToLayout.isVisible = true
+            replyingToTextView.text = comment.text
+            replyingToUsernameTextView.text = comment.username
+            Glide.with(requireContext())
+                .load(comment.pfp)
+                .into(replyingToPfpImageView)
+        }
     }
+
+    override fun onReplyingToClick(replyingToCommentId: String) {
+        val comments = commentsAdapter.currentList
+        var position = -1
+        for (i in 0 until comments.size) {
+            if (comments[i].commentId == replyingToCommentId) {
+                position = i
+                break
+            }
+        }
+        if (position != -1) {
+            binding.commentRecyclerView.scrollToPosition(position)
+        }
+    }
+
 
     private fun showKeyboard(mContext: Context) {
         val imm = mContext
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(requireView(),0)
+        imm.showSoftInput(requireView(), 0)
     }
 
     private fun hideKeyboard(mContext: Context) {

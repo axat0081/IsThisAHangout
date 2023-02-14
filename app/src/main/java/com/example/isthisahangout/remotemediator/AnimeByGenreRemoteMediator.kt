@@ -1,6 +1,5 @@
 package com.example.isthisahangout.remotemediator
 
-import android.util.Log
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator

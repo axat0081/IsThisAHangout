@@ -61,7 +61,7 @@ class AiringAnimeRemoteMediator(
         }
     }
 
-    suspend fun getKeyPageData(
+    private suspend fun getKeyPageData(
         loadType: LoadType,
         state: PagingState<Int, AiringAnimeResponse.AiringAnime>
     ): Any? {

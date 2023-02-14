@@ -28,7 +28,7 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
         val COMPARATOR = object : DiffUtil.ItemCallback<AnimeUIModel>() {
             override fun areItemsTheSame(
                 oldItem: AnimeUIModel,
-                newItem: AnimeUIModel
+                newItem: AnimeUIModel,
             ): Boolean {
                 return (oldItem is AnimeUIModel.AnimeModel && newItem is AnimeUIModel.AnimeModel &&
                         oldItem.title == newItem.title) ||
@@ -38,14 +38,14 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
 
             override fun areContentsTheSame(
                 oldItem: AnimeUIModel,
-                newItem: AnimeUIModel
+                newItem: AnimeUIModel,
             ) = oldItem == newItem
         }
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ) = when (viewType) {
         R.layout.anime_display_layout -> PaginatedAnimeViewHolder(
             AnimeDisplayLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -102,7 +102,7 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
                             e: GlideException?,
                             model: Any?,
                             target: Target<Drawable>?,
-                            isFirstResource: Boolean
+                            isFirstResource: Boolean,
                         ): Boolean {
                             animeProgressBar.isVisible = false
                             return false
@@ -113,7 +113,7 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
                             model: Any?,
                             target: Target<Drawable>?,
                             dataSource: DataSource?,
-                            isFirstResource: Boolean
+                            isFirstResource: Boolean,
                         ): Boolean {
                             animeProgressBar.isVisible = false
                             return false

@@ -61,4 +61,26 @@
     <string name="password">Password....</string>
     <string name="send_message">Send message</string>
     <string name="openai">OpenAI</string>
+    <string name="home_logo">home logo</string>
+    <string name="search_button">search button</string>
+    <string name="profile_button">profile button</string>
+    <string name="discover">Discover</string>
+    <string name="your_library">Your library</string>
+    <string name="play">play</string>
+    <string name="add">add</string>
+    <string name="more">More</string>
+    <string name="followers">%1$s FOLLOWERS</string>
+    <string name="nbAlbum"> %1$s ALBUMS</string>
+    <string name="back_button">back_button</string>
+    <string name="previous">Previous</string>
+    <string name="replay10">replay10</string>
+    <string name="forward10">forward10</string>
+    <string name="next">Next</string>
+    <string name="repeat">Repeat</string>
+    <string name="repeat_one">Repeat one</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="skip_previous">Skip to previous</string>
+    <string name="pause">Pause</string>
+    <string name="skip_next">Skip to next</string>
+    <string name="player_timestamp_format" translatable="false">%1$s:%2$s</string>
 </resources>

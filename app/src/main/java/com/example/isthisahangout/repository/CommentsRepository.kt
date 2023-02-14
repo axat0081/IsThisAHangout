@@ -24,12 +24,20 @@ class CommentsRepository @Inject constructor(
                 }
         } ?: emptyFlow()
 
-    fun getVideosComments(videotId: String?): Flow<Resource<List<Comments>>> =
-        videotId?.let {
-            commentsRef.document(videotId).collection("comments")
+    fun getVideosComments(videoId: String?): Flow<Resource<List<Comments>>> =
+        videoId?.let {
+            commentsRef.document(videoId).collection("comments")
                 .orderBy("time", Query.Direction.DESCENDING).asResourceFlow {
                 it.toObjects(Comments::class.java)
             }
+        } ?: emptyFlow()
+
+    fun getSongComments(songId: String?): Flow<Resource<List<Comments>>> =
+        songId?.let {
+            commentsRef.document(songId).collection("comments")
+                .orderBy("time", Query.Direction.DESCENDING).asResourceFlow {
+                    it.toObjects(Comments::class.java)
+                }
         } ?: emptyFlow()
 
 }

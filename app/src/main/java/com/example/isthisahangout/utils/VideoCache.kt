@@ -1,14 +1,14 @@
 package com.example.isthisahangout.utils
 
 import android.content.Context
-import com.example.isthisahangout.R
-import com.google.android.exoplayer2.database.ExoDatabaseProvider
-import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.database.StandaloneDatabaseProvider
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.FileDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSink
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import com.google.android.exoplayer2.util.Util
 import java.io.File
 
 const val DEFAULT_VIDEO_MAX_CACHE_SIZE = 100 * 1024 * 1024L
@@ -18,18 +18,14 @@ class VideoCache(
     context: Context,
 ) : DataSource.Factory {
 
-    private var defaultDataSourceFactory: DefaultDataSourceFactory
+    private var defaultDataSourceFactory: DefaultDataSource.Factory
     private val simpleCache = SimpleCache(
         File(context.cacheDir, "media"),
         LeastRecentlyUsedCacheEvictor(DEFAULT_VIDEO_MAX_CACHE_SIZE),
-        ExoDatabaseProvider(context)
+        StandaloneDatabaseProvider(context)
     )
     init {
-        val userAgent = Util.getUserAgent(context, context.getString(R.string.app_name))
-        defaultDataSourceFactory = DefaultDataSourceFactory(
-            context,
-            DefaultHttpDataSourceFactory(userAgent, DefaultBandwidthMeter.Builder(context).build())
-        )
+        defaultDataSourceFactory = DefaultDataSource.Factory(context)
     }
 
     override fun createDataSource(): DataSource {

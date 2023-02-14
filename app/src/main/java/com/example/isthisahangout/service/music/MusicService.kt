@@ -1,170 +1,44 @@
 package com.example.isthisahangout.service.music
 
-import android.app.PendingIntent
-import android.content.Intent
-import android.os.Build
-import android.os.Bundle
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
-import androidx.media.MediaBrowserServiceCompat
-import com.example.isthisahangout.utils.Constants.MEDIA_ROOT_ID
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaLibraryService
+import androidx.media3.session.MediaSession
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
 import javax.inject.Inject
-
-private const val SERVICE_TAG = "com.example.isthisahangout.service.music.MusicService"
+import javax.inject.Named
 
 @AndroidEntryPoint
-class MusicService : MediaBrowserServiceCompat() {
+class MusicService : MediaLibraryService() {
+    private var mediaLibrarySession: MediaLibrarySession? = null
 
     @Inject
-    lateinit var dataSourceFactory: DefaultDataSourceFactory
+    lateinit var musicSessionCallback: MusicSessionCallback
 
     @Inject
-    lateinit var exoPlayer: SimpleExoPlayer
+    @Named("MusicExoplayer")
+    lateinit var musicExoPlayer: ExoPlayer
 
     @Inject
-    lateinit var firebaseMusicSource: FirebaseMusicSource
-
-    private lateinit var musicNotificationManager: MusicNotificationManager
-
-    private val serviceJob = Job()
-    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-
-    private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaSessionConnector: MediaSessionConnector
-
-    var isForegroundService = false
-
-    private var curPlayingSong: MediaMetadataCompat? = null
-
-    private var isPlayerInitialized = false
-
-    private lateinit var musicPlayerEventListener: MusicPlayerEventListener
-
-    companion object {
-        var curSongDuration = 0L
-            private set
-    }
+    lateinit var musicNotificationProvider: MusicNotificationProvider
 
     override fun onCreate() {
         super.onCreate()
-        serviceScope.launch {
-            firebaseMusicSource.fetchMediaData()
-        }
-
-        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_IMMUTABLE
-        else PendingIntent.FLAG_UPDATE_CURRENT
-
-        val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, flag)
-        }
-
-        mediaSession = MediaSessionCompat(this, SERVICE_TAG, null, activityIntent).apply {
-            isActive = true
-        }
-
-        sessionToken = mediaSession.sessionToken
-
-        musicNotificationManager = MusicNotificationManager(
-            this,
-            mediaSession.sessionToken,
-            MusicPlayerNotificationListener(this)
-        ) {
-            curSongDuration = exoPlayer.duration
-        }
-
-        val musicPlaybackPreparer = MusicPlaybackPreparer(firebaseMusicSource) {
-            curPlayingSong = it
-            preparePlayer(
-                firebaseMusicSource.songs,
-                it,
-                true
-            )
-        }
-
-        mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.setPlaybackPreparer(musicPlaybackPreparer)
-        mediaSessionConnector.setQueueNavigator(MusicQueueNavigator())
-        mediaSessionConnector.setPlayer(exoPlayer)
-
-        musicPlayerEventListener = MusicPlayerEventListener(this)
-        exoPlayer.addListener(musicPlayerEventListener)
-        musicNotificationManager.showNotification(exoPlayer)
+        setMediaNotificationProvider(musicNotificationProvider)
+        mediaLibrarySession =
+            MediaLibrarySession.Builder(this, musicExoPlayer, musicSessionCallback).build()
     }
 
-    private inner class MusicQueueNavigator : TimelineQueueNavigator(mediaSession) {
-        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-            return firebaseMusicSource.songs[windowIndex].description
-        }
-    }
-
-    private fun preparePlayer(
-        songs: List<MediaMetadataCompat>,
-        itemToPlay: MediaMetadataCompat?,
-        playNow: Boolean
-    ) {
-        val curSongIndex = if (curPlayingSong == null) 0 else songs.indexOf(itemToPlay)
-        CoroutineScope(Dispatchers.Main).launch {
-            exoPlayer.prepare(firebaseMusicSource.asMediaSource(dataSourceFactory))
-            exoPlayer.seekTo(curSongIndex, 0L)
-            exoPlayer.playWhenReady = playNow
-        }
-    }
-
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        super.onTaskRemoved(rootIntent)
-        exoPlayer.stop()
-    }
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession? =
+        mediaLibrarySession
 
     override fun onDestroy() {
         super.onDestroy()
-        serviceScope.cancel()
-
-        exoPlayer.removeListener(musicPlayerEventListener)
-        exoPlayer.release()
-    }
-
-    override fun onGetRoot(
-        clientPackageName: String,
-        clientUid: Int,
-        rootHints: Bundle?
-    ): BrowserRoot {
-        return BrowserRoot(MEDIA_ROOT_ID, null)
-    }
-
-    override fun onLoadChildren(
-        parentId: String,
-        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-    ) {
-        when (parentId) {
-            MEDIA_ROOT_ID -> {
-                val resultsSent = firebaseMusicSource.whenReady { isInitialized ->
-                    if (isInitialized) {
-                        result.sendResult(firebaseMusicSource.asMediaItems())
-                        if (!isPlayerInitialized && firebaseMusicSource.songs.isNotEmpty()) {
-                            preparePlayer(
-                                firebaseMusicSource.songs,
-                                firebaseMusicSource.songs[0],
-                                false
-                            )
-                            isPlayerInitialized = true
-                        }
-                    } else {
-                        result.sendResult(null)
-                    }
-                }
-                if (!resultsSent) {
-                    result.detach()
-                }
-            }
+        mediaLibrarySession?.run {
+            player.release()
+            release()
+            mediaLibrarySession = null
         }
+        musicSessionCallback.cancelCoroutineScope()
+        musicNotificationProvider.cancelCoroutineScope()
     }
 }

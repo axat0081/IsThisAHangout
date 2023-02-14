@@ -18,8 +18,8 @@ import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.utils.VideoCache
 import com.example.isthisahangout.utils.asFlow
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
@@ -44,7 +44,7 @@ class VideoDetailViewModel @Inject constructor(
     commentsRepository: CommentsRepository,
 ) : ViewModel() {
     val video = savedStateHandle.get<FirebaseVideo>(VIDEO)!!
-    var simpleExoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(app.applicationContext).build()
+    var simpleExoPlayer = ExoPlayer.Builder(app.applicationContext).build()
     private val videoCache = VideoCache(app.applicationContext)
 
     init {

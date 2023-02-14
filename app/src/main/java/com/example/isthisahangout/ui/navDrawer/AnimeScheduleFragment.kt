@@ -70,8 +70,8 @@ class AnimeScheduleFragment : Fragment(R.layout.fragment_anime_schedule),
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 }

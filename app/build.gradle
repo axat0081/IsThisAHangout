@@ -112,9 +112,20 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // ExoPlayer
+    //exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    // for PlayerNotificationManager
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
     implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
     implementation 'com.github.norulab:android-exoplayer-fullscreen:1.2.1'
     implementation "com.google.android.exoplayer:extension-mediasession:2.13.3"
+
+    // Media3
+    def media3_version = "1.0.0-beta03"
+    implementation "androidx.media3:media3-common:$media3_version"
+    implementation "androidx.media3:media3-ui:$media3_version"
+    implementation "androidx.media3:media3-session:$media3_version"
+    implementation "androidx.media3:media3-exoplayer:$media3_version"
 
     //CircleImageView
     implementation 'de.hdodenhof:circleimageview:3.1.0'
