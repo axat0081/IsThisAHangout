@@ -17,7 +17,7 @@ import com.example.isthisahangout.databinding.SongDisplayLayoutBinding
 import com.example.isthisahangout.models.Song
 
 class SongAdapter(
-    private val listener: OnItemClickListener
+    private val listener: OnItemClickListener,
 ) : ListAdapter<Song, SongAdapter.SongViewHolder>(COMPARATOR) {
 
     companion object {
@@ -41,7 +41,10 @@ class SongAdapter(
         )
 
     override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        if (item != null) {
+            holder.bind(item)
+        }
     }
 
     interface OnItemClickListener {
@@ -50,6 +53,19 @@ class SongAdapter(
 
     inner class SongViewHolder(private val binding: SongDisplayLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item != null) {
+                        listener.onItemClick(item)
+                    }
+                }
+            }
+        }
+
         @SuppressLint("SetTextI18n")
         fun bind(song: Song) {
             binding.apply {
@@ -62,7 +78,7 @@ class SongAdapter(
                             e: GlideException?,
                             model: Any?,
                             target: Target<Drawable>?,
-                            isFirstResource: Boolean
+                            isFirstResource: Boolean,
                         ): Boolean {
                             progressBar.isVisible = false
                             return false
@@ -73,7 +89,7 @@ class SongAdapter(
                             model: Any?,
                             target: Target<Drawable>?,
                             dataSource: DataSource?,
-                            isFirstResource: Boolean
+                            isFirstResource: Boolean,
                         ): Boolean {
                             progressBar.isVisible = false
                             return false

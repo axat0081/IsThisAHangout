@@ -1,6 +1,5 @@
 package com.example.isthisahangout.pagingsource
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.isthisahangout.models.FirebaseVideo
@@ -15,7 +14,6 @@ class VideosPagingSource : PagingSource<QuerySnapshot, FirebaseVideo>() {
             val lastDocumentSnapshot = currentPage.documents[currentPage.size() - 1]
             val nextPage = videoQuery.limit(10).startAfter(lastDocumentSnapshot)
                 .get().await()
-            Log.e("Posts", currentPage.documents.toString())
             LoadResult.Page(
                 data = currentPage.toObjects(FirebaseVideo::class.java),
                 prevKey = null,

@@ -42,10 +42,8 @@ class MusicServiceConnection @Inject constructor(
             ).buildAsync().await()
         }
     }
-
     fun play() = mediaBrowser?.play()
     fun pause() = mediaBrowser?.pause()
-
     fun playSong(
         song: Song,
     ) {

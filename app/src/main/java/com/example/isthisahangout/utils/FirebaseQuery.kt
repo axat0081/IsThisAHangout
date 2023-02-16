@@ -28,10 +28,6 @@ val postsQuery by lazy {
         .orderBy("time", Query.Direction.DESCENDING)
 }
 
-val newPostsQuery by lazy {
-    postsQuery.whereAfterTimestamp()
-}
-
 val videoCollectionReference by lazy {
     FirebaseFirestore.getInstance()
         .collection("Videos")
@@ -41,20 +37,12 @@ val videoQuery by lazy {
     videoCollectionReference.orderBy("time", Query.Direction.DESCENDING)
 }
 
-val newVideoQuery by lazy {
-    videoQuery.whereAfterTimestamp()
-}
-
 val songCollectionReference by lazy {
     FirebaseFirestore.getInstance()
         .collection("Songs")
 }
 val songQuery by lazy {
     songCollectionReference.orderBy("time", Query.Direction.DESCENDING)
-}
-
-val newSongQuery by lazy {
-    songQuery.whereAfterTimestamp()
 }
 
 val firebaseAuth by lazy {

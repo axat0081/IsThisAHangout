@@ -8,14 +8,14 @@
     tools:context=".ui.detailsscreen.SongDetailFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/player_view"
+        android:id="@+id/song_player_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/player_view">
+        android:layout_below="@id/song_player_view">
 
         <RelativeLayout
             android:layout_width="match_parent"
