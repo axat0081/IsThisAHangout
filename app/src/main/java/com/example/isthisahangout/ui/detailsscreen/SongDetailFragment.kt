@@ -7,7 +7,20 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -17,6 +30,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -25,11 +40,15 @@ import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentSongDetailBinding
 import com.example.isthisahangout.models.Comments
+import com.example.isthisahangout.ui.components.MusicPlayerButtons
+import com.example.isthisahangout.utils.LocalSpacing
 import com.example.isthisahangout.utils.Resource
+import com.example.isthisahangout.utils.convertToProgress
 import com.example.isthisahangout.viewmodel.detailScreen.SongDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.DateFormat
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -41,6 +60,7 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
     private lateinit var cropImage: ActivityResultLauncher<CropImageContractOptions>
     private val viewModel by viewModels<SongDetailViewModel>()
     private lateinit var commentsAdapter: CommentsAdapter
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,7 +97,63 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
 
             songPlayerView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             songPlayerView.setContent {
-
+                val musicState = viewModel.musicState.collectAsState()
+                val currentPosition = viewModel.currentSongPosition.collectAsState()
+                val songProgress by animateFloatAsState(
+                    targetValue = convertToProgress(
+                        count = currentPosition.value,
+                        total = musicState.value.duration
+                    )
+                )
+                val spacing = LocalSpacing.current
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .windowInsetsTopHeight(WindowInsets.statusBars)
+                    )
+                    Box(modifier = Modifier.padding(all = spacing.spaceExtraLarge)) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(requireContext())
+                                .data(song.thumbnail)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
+                                .aspectRatio(1f)
+                                .clip(MaterialTheme.shapes.medium)
+                        )
+                    }
+                    Slider(
+                        modifier = Modifier.padding(horizontal = spacing.spaceMedium),
+                        value = songProgress,
+                        onValueChange = { }
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = spacing.spaceMedium)
+                    ) {
+                        Text(text = currentPosition.value.toInt().asFormattedString())
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(musicState.value.duration.toInt().asFormattedString())
+                    }
+                    Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))
+                    MusicPlayerButtons(
+                        modifier = Modifier.fillMaxWidth(),
+                        playWhenReady = true,
+                        play = { viewModel.play() },
+                        pause = { viewModel.pause() },
+                        replay10 = { },
+                        forward10 = { },
+                    )
+                    Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))
+                }
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -174,6 +250,13 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
             }
         }
     }
+
+    @Composable
+    fun Int.asFormattedString() = stringResource(
+        id = R.string.player_timestamp_format,
+        String.format(locale = Locale.US, format = "%02d", this / 60),
+        String.format(locale = Locale.US, format = "%02d", this % 60)
+    )
 
     override fun onItemLongClick(comment: Comments) {
         showKeyboard(requireContext())

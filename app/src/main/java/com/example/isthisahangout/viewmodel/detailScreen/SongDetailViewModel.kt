@@ -8,7 +8,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.Comments
-import com.example.isthisahangout.models.FirebaseVideo
 import com.example.isthisahangout.models.Song
 import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.music.MusicServiceConnection
@@ -29,6 +28,7 @@ class SongDetailViewModel @Inject constructor(
     commentsRepository: CommentsRepository,
 ) : AndroidViewModel(app) {
     val song = savedStateHandle.get<Song>(SONG)!!
+    val musicState = musicServiceConnection.musicState
     val currentSongPosition =
         musicServiceConnection.currentPosition.stateIn(viewModelScope, SharingStarted.Lazily, 0L)
     private val songEventChannel = Channel<SongEvent>()
@@ -79,6 +79,7 @@ class SongDetailViewModel @Inject constructor(
 
     init {
         musicServiceConnection.playSong(song)
+        play()
     }
 
     val comments = commentsRepository.getSongComments(song.id)
