@@ -1,6 +1,5 @@
 package com.example.isthisahangout.utils
 
-import com.example.isthisahangout.adapter.chat.whereAfterTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -47,15 +46,6 @@ val songQuery by lazy {
 
 val firebaseAuth by lazy {
     FirebaseAuth.getInstance()
-}
-
-val chatMessagesQuery by lazy {
-    chatCollectionReference
-        .orderBy("time", Query.Direction.DESCENDING)
-}
-
-val newChatMessagesQuery by lazy {
-    chatMessagesQuery.whereAfterTimestamp()
 }
 
 val currentUser get() = FirebaseAuth.getInstance().currentUser

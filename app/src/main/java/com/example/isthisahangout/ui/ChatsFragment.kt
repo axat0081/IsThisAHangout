@@ -10,9 +10,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
@@ -38,7 +36,6 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentChatBinding.bind(view)
-        //val oldMessagesAdapter = ChatRealTimeAdapter()
         val messagesPagingAdapter = MessagesPagingAdapter()
         val newMessagesAdapter = ChatRealTimeAdapter()
         val messagesAdapter = ConcatAdapter(
@@ -47,8 +44,6 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
             )
         )
         binding.apply {
-            messageEditText.isVisible = true
-            sendButton.isVisible = true
             messagesRecyclerview.apply {
                 itemAnimator = null
                 adapter = messagesAdapter
@@ -67,6 +62,32 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
                         newMessagesAdapter.submitList(it)
                     }
                 }
+                scope.launch {
+                    viewModel.messageEventFlow.collectLatest { event ->
+                        when (event) {
+                            is ChatViewModel.MessagingEvent.MessageError -> {
+                                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                    }
+                }
+                scope.launch {
+                    messagesPagingAdapter.loadStateFlow.collect { loadState ->
+                        val refresh = loadState.source.refresh
+                        messagesProgressBar.isVisible =
+                            loadState.source.refresh is LoadState.Loading
+                        messagesErrorLayout.isVisible = loadState.source.refresh is LoadState.Error
+                        if (refresh is LoadState.Error) {
+                            val errorMessage = refresh.error.localizedMessage
+                            messagesErrorTextView.text = "Can't load messages: $errorMessage"
+                        }
+                    }
+                }
+            }
+
+            messagesRetryButton.setOnClickListener {
+                messagesPagingAdapter.retry()
             }
 
             messageEditText.addTextChangedListener { text ->
@@ -78,25 +99,6 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
                     messageEditText.text!!.clear()
                 }
                 hideKeyboard(requireContext())
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.messageEventFlow.collectLatest { event ->
-                        when (event) {
-                            is ChatViewModel.MessagingEvent.MessageError -> {
-                                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        }
-                    }
-                }
             }
         }
     }
