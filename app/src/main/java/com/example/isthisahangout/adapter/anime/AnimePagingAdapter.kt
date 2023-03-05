@@ -75,6 +75,7 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
 
     interface OnItemClickListener {
         fun onItemClick(animeResults: AnimeUIModel.AnimeModel)
+        fun onAnimeLikeClick(animeResults: AnimeUIModel.AnimeModel)
     }
 
 
@@ -88,6 +89,15 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
                     val item = getItem(position)
                     if (item != null && item is AnimeUIModel.AnimeModel) {
                         listener.onItemClick(item)
+                    }
+                }
+            }
+            binding.animeLikeButton.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item != null && item is AnimeUIModel.AnimeModel) {
+                        listener.onAnimeLikeClick(item)
                     }
                 }
             }
@@ -120,6 +130,10 @@ class AnimePagingAdapter(private val listener: OnItemClickListener) :
                         }
                     }).into(animeImageView)
                 animeTitleTextView.text = animeResults.title
+                animeLikeButton.setImageResource(
+                    if (animeResults.isFav) R.drawable.bookmarked
+                    else R.drawable.bookmark
+                )
             }
         }
     }

@@ -1,11 +1,10 @@
 package com.example.isthisahangout.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -14,13 +13,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isthisahangout.R
-import com.example.isthisahangout.adapter.chat.LoadingState
+import com.example.isthisahangout.adapter.VerticalLoadStateAdapter
+import com.example.isthisahangout.adapter.chat.ChatRealTimeAdapter
+import com.example.isthisahangout.adapter.chat.MessagesPagingAdapter
 import com.example.isthisahangout.databinding.FragmentChatBinding
+import com.example.isthisahangout.utils.observeFlows
 import com.example.isthisahangout.viewmodel.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class
@@ -29,16 +33,42 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<ChatViewModel>()
+
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentChatBinding.bind(view)
+        //val oldMessagesAdapter = ChatRealTimeAdapter()
+        val messagesPagingAdapter = MessagesPagingAdapter()
+        val newMessagesAdapter = ChatRealTimeAdapter()
+        val messagesAdapter = ConcatAdapter(
+            newMessagesAdapter, messagesPagingAdapter.withLoadStateFooter(
+                footer = VerticalLoadStateAdapter { messagesPagingAdapter.retry() }
+            )
+        )
         binding.apply {
+            messageEditText.isVisible = true
+            sendButton.isVisible = true
             messagesRecyclerview.apply {
                 itemAnimator = null
-                adapter = viewModel.chatAdapter
+                adapter = messagesAdapter
                 layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
             }
+
+            observeFlows { scope ->
+                scope.launch {
+                    viewModel.messagesPaged.collectLatest {
+                        messagesPagingAdapter.submitData(it)
+                    }
+                }
+                scope.launch {
+                    viewModel.newMessages.collect {
+                        newMessagesAdapter.submitList(it)
+                    }
+                }
+            }
+
             messageEditText.addTextChangedListener { text ->
                 viewModel.text = text.toString()
             }
@@ -52,25 +82,7 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
 
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.chatAdapter.loadingState.collect { loadState->
-                        headerProgressBar.isVisible =
-                            loadState == LoadingState.LOADING_MORE
-                        messagesProgressBar.isVisible =
-                            loadState == LoadingState.LOADING_INITIAL
-                        messagesErrorTextView.isVisible =
-                            loadState == LoadingState.ERROR
-                        if (loadState == LoadingState.INITIAL_LOADED || loadState == LoadingState.NEW_ITEM)
-                            messagesRecyclerview.scrollToPosition(viewModel.chatAdapter.itemCount.value - 1)
-                    }
-                }
-            }
 
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.chatAdapter.itemCount.collect { messagesCount->
-                        messageEditText.isVisible = messagesCount > 0
-                        sendButton.isVisible = messagesCount > 0
-                    }
                 }
             }
 
@@ -81,15 +93,6 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
                             is ChatViewModel.MessagingEvent.MessageError -> {
                                 Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
                                     .show()
-                            }
-                            is ChatViewModel.MessagingEvent.SmartReplySuccess -> {
-                                val smartRepliesAdapter = ArrayAdapter(
-                                    requireContext(),
-                                    android.R.layout.simple_dropdown_item_1line,
-                                    event.replies
-                                )
-                                Log.e("replies", event.replies.toString())
-                                messageEditText.setAdapter(smartRepliesAdapter)
                             }
                         }
                     }
@@ -107,23 +110,10 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
         )
     }
 
-    override fun onStart() {
-        super.onStart()
-        viewModel.chatAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        viewModel.chatAdapter.stopListening()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.chatAdapter.cleanup()
-    }
 }

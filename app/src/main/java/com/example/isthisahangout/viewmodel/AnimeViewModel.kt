@@ -4,9 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.isthisahangout.MainActivity
+import com.example.isthisahangout.models.favourites.FavAnime
 import com.example.isthisahangout.repository.AnimeRepository
+import com.example.isthisahangout.ui.models.AnimeUIModel
 import com.example.isthisahangout.usecases.anime.GetAiringAnimeUseCase
 import com.example.isthisahangout.usecases.anime.GetUpcomingAnimeUseCase
+import com.example.isthisahangout.usecases.anime.UpdateFavAnimeUseCase
 import com.example.isthisahangout.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,8 +22,9 @@ import javax.inject.Inject
 class AnimeViewModel @Inject constructor(
     getUpcomingAnimeUseCase: GetUpcomingAnimeUseCase,
     getAiringAnimeUseCase: GetAiringAnimeUseCase,
+    private val updateFavAnimeUseCase: UpdateFavAnimeUseCase,
     animeRepository: AnimeRepository,
-    private val state: SavedStateHandle
+    private val state: SavedStateHandle,
 ) : ViewModel() {
 
     private val quoteRefreshTrigger = Channel<Refresh>()
@@ -76,6 +81,21 @@ class AnimeViewModel @Inject constructor(
             viewModelScope.launch {
                 quoteRefreshTrigger.send(Refresh.FORCE)
             }
+        }
+    }
+
+    fun onAnimeLikeClick(animeResult: AnimeUIModel.AnimeModel) {
+        val isFav = !animeResult.isFav
+        val updatedAnime = animeResult.copy(isFav = isFav)
+        viewModelScope.launch {
+            updateFavAnimeUseCase(
+                FavAnime(
+                    id = updatedAnime.id,
+                    userId = MainActivity.userId,
+                    title = updatedAnime.title,
+                    image = updatedAnime.imageUrl
+                )
+            )
         }
     }
 

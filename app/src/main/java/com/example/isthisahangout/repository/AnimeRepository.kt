@@ -10,7 +10,9 @@ import com.example.isthisahangout.api.AnimeMangaDetailAPI
 import com.example.isthisahangout.api.AnimePicsAPI
 import com.example.isthisahangout.api.AnimeQuoteAPI
 import com.example.isthisahangout.cache.anime.*
+import com.example.isthisahangout.cache.favourites.FavouritesDao
 import com.example.isthisahangout.models.*
+import com.example.isthisahangout.models.favourites.FavAnime
 import com.example.isthisahangout.remotemediator.AiringAnimeRemoteMediator
 import com.example.isthisahangout.remotemediator.AnimeByGenreRemoteMediator
 import com.example.isthisahangout.remotemediator.AnimeBySeasonsRemoteMediator
@@ -47,7 +49,8 @@ class AnimeRepository @Inject constructor(
     private val animePicsDao: AnimePicsDao,
     private val animeNewsDao: AnimeNewsDao,
     private val animeDatabase: AnimeDatabase,
-    private val animeMangaDetailAPI: AnimeMangaDetailAPI
+    private val animeMangaDetailAPI: AnimeMangaDetailAPI,
+    private val favouritesDao: FavouritesDao
 ) {
     val animeDetailDao = animeDatabase.getAnimeDetailDao()
     fun getUpcomingAnime(): Flow<PagingData<UpcomingAnimeResponse.UpcomingAnime>> =
@@ -282,5 +285,9 @@ class AnimeRepository @Inject constructor(
         } catch (exception: IOException) {
             emit(Resource.Error(data = cachedAnimeDetail, throwable = exception))
         }
+    }
+
+    suspend fun updateFavAnime(anime: FavAnime) {
+        favouritesDao.updateFavAnime(anime)
     }
 }

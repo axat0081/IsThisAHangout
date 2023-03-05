@@ -30,7 +30,7 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
     val pageSize: Int
 ) : RecyclerView.Adapter<VH>(), LifecycleObserver {
     abstract val data: SortedList<T>
-    val _loadingState = MutableStateFlow(LoadingState.LOADING_INITIAL)
+    private val _loadingState = MutableStateFlow(LoadingState.LOADING_INITIAL)
     val loadingState = _loadingState.asStateFlow()
     private val _itemCount = MutableStateFlow(0)
     val itemCount = _itemCount.asStateFlow()
@@ -43,6 +43,7 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
     }
 
     fun stopListening() {
+
     }
 
     fun cleanup() {
@@ -50,7 +51,6 @@ abstract class FirestoreRealTimePaginationAdapter<T, VH : RecyclerView.ViewHolde
     }
 
     init {
-
         newMessagesListenerRegistration = realTimeQuery
             .addSnapshotListener { snapshots: QuerySnapshot?, error: FirebaseFirestoreException? ->
                 if (error != null) {

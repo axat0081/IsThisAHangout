@@ -9,7 +9,6 @@ import kotlinx.coroutines.tasks.await
 
 class MessagesPagingSource :
     PagingSource<QuerySnapshot, FirebaseMessage>() {
-
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, FirebaseMessage> {
         return try {
             val currentPage = params.key ?: messagesQuery.limit(10).get().await()

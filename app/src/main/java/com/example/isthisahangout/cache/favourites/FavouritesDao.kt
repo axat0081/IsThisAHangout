@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.example.isthisahangout.models.favourites.*
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +16,9 @@ interface FavouritesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertManga(manga: FavManga)
+
+    @Update
+    suspend fun updateFavAnime(anime: FavAnime)
 
     @Query("SELECT * FROM anime_favourites WHERE userId = :userId AND title LIKE '%' || :searchQuery || '%'")
     fun getAnime(searchQuery: String, userId: String): Flow<List<FavAnime>>

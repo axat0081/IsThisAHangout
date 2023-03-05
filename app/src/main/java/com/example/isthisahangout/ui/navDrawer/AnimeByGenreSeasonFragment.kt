@@ -305,6 +305,10 @@ class AnimeByGenreSeasonFragment : Fragment(R.layout.fragment_anime_by_genre_sea
         findNavController().navigate(action)
     }
 
+    override fun onAnimeLikeClick(animeResults: AnimeUIModel.AnimeModel) {
+        viewModel.onAnimeLikeClick(animeResults)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

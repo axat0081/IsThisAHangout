@@ -225,6 +225,10 @@ class HomeFragment : Fragment(R.layout.fragment_home), AnimePagingAdapter.OnItem
         findNavController().navigate(action)
     }
 
+    override fun onAnimeLikeClick(animeResults: AnimeUIModel.AnimeModel) {
+        animeViewModel.onAnimeLikeClick(animeResults)
+    }
+
     override fun onItemClick(videoGame: VideoGameUIModel.VideoGameModel) {
 
     }

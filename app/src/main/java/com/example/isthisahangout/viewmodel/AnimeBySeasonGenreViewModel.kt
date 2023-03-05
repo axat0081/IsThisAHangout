@@ -5,18 +5,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
+import com.example.isthisahangout.MainActivity
+import com.example.isthisahangout.models.favourites.FavAnime
+import com.example.isthisahangout.ui.models.AnimeUIModel
 import com.example.isthisahangout.usecases.anime.GetAnimeByGenreUseCase
 import com.example.isthisahangout.usecases.anime.GetAnimeBySeasonsUseCase
+import com.example.isthisahangout.usecases.anime.UpdateFavAnimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AnimeBySeasonGenreViewModel @Inject constructor(
     getAnimeByGenreUseCase: GetAnimeByGenreUseCase,
-    getAnimeBySeasonsUseCase: GetAnimeBySeasonsUseCase
+    getAnimeBySeasonsUseCase: GetAnimeBySeasonsUseCase,
+    private val updateFavAnimeUseCase: UpdateFavAnimeUseCase
 ) : ViewModel() {
 
     private val genreQuery = MutableLiveData("1")
@@ -71,4 +77,20 @@ class AnimeBySeasonGenreViewModel @Inject constructor(
     fun searchAnimeBySeason(query: String) {
         season.value = query
     }
+
+    fun onAnimeLikeClick(animeResult: AnimeUIModel.AnimeModel) {
+        val isFav = !animeResult.isFav
+        val updatedAnime = animeResult.copy(isFav = isFav)
+        viewModelScope.launch {
+            updateFavAnimeUseCase(
+                FavAnime(
+                    id = updatedAnime.id,
+                    userId = MainActivity.userId,
+                    title = updatedAnime.title,
+                    image = updatedAnime.imageUrl
+                )
+            )
+        }
+    }
+
 }

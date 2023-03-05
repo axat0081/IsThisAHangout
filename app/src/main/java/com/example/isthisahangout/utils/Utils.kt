@@ -3,6 +3,11 @@ package com.example.isthisahangout.utils
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.CoroutineScope
 
 private const val ProgressDivider = 100f
 private const val ZeroProgress = 0f
@@ -24,3 +29,10 @@ data class Dimensions(
     val spaceExtraLarge: Dp = 64.dp,
 )
 
+inline fun Fragment.observeFlows(crossinline observationFunction: suspend (CoroutineScope) -> Unit) {
+    viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            observationFunction(this)
+        }
+    }
+}
