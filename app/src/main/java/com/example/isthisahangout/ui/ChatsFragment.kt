@@ -10,23 +10,18 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.paging.LoadState
-import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.R
-import com.example.isthisahangout.adapter.VerticalLoadStateAdapter
-import com.example.isthisahangout.adapter.chat.ChatRealTimeAdapter
-import com.example.isthisahangout.adapter.chat.MessagesPagingAdapter
+import com.example.isthisahangout.adapter.chat.MessagesLoadingState
 import com.example.isthisahangout.databinding.FragmentChatBinding
 import com.example.isthisahangout.utils.observeFlows
 import com.example.isthisahangout.viewmodel.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class
-ChatsFragment : Fragment(R.layout.fragment_chat) {
+class ChatsFragment : Fragment(R.layout.fragment_chat) {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
 
@@ -36,58 +31,75 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentChatBinding.bind(view)
-        val messagesPagingAdapter = MessagesPagingAdapter()
-        val newMessagesAdapter = ChatRealTimeAdapter()
-        val messagesAdapter = ConcatAdapter(
-            newMessagesAdapter, messagesPagingAdapter.withLoadStateFooter(
-                footer = VerticalLoadStateAdapter { messagesPagingAdapter.retry() }
-            )
-        )
         binding.apply {
             messagesRecyclerview.apply {
                 itemAnimator = null
-                adapter = messagesAdapter
+                adapter = viewModel.chatAdapter
                 layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, true)
+                    LinearLayoutManager(requireContext())
             }
 
-            observeFlows { scope ->
-                scope.launch {
-                    viewModel.messagesPaged.collectLatest {
-                        messagesPagingAdapter.submitData(it)
+            viewModel.chatAdapter.loadingState.observe(viewLifecycleOwner) { loadingState ->
+                when (loadingState) {
+                    is MessagesLoadingState.Empty -> {
+                        messagesProgressBar.isVisible = false
+                        messagesHeaderProgressBar.isVisible = false
+                        emptyMessagesTextView.isVisible = true
                     }
-                }
-                scope.launch {
-                    viewModel.newMessages.collect {
-                        newMessagesAdapter.submitList(it)
+                    is MessagesLoadingState.LoadingInitial -> {
+                        messagesProgressBar.isVisible = true
+                        messagesHeaderProgressBar.isVisible = false
+                        emptyMessagesTextView.isVisible = false
                     }
+                    is MessagesLoadingState.InitialLoaded -> {
+                        messagesProgressBar.isVisible = false
+                        messagesHeaderProgressBar.isVisible = false
+                        emptyMessagesTextView.isVisible = false
+                        messagesRecyclerview.scrollToPosition(viewModel.chatAdapter.itemCount - 1)
+                    }
+                    is MessagesLoadingState.LoadingMore -> {
+                        messagesProgressBar.isVisible = false
+                        messagesHeaderProgressBar.isVisible = true
+                        emptyMessagesTextView.isVisible = false
+                    }
+                    is MessagesLoadingState.MoreLoaded -> {
+                        messagesProgressBar.isVisible = false
+                        messagesHeaderProgressBar.isVisible = false
+                        emptyMessagesTextView.isVisible = false
+                    }
+                    is MessagesLoadingState.Finished -> Unit
+                    is MessagesLoadingState.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Could not load messages, check your internet connection",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    is MessagesLoadingState.NewItem -> {
+                        val item = loadingState.message
+                        item?.let { message->
+                            if (message.senderId == MainActivity.userId) {
+                                messagesRecyclerview.smoothScrollToPosition(viewModel.chatAdapter.itemCount - 1)
+                            }
+                        }
+                    }
+                    is MessagesLoadingState.DeletedItem -> Unit // will change this later
+                    null -> Unit
                 }
-                scope.launch {
-                    viewModel.messageEventFlow.collectLatest { event ->
+            }
+
+            observeFlows { coroutineScope ->
+                coroutineScope.launch {
+                    viewModel.messageEventFlow.collect { event ->
                         when (event) {
-                            is ChatViewModel.MessagingEvent.MessageError -> {
+                            is ChatViewModel.MessagingEvent.MessagesSendError -> {
                                 Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
                                     .show()
                             }
                         }
                     }
-                }
-                scope.launch {
-                    messagesPagingAdapter.loadStateFlow.collect { loadState ->
-                        val refresh = loadState.source.refresh
-                        messagesProgressBar.isVisible =
-                            loadState.source.refresh is LoadState.Loading
-                        messagesErrorLayout.isVisible = loadState.source.refresh is LoadState.Error
-                        if (refresh is LoadState.Error) {
-                            val errorMessage = refresh.error.localizedMessage
-                            messagesErrorTextView.text = "Can't load messages: $errorMessage"
-                        }
-                    }
-                }
-            }
 
-            messagesRetryButton.setOnClickListener {
-                messagesPagingAdapter.retry()
+                }
             }
 
             messageEditText.addTextChangedListener { text ->
@@ -95,8 +107,8 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
             }
             sendButton.setOnClickListener {
                 viewModel.onSendClick()
-                if (messageEditText.text != null && messageEditText.text!!.isNotEmpty()) {
-                    messageEditText.text!!.clear()
+                if (messageEditText.text != null && messageEditText.text.isNotEmpty()) {
+                    messageEditText.text.clear()
                 }
                 hideKeyboard(requireContext())
             }
@@ -104,18 +116,25 @@ ChatsFragment : Fragment(R.layout.fragment_chat) {
     }
 
     private fun hideKeyboard(mContext: Context) {
-        val imm = mContext
-            .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(
-            requireActivity().window
-                .currentFocus!!.windowToken, 0
+            requireActivity().window.currentFocus!!.windowToken, 0
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.onStart()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.chatAdapter.onDestroy()
     }
 
 }

@@ -7,10 +7,12 @@ import com.example.isthisahangout.models.FirebaseMessage
 import com.example.isthisahangout.pagingsource.MessagesPagingSource
 import com.example.isthisahangout.utils.asFlow
 import com.example.isthisahangout.utils.chatCollectionReference
+import com.example.isthisahangout.utils.messagesQuery
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,6 +30,23 @@ class ChatRepository @Inject constructor(
             ),
             pagingSourceFactory = { MessagesPagingSource() }
         ).flow
+
+    suspend fun loadMessages(lastLoadedMessage: FirebaseMessage?): List<FirebaseMessage> {
+        return if (lastLoadedMessage == null) {
+            chatCollectionReference.orderBy("time", Query.Direction.DESCENDING)
+                .limit(20)
+                .get().await().map {
+                    it.toObject(FirebaseMessage::class.java)
+                }
+        } else {
+            chatCollectionReference.orderBy("time", Query.Direction.DESCENDING)
+                .startAfter(lastLoadedMessage)
+                .limit(20)
+                .get().await().map {
+                    it.toObject(FirebaseMessage::class.java)
+                }
+        }
+    }
 
     fun getNewMessages(): Flow<List<FirebaseMessage>> =
         chatCollectionReference.orderBy("time", Query.Direction.DESCENDING)

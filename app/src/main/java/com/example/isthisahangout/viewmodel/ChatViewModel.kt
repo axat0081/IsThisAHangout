@@ -3,10 +3,11 @@ package com.example.isthisahangout.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.cachedIn
 import com.example.isthisahangout.MainActivity
+import com.example.isthisahangout.adapter.chat.ChatAdapter
 import com.example.isthisahangout.models.FirebaseMessage
-import com.example.isthisahangout.repository.ChatRepository
+import com.example.isthisahangout.utils.messagesQuery
+import com.example.isthisahangout.utils.newMessagesQuery
 import com.google.firebase.firestore.CollectionReference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +20,6 @@ import javax.inject.Named
 class ChatViewModel @Inject constructor(
     private val state: SavedStateHandle,
     @Named("MessagesRef") private val messagesRef: CollectionReference,
-    chatRepository: ChatRepository,
 ) : ViewModel() {
 
     private val messageChannel = Channel<MessagingEvent>()
@@ -29,10 +29,23 @@ class ChatViewModel @Inject constructor(
             field = value
             state["message_text"] = text
         }
+    val chatAdapter = ChatAdapter(
+        paginationQuery = messagesQuery,
+        realTimeQuery = newMessagesQuery,
+        parser = {
+            it.toObject(FirebaseMessage::class.java)
+        },
+        prefetchDistance = 3,
+        pageSize = 10
+    )
 
-    val messagesPaged = chatRepository.getMessagesPaged().cachedIn(viewModelScope)
-    val newMessages =
-        chatRepository.getNewMessages().stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    fun onStart() {
+        chatAdapter.onStart()
+    }
+
+    fun onDestroy() {
+        chatAdapter.onDestroy()
+    }
 
     fun onSendClick() {
         if (text?.isNotEmpty() == true) {
@@ -48,7 +61,7 @@ class ChatViewModel @Inject constructor(
                 ).addOnFailureListener {
                     viewModelScope.launch {
                         messageChannel.send(
-                            MessagingEvent.MessageError(
+                            MessagingEvent.MessagesSendError(
                                 it.localizedMessage ?: "Network error, check internet connection"
                             )
                         )
@@ -59,6 +72,6 @@ class ChatViewModel @Inject constructor(
     }
 
     sealed class MessagingEvent {
-        data class MessageError(val message: String) : MessagingEvent()
+        data class MessagesSendError(val message: String) : MessagingEvent()
     }
 }

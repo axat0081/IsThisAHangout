@@ -14,7 +14,10 @@ val chatCollectionReference by lazy {
 val messagesQuery by lazy {
     chatCollectionReference
         .orderBy("time", Query.Direction.DESCENDING)
-        .whereLessThan("time", Timestamp.now())
+}
+
+val newMessagesQuery by lazy {
+    messagesQuery.whereGreaterThan("time", Timestamp.now())
 }
 
 val postCollectionReference by lazy {

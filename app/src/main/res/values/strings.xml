@@ -83,4 +83,5 @@
     <string name="pause">Pause</string>
     <string name="skip_next">Skip to next</string>
     <string name="player_timestamp_format" translatable="false">%1$s:%2$s</string>
+    <string name="no_messages_yet">No messages yet</string>
 </resources>
