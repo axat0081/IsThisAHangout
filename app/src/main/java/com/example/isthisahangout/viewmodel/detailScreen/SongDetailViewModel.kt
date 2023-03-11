@@ -10,7 +10,6 @@ import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.models.Song
 import com.example.isthisahangout.repository.CommentsRepository
-import com.example.isthisahangout.service.music.MusicServiceConnection
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,14 +22,10 @@ const val SONG = "song"
 @HiltViewModel
 class SongDetailViewModel @Inject constructor(
     private val app: Application,
-    private val musicServiceConnection: MusicServiceConnection,
     private val savedStateHandle: SavedStateHandle,
     commentsRepository: CommentsRepository,
 ) : AndroidViewModel(app) {
     val song = savedStateHandle.get<Song>(SONG)!!
-    val musicState = musicServiceConnection.musicState
-    val currentSongPosition =
-        musicServiceConnection.currentPosition.stateIn(viewModelScope, SharingStarted.Lazily, 0L)
     private val songEventChannel = Channel<SongEvent>()
     val songEventFlow = songEventChannel.receiveAsFlow()
     private val _showDetails = MutableStateFlow(false)
@@ -77,16 +72,8 @@ class SongDetailViewModel @Inject constructor(
             savedStateHandle["comment_image"] = commentImage
         }
 
-    init {
-        musicServiceConnection.playSong(song)
-        play()
-    }
-
     val comments = commentsRepository.getSongComments(song.id)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
-
-    fun play() = musicServiceConnection.play()
-    fun pause() = musicServiceConnection.pause()
 
     fun onShowDetailsClick() {
         _showDetails.value = !_showDetails.value

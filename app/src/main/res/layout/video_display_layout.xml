@@ -21,12 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true" />
-
-        <com.master.exoplayer.MasterExoPlayer
-            android:id="@+id/masterExoPlayer"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
-
         <ImageView
             android:id="@+id/video_thumbnail_image_view"
             android:layout_width="match_parent"

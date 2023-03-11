@@ -1,6 +1,7 @@
 package com.example.isthisahangout.models
 
 import android.os.Parcelable
+import androidx.media3.common.MediaItem
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
@@ -26,3 +27,10 @@ data class LikedVideoId(
     val videoId: String,
     val userId: String
 )
+
+fun FirebaseVideo.asMediaItem(
+    mediaId: String,
+): MediaItem =
+    MediaItem.Builder()
+        .setMediaId(mediaId)
+        .build()

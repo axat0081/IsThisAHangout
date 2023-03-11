@@ -69,7 +69,6 @@ class ChatAdapter(
 
     val loadingState = MutableLiveData<MessagesLoadingState>()
     private val dataSource = ChatPagingSource(paginationQuery)
-
     private var newMessagesListenerRegistration: ListenerRegistration? = null
 
 
@@ -135,10 +134,10 @@ class ChatAdapter(
                 pageSize
             ) { querySnapshot: QuerySnapshot ->
                 if (querySnapshot.documents.isEmpty()) {
-                    loadingState.postValue(MessagesLoadingState.Finished)
+                    loadingState.value = MessagesLoadingState.Finished
                 } else {
                     data.addAll(querySnapshot.documents.map(parser))
-                    loadingState.postValue(MessagesLoadingState.MoreLoaded)
+                    loadingState.value = MessagesLoadingState.MoreLoaded
                 }
             }
         }

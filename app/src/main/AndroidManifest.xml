@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.isthisahangout">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +13,7 @@
 
     <queries>
         <intent>
-            <action android:name="com.google.android.youtube.api.service.START"/>
+            <action android:name="com.google.android.youtube.api.service.START" />
         </intent>
     </queries>
 
@@ -26,7 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IsThisAHangout">
-<!--        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"-->
+        <!--        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"-->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -36,27 +35,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.music.MusicService"
-            android:foregroundServiceType="mediaPlayback"
-            android:exported="true"
-            tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="androidx.media3.session.MediaLibraryService" />
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
         <service
             android:name=".service.uploadService.BaseService"
             android:exported="false" />
         <service
             android:name=".service.uploadService.FirebaseUploadService"
             android:exported="false" />
-        <service android:name=".service.firebaseMessagesService.HangoutMessagingService"
+        <service
+            android:name=".service.firebaseMessagesService.HangoutMessagingService"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-            </application>
+    </application>
 
-        </manifest>
+</manifest>

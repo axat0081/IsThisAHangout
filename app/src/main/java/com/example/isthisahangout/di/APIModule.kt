@@ -1,18 +1,14 @@
 package com.example.isthisahangout.di
 
-import android.content.Context
 import com.deimos.openaiapi.OpenAI
 import com.example.isthisahangout.api.*
-import com.example.isthisahangout.service.music.MusicServiceConnection
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -105,12 +101,6 @@ object APIModule {
     fun providesStockMarketAPI(@Named("StockMarketAPI") retrofit: Retrofit): StockMarketAPI =
         retrofit.create(StockMarketAPI::class.java)
 
-    //Music
-    @Singleton
-    @Provides
-    fun provideMusicServiceConnection(
-        @ApplicationContext context: Context
-    ) = MusicServiceConnection(context)
 
     //AnimeMangaDetail
     @Singleton

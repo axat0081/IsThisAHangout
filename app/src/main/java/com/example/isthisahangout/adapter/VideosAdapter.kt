@@ -71,8 +71,6 @@ class VideosPagingAdapter(private val listener: OnItemClickListener) :
         @SuppressLint("SetTextI18n")
         fun bind(video: FirebaseVideo) {
             binding.apply {
-                masterExoPlayer.imageView = videoThumbnailImageView
-                masterExoPlayer.url = video.url
                 Glide.with(itemView)
                     .load(video.thumbnail)
                     .apply(object : RequestOptions() {}.override(600, 200))

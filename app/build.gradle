@@ -113,15 +113,15 @@ dependencies {
 
     // ExoPlayer
     //exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.1'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.4'
     // for PlayerNotificationManager
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.1'
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.4'
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.4'
     implementation 'com.github.norulab:android-exoplayer-fullscreen:1.2.1'
-    implementation "com.google.android.exoplayer:extension-mediasession:2.13.3"
+    implementation "com.google.android.exoplayer:extension-mediasession:2.18.4"
 
     // Media3
-    def media3_version = "1.0.0-beta03"
+    def media3_version = "1.0.0-rc02"
     implementation "androidx.media3:media3-common:$media3_version"
     implementation "androidx.media3:media3-ui:$media3_version"
     implementation "androidx.media3:media3-session:$media3_version"

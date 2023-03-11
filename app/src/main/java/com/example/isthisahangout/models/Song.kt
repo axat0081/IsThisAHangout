@@ -1,9 +1,6 @@
 package com.example.isthisahangout.models
 
 import android.os.Parcelable
-import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -49,19 +46,3 @@ fun Song.toSongDto(): SongDto =
         songUrl = url,
         imageUrl = thumbnail
     )
-
-fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
-    .setMediaId(id)
-    .setRequestMetadata(
-        MediaItem.RequestMetadata.Builder()
-            .setMediaUri(url.toUri())
-            .build()
-    ).setMediaMetadata(
-        MediaMetadata.Builder()
-            .setArtworkUri(thumbnail.toUri())
-            .setTitle(title)
-            .setArtist(username)
-            .setFolderType(MediaMetadata.FOLDER_TYPE_NONE)
-            .setIsPlayable(true)
-            .build()
-    ).build()
