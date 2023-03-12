@@ -7,22 +7,11 @@
     android:background="@drawable/bgdetails"
     tools:context=".ui.detailsscreen.VideoDetailsFragment">
 
-    <ProgressBar
-        android:id="@+id/videos_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="122dp" />
-
     <androidx.media3.ui.PlayerView
         android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        app:controller_layout_id="@layout/custom_controller"
-        app:resize_mode="fill"
-        app:show_buffering="always"
-        app:show_timeout="5000"
-        app:use_controller="true" />
+        app:controller_layout_id="@layout/custom_controller" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

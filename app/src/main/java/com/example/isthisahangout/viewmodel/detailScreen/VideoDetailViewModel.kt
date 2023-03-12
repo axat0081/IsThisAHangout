@@ -3,10 +3,12 @@ package com.example.isthisahangout.viewmodel.detailScreen
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.cache.favourites.FavouritesDao
 import com.example.isthisahangout.cache.videos.VideosDao
@@ -16,11 +18,7 @@ import com.example.isthisahangout.models.LikedVideoId
 import com.example.isthisahangout.models.favourites.FavVideo
 import com.example.isthisahangout.repository.CommentsRepository
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
-import com.example.isthisahangout.utils.VideoCache
 import com.example.isthisahangout.utils.asFlow
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,18 +40,14 @@ class VideoDetailViewModel @Inject constructor(
     @Named("VideoRef")
     private val videosRef: CollectionReference,
     commentsRepository: CommentsRepository,
+    @Named("VideoPlayer") val player: Player,
 ) : ViewModel() {
     val video = savedStateHandle.get<FirebaseVideo>(VIDEO)!!
-    var simpleExoPlayer = ExoPlayer.Builder(app.applicationContext).build()
-    private val videoCache = VideoCache(app.applicationContext)
+
 
     init {
-        val mediaSource = ProgressiveMediaSource.Factory(
-            videoCache
-        ).createMediaSource(MediaItem.fromUri(Uri.parse(video.url!!)))
-        simpleExoPlayer.setMediaSource(mediaSource)
-        Log.e("video", "Preparing")
-        simpleExoPlayer.prepare()
+        player.prepare()
+        player.addMediaItem(MediaItem.fromUri(video.url!!.toUri()))
     }
 
     var replyingToCommentId = savedStateHandle.get<String>("replying_to_comment_id")
@@ -91,11 +85,8 @@ class VideoDetailViewModel @Inject constructor(
             field = value
             savedStateHandle["comment_text"] = commentText
         }
-    var commentImage = savedStateHandle.get<Uri>("comment_image")
-        set(value) {
-            field = value
-            savedStateHandle["comment_image"] = commentImage
-        }
+    val commentImage = savedStateHandle.getStateFlow<String?>("comment_image", null)
+
 
     val comments = commentsRepository.getVideosComments(video.id)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
@@ -123,6 +114,10 @@ class VideoDetailViewModel @Inject constructor(
         _showDetails.value = !_showDetails.value
     }
 
+    fun setCommentImage(uri: Uri?) {
+        savedStateHandle["comment_image"] = uri?.toString()
+    }
+
     fun onLikeClick() {
         if (video.id == null) return
         if (isLiked.value) {
@@ -132,7 +127,6 @@ class VideoDetailViewModel @Inject constructor(
                         .await()
                     videosDao.deleteLikedVideo(video.id, MainActivity.userId)
                 } catch (exception: Exception) {
-                    videosDao.insert(LikedVideoId(videoId = video.id, userId = MainActivity.userId))
                     videosLikeBookMarkEventChannel.send(VideoLikeBookMarkEvent.VideosLikeError("Could not remove like: ${exception.localizedMessage}"))
                 }
             }
@@ -179,7 +173,7 @@ class VideoDetailViewModel @Inject constructor(
 
 
     fun onCommentSendClick(video: FirebaseVideo) {
-        if (commentText.isNullOrBlank() && commentImage == null) {
+        if (commentText.isNullOrBlank() && commentImage.value == null) {
             viewModelScope.launch {
                 videosCommentEventChannel.send(VideosCommentEvent.CommentSendFailure("Comment cannot be blank"))
             }
@@ -189,7 +183,7 @@ class VideoDetailViewModel @Inject constructor(
                 text = commentText,
                 pfp = MainActivity.userPfp,
                 time = System.currentTimeMillis(),
-                image = if (commentImage == null) null else commentImage.toString(),
+                image = if (commentImage.value == null) null else commentImage.toString(),
                 contentId = video.id,
                 replyingToCommentId = replyingToCommentId,
                 replyingToUserId = replyingToUserId,
@@ -203,14 +197,13 @@ class VideoDetailViewModel @Inject constructor(
                     .putExtra("path", "comment")
                     .setAction(FirebaseUploadService.ACTION_UPLOAD)
             )
-            commentImage = null
+            setCommentImage(null)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        simpleExoPlayer.release()
-        videoCache.release()
+        player.release()
     }
 
     sealed class VideoLikeBookMarkEvent {

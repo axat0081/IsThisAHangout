@@ -303,7 +303,7 @@ class FirebaseUploadService : BaseService() {
                         }
                     }.addOnFailureListener { exception ->
                         // Upload failed
-                        Log.w(TAG, "uploadFromUri:onFailure", exception)
+                        Log.w(TAG, "uploadFromUri:onFailure, ${exception.localizedMessage}", exception)
 
                         // [START_EXCLUDE]
                         broadcastUploadFinished(null, image)

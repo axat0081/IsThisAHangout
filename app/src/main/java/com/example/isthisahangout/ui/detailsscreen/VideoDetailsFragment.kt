@@ -9,6 +9,7 @@ import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.ui.PlayerView
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,15 +30,17 @@ import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentVideoDetailsBinding
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.utils.Resource
+import com.example.isthisahangout.utils.observeFlows
 import com.example.isthisahangout.viewmodel.detailScreen.VideoDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.lang.Integer.min
 import java.text.DateFormat
 
 @AndroidEntryPoint
 class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
-    CommentsAdapter.OnItemLongClickListener, CommentsAdapter.OnReplyingToClickListener {
+    CommentsAdapter.OnItemLongClickListener, CommentsAdapter.OnReplyingToClickListener, PlayerView.FullscreenButtonClickListener {
     private var _binding: FragmentVideoDetailsBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<VideoDetailViewModel>()
@@ -51,11 +55,7 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
-                viewModel.commentImage = uri
-                binding.addCommentImageView.visibility = VISIBLE
-                Glide.with(requireContext())
-                    .load(uri)
-                    .into(binding.addCommentImageView)
+                viewModel.setCommentImage(uri)
             } else {
                 val error = result.error
                 error?.let { exception ->
@@ -67,7 +67,6 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                 }
             }
         }
-
         binding.apply {
             commentRecyclerView.apply {
                 layoutManager =
@@ -76,11 +75,21 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                 itemAnimator = null
                 isVisible = true
             }
-            addCommentImageView.visibility = GONE
-            playerView.player = viewModel.simpleExoPlayer
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            playerView.player = viewModel.player
+            observeFlows { coroutineScope ->
+                coroutineScope.launch {
+                    viewModel.commentImage.collect { image->
+                        if(image == null) {
+                            addCommentImageView.visibility = GONE
+                        } else {
+                            addCommentImageView.visibility = VISIBLE
+                            Glide.with(requireContext())
+                                .load(image.toUri())
+                                .into(binding.addCommentImageView)
+                        }
+                    }
+                }
+                coroutineScope.launch {
                     viewModel.comments.collect { result ->
                         if (result == null) return@collect
                         commentsAdapter.submitList(result.data)
@@ -100,9 +109,7 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                         }
                     }
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.isBookMarked.collect {
                         bookmarkImageView.setImageResource(
                             if (it) R.drawable.bookmarked
@@ -110,16 +117,12 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                         )
                     }
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.isLiked.collect {
                         likeButton.isLiked = it
                     }
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.showDetails.collect {
                         if (it) {
                             showDetailsButton.setImageResource(R.drawable.shrink)
@@ -131,10 +134,7 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
                         }
                     }
                 }
-            }
-
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.currentVideo.collect { video->
                         likeTextView.text = (video?.likes?:0).toString()
                     }
@@ -301,9 +301,25 @@ class VideoDetailsFragment : Fragment(R.layout.fragment_video_details),
         }
     }
 
+    override fun onFullscreenButtonClick(isFullScreen: Boolean) {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.playerView.onResume()
+        binding.playerView.player?.play()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.playerView.onPause()
+        binding.playerView.player?.pause()
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        viewModel.simpleExoPlayer.release()
     }
 }
