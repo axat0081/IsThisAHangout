@@ -22,7 +22,7 @@ class UserRepository @Inject constructor(
     @Named("ComfortCharacterRef")
     private val comfortCharacterRef: CollectionReference,
     @Named("RemindersRef")
-    private val remindersRef: CollectionReference
+    private val remindersRef: CollectionReference,
 ) {
 
     fun getComfortCharacters(userId: String): Flow<List<ComfortCharacter>> =
@@ -44,10 +44,11 @@ class UserRepository @Inject constructor(
     fun createReminder(userId: String, reminder: Reminder): Flow<Resource<FirebaseResult>> = flow {
         emit(Resource.Loading())
         val id = userId + System.currentTimeMillis()
+        val newReminder = reminder.copy(id = id)
         try {
             remindersRef.document(userId).collection("reminders")
                 .document(id)
-                .set(reminder)
+                .set(newReminder)
                 .await()
             emit(Resource.Success(FirebaseResult(result = true, message = "Reminder added")))
         } catch (exception: Exception) {
@@ -77,6 +78,12 @@ class UserRepository @Inject constructor(
         } catch (exception: IOException) {
             emit(Resource.Error(throwable = exception))
         }
+    }
+
+    suspend fun updateReminder(userId: String, reminderId: String, isChecked: Boolean) {
+        remindersRef.document(userId).collection("reminders").document(reminderId)
+            .update("done", isChecked)
+            .await()
     }
 
 }

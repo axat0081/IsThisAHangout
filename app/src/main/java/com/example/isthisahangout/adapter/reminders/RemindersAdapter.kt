@@ -41,18 +41,30 @@ class RemindersAdapter(private val listener: OnItemClickListener) :
 
     interface OnItemClickListener {
         fun onItemClick(reminder: Reminder)
+        fun onCheckBoxClickListener(reminder: Reminder, isChecked: Boolean)
     }
 
     inner class RemindersViewHolder(private val binding: RemindersDisplayLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val item = getItem(position)
-                    if (item != null) {
-                        listener.onItemClick(item)
+            binding.apply {
+                root.setOnClickListener {
+                    val position = bindingAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val item = getItem(position)
+                        if (item != null) {
+                            listener.onItemClick(item)
+                        }
+                    }
+                }
+                checkBoxCompleted.setOnClickListener {
+                    val position = bindingAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        val item = getItem(position)
+                        if (item != null) {
+                            listener.onCheckBoxClickListener(item, checkBoxCompleted.isChecked)
+                        }
                     }
                 }
             }
@@ -61,8 +73,9 @@ class RemindersAdapter(private val listener: OnItemClickListener) :
         fun bind(reminder: Reminder) {
             binding.apply {
                 binding.apply {
-                    checkBoxCompleted.isChecked = reminder.isDone
+                    checkBoxCompleted.isChecked = reminder.done
                     textViewName.text = reminder.name
+                    textViewName.paint.isStrikeThruText = reminder.done
                     val time = DateFormat.getDateTimeInstance().format(Date(reminder.time))
                     val idx = time.lastIndexOf(':')
                     dateTextView.text = time.substring(startIndex = 0, endIndex = idx - 1)

@@ -1,6 +1,5 @@
 package com.example.isthisahangout.utils
 
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -8,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.CoroutineScope
+import kotlin.random.Random
 
 private const val ProgressDivider = 100f
 private const val ZeroProgress = 0f
@@ -17,7 +17,6 @@ val <T> T.exhaustive: T
 internal fun convertToProgress(count: Long, total: Long) =
     ((count * ProgressDivider) / total / ProgressDivider).takeIf(Float::isFinite) ?: ZeroProgress
 
-val LocalSpacing = compositionLocalOf { Dimensions() }
 data class Dimensions(
     val default: Dp = 0.dp,
     val spaceExtraSmall: Dp = 4.dp,
@@ -36,3 +35,5 @@ inline fun Fragment.observeFlows(crossinline observationFunction: suspend (Corou
         }
     }
 }
+
+fun Random.nextFloat(start: Float, end: Float) = start + nextFloat() * (end - start)

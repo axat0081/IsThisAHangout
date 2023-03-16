@@ -2,6 +2,10 @@ package com.example.isthisahangout.ui.navDrawer
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +18,7 @@ import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.reminders.RemindersAdapter
 import com.example.isthisahangout.databinding.FragmentRemindersBinding
 import com.example.isthisahangout.models.reminders.Reminder
+import com.example.isthisahangout.ui.components.ComposeClock
 import com.example.isthisahangout.utils.Resource
 import com.example.isthisahangout.viewmodel.RemindersViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +36,17 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
         _binding = FragmentRemindersBinding.bind(view)
         val remindersAdapter = RemindersAdapter(this)
         binding.apply {
+
+            reminderClockComposeView.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    ComposeClock(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    )
+                }
+            }
+
             remindersRecyclerview.apply {
                 adapter = remindersAdapter
                 layoutManager =
@@ -38,7 +54,10 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
             }
             addReminderButton.setOnClickListener {
                 findNavController().navigate(
-                    RemindersFragmentDirections.actionRemindersFragment2ToAddReminderFragment()
+                    RemindersFragmentDirections.actionRemindersFragment2ToAddReminderFragment(
+                        reminderDesc = "",
+                        reminderName = ""
+                    )
                 )
             }
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
@@ -53,6 +72,19 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
                                 ?: getString(R.string.aw_snap_an_error_occurred)
                         } else {
                             remindersErrorTextView.isVisible = false
+                        }
+                    }
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.reminderUpdateIsDoneEventFlow.collect { event ->
+                        when (event) {
+                            is RemindersViewModel.RemindersUpdateIsDoneEvent.ReminderUpdateIsDoneFailure -> {
+                                Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
                     }
                 }
@@ -74,6 +106,10 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders),
                 reminderMinute = calendar.get(Calendar.MINUTE)
             )
         )
+    }
+
+    override fun onCheckBoxClickListener(reminder: Reminder, isChecked: Boolean) {
+        viewModel.onCheckBoxClick(reminder, isChecked)
     }
 
     override fun onDestroyView() {

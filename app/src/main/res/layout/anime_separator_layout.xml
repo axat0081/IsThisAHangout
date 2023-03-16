@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="220dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="@color/myblack"
+    app:cardBackgroundColor="@color/transparent_dark"
+    app:cardCornerRadius="30dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout

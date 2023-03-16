@@ -1,44 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bgdetails"
-    tools:context=".ui.navDrawer.RemindersFragment">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_reminder_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:src="@drawable/add"
-        android:contentDescription="@string/add_reminder" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reminders_recyclerview"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        tools:itemCount="40"
-        android:layout_marginBottom="10dp"
-        tools:listitem="@layout/reminders_display_layout" />
+        android:background="@drawable/bgdetails"
+        tools:context=".ui.navDrawer.RemindersFragment">
 
-    <ProgressBar
-        android:id="@+id/reminders_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/reminder_clock_compose_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp" />
 
-    <TextView
-        android:id="@+id/reminders_error_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_margin="20dp"
-        android:textAlignment="center"
-        android:textColor="@color/mypink"
-        android:visibility="gone"
-        tools:text="@string/aw_snap_an_error_occurred" />
-</RelativeLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reminders_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/reminder_clock_compose_view"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            tools:itemCount="40"
+            tools:listitem="@layout/reminders_display_layout" />
+
+        <ProgressBar
+            android:id="@+id/reminders_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/reminders_error_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="20dp"
+            android:textAlignment="center"
+            android:textColor="@color/mypink"
+            android:visibility="gone"
+            tools:text="@string/aw_snap_an_error_occurred" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_reminder_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/reminders_recyclerview"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="20dp"
+            android:contentDescription="@string/add_reminder"
+            android:src="@drawable/add" />
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
