@@ -3,7 +3,6 @@ package com.example.isthisahangout.viewmodel.detailScreen
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -102,8 +101,6 @@ class PostDetailsViewModel @Inject constructor(
         favPosts.any { it.id == post.id }
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
     val isLiked = postsDao.getLikesPostsId(MainActivity.userId).map { likedPosts ->
-        Log.e("likes", likedPosts.toString())
-        Log.e("likes", MainActivity.userId + " " + post.id!!)
         likedPosts.any { it.postId == post.id }
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 

@@ -259,7 +259,7 @@ class PostsDetailsFragment : Fragment(R.layout.fragment_post_details),
             .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(
             requireActivity().window
-                .currentFocus!!.windowToken, 0
+                .currentFocus?.windowToken, 0
         )
     }
 

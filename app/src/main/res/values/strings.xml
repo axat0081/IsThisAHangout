@@ -86,4 +86,7 @@
     <string name="no_messages_yet">No messages yet</string>
     <string name="media_duration_divider">/</string>
     <string name="full_screen">full Screen</string>
+    <string name="rewind">Rewind</string>
+    <string name="forward">Forward</string>
+    <string name="divider">Divider</string>
 </resources>

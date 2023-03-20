@@ -5,17 +5,15 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.layout.*
-import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -27,10 +25,13 @@ import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentSongDetailBinding
 import com.example.isthisahangout.models.Comments
 import com.example.isthisahangout.utils.Resource
+import com.example.isthisahangout.utils.observeFlows
 import com.example.isthisahangout.viewmodel.detailScreen.SongDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -53,10 +54,7 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
         cropImage = registerForActivityResult(CropImageContract()) { result ->
             if (result.isSuccessful) {
                 val uri = result.uriContent
-                viewModel.commentImage = uri
-                Glide.with(requireContext())
-                    .load(uri)
-                    .into(binding.addCommentImageView)
+                viewModel.setCommentImageUri(uri)
             } else {
                 val error = result.error
                 error?.let { exception ->
@@ -76,11 +74,70 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                 itemAnimator = null
                 isVisible = true
             }
-            addCommentImageView.visibility = View.GONE
+            songSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(
+                    seekBar: SeekBar?,
+                    progress: Int,
+                    fromUser: Boolean,
+                ) {
+                    viewModel.seekTo((progress * 1000).toLong())
+                }
 
-            songPlayerView.setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                override fun onStartTrackingTouch(p0: SeekBar?) {
+
+                }
+
+                override fun onStopTrackingTouch(p0: SeekBar?) {
+
+                }
+
+            })
+            songPlayPauseButton.setOnClickListener {
+                if (viewModel.isPlaying()) {
+                    songPlayPauseButton.setImageResource(R.drawable.song_play)
+                    viewModel.pause()
+                } else {
+                    songPlayPauseButton.setImageResource(R.drawable.song_pause)
+                    viewModel.play()
+                }
+            }
+            songRewindButton.setOnClickListener {
+                viewModel.rewind()
+            }
+            songForwardButton.setOnClickListener {
+                viewModel.forward()
+            }
+            songDurationTextView.text = "00:00"
+            observeFlows { coroutineScope ->
+                coroutineScope.launch {
+                    viewModel.songDuration.collect { songDuration ->
+                        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+                        songDurationTextView.text = dateFormat.format(songDuration)
+                        songSeekBar.max = songDuration.toInt()
+                    }
+                }
+                coroutineScope.launch {
+                    viewModel.seekbarPosition.collect {
+                        if (it == null) return@collect
+                        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
+                        songCurrentPositionTextView.text = dateFormat.format(it.first)
+                        if(it.second != 0L)
+                        songSeekBar.progress = it.first.toInt()
+                    }
+                }
+                coroutineScope.launch {
+                    viewModel.commentImage.collect { image ->
+                        if (image == null) {
+                            addCommentImageView.isVisible = false
+                        } else {
+                            addCommentImageView.isVisible = true
+                            Glide.with(requireContext())
+                                .load(image.toUri())
+                                .into(addCommentImageView)
+                        }
+                    }
+                }
+                coroutineScope.launch {
                     viewModel.comments.collect { result ->
                         if (result == null) return@collect
                         commentsAdapter.submitList(result.data)
@@ -100,9 +157,7 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                         }
                     }
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.showDetails.collect {
                         if (it) {
                             showDetailsButton.setImageResource(R.drawable.shrink)
@@ -114,9 +169,7 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                         }
                     }
                 }
-            }
-            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                coroutineScope.launch {
                     viewModel.songEventFlow.collect { event ->
                         when (event) {
                             is SongDetailViewModel.SongEvent.SongError -> {
@@ -130,7 +183,6 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                     }
                 }
             }
-
             songTitleTextView.text = song.title
             uploaderUsername.text = song.username
             timeTextView.text = DateFormat.getDateTimeInstance().format(song.time).dropLast(3)

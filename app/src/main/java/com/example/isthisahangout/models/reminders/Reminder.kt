@@ -9,5 +9,6 @@ data class Reminder(
     val name: String? = null,
     val desc: String? = null,
     val time: Long = 0,
-    val done: Boolean = false
+    val done: Boolean = false,
+    val userId: String? = null
 ): Parcelable

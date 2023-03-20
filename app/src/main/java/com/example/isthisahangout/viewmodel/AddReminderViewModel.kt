@@ -96,7 +96,8 @@ class AddReminderViewModel @Inject constructor(
                 MainActivity.userId, Reminder(
                     name = reminderName.value,
                     desc = reminderDesc.value,
-                    time = reminderTime.value
+                    time = reminderTime.value,
+                    userId = MainActivity.userId
                 )
             ).onEach { result ->
                 _isLoading.value = result is Resource.Loading
