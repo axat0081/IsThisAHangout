@@ -5,10 +5,22 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Slider
+import androidx.compose.material.Text
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -16,6 +28,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -24,14 +38,13 @@ import com.example.isthisahangout.R
 import com.example.isthisahangout.adapter.CommentsAdapter
 import com.example.isthisahangout.databinding.FragmentSongDetailBinding
 import com.example.isthisahangout.models.Comments
-import com.example.isthisahangout.utils.Resource
-import com.example.isthisahangout.utils.observeFlows
+import com.example.isthisahangout.ui.components.PlayerButtons
+import com.example.isthisahangout.utils.*
 import com.example.isthisahangout.viewmodel.detailScreen.SongDetailViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -74,57 +87,76 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                 itemAnimator = null
                 isVisible = true
             }
-            songSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(
-                    seekBar: SeekBar?,
-                    progress: Int,
-                    fromUser: Boolean,
-                ) {
-                    viewModel.seekTo((progress * 1000).toLong())
-                }
-
-                override fun onStartTrackingTouch(p0: SeekBar?) {
-
-                }
-
-                override fun onStopTrackingTouch(p0: SeekBar?) {
-
-                }
-
-            })
-            songPlayPauseButton.setOnClickListener {
-                if (viewModel.isPlaying()) {
-                    songPlayPauseButton.setImageResource(R.drawable.song_play)
-                    viewModel.pause()
-                } else {
-                    songPlayPauseButton.setImageResource(R.drawable.song_pause)
-                    viewModel.play()
+            songPlayerComposeView.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    val musicState by viewModel.musicState.collectAsState()
+                    val currentPosition by viewModel.currentPosition.collectAsState()
+                    val progress by animateFloatAsState(
+                        targetValue = convertToProgress(
+                            count = currentPosition,
+                            total = musicState.duration
+                        )
+                    )
+                    val spacing = LocalSpacing.current
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))
+                        Box(
+                            modifier = Modifier.padding(all = spacing.spaceMedium)
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(musicState.currentSong.thumbnail.toUri())
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .sizeIn(maxWidth = 500.dp, maxHeight = 500.dp)
+                                    .aspectRatio(1f)
+                                    .clip(MaterialTheme.shapes.medium)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))
+                        Slider(
+                            modifier = Modifier.padding(horizontal = spacing.spaceMedium),
+                            value = progress,
+                            onValueChange = { }
+                        )
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = spacing.spaceMedium)
+                        ) {
+                            Text(
+                                text = (currentPosition / 1000).toInt().asFormattedString(),
+                                color = Color(0x66D9EF)
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Text(
+                                text = (musicState.duration / 1000).toInt().asFormattedString(),
+                                color = Color(0x66D9EF)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))
+                        PlayerButtons(
+                            modifier = Modifier.fillMaxWidth(),
+                            playWhenReady = musicState.playWhenReady,
+                            play = { viewModel.play() },
+                            pause = { viewModel.pause() },
+                            replay10 = { },
+                            forward10 = { },
+                            next = { viewModel.skipNext() },
+                            previous = { viewModel.skipPrevious() }
+                        )
+                        Spacer(modifier = Modifier.height(spacing.spaceExtraLarge))
+                    }
                 }
             }
-            songRewindButton.setOnClickListener {
-                viewModel.rewind()
-            }
-            songForwardButton.setOnClickListener {
-                viewModel.forward()
-            }
-            songDurationTextView.text = "00:00"
             observeFlows { coroutineScope ->
-                coroutineScope.launch {
-                    viewModel.songDuration.collect { songDuration ->
-                        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-                        songDurationTextView.text = dateFormat.format(songDuration)
-                        songSeekBar.max = songDuration.toInt()
-                    }
-                }
-                coroutineScope.launch {
-                    viewModel.seekbarPosition.collect {
-                        if (it == null) return@collect
-                        val dateFormat = SimpleDateFormat("mm:ss", Locale.getDefault())
-                        songCurrentPositionTextView.text = dateFormat.format(it.first)
-                        if(it.second != 0L)
-                        songSeekBar.progress = it.first.toInt()
-                    }
-                }
                 coroutineScope.launch {
                     viewModel.commentImage.collect { image ->
                         if (image == null) {

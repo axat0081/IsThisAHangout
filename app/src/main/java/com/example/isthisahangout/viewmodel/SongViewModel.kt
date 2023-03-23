@@ -12,6 +12,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.MainActivity
 import com.example.isthisahangout.models.Song
 import com.example.isthisahangout.models.SongDto
+import com.example.isthisahangout.models.toSong
+import com.example.isthisahangout.service.music.MusicServiceConnection
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.utils.asResourceFlow
 import com.google.firebase.firestore.CollectionReference
@@ -29,7 +31,8 @@ class SongViewModel @Inject constructor(
     private val app: Application,
     private val state: SavedStateHandle,
     @Named("SongRef")
-    private val musicCollectionRef: CollectionReference
+    private val musicCollectionRef: CollectionReference,
+    private val musicServiceConnection: MusicServiceConnection,
 ) : AndroidViewModel(app) {
 
     private val songChannel = Channel<SongEvent>()
@@ -66,7 +69,9 @@ class SongViewModel @Inject constructor(
     }
 
     val songs = musicCollectionRef.asResourceFlow {
-        it.toObjects(SongDto::class.java)
+        val songList = it.toObjects(SongDto::class.java)
+        musicServiceConnection.setSongList(songList.toList().map { songDto -> songDto.toSong() })
+        songList
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun onUploadClick() {
@@ -114,7 +119,10 @@ class SongViewModel @Inject constructor(
         }
     }
 
-
+    override fun onCleared() {
+        super.onCleared()
+        musicServiceConnection.release()
+    }
 
     sealed class SongEvent {
         data class UploadSongSuccess(val message: String) : SongEvent()

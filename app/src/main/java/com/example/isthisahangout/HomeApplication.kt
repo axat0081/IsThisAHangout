@@ -11,12 +11,10 @@ import com.vanniktech.emoji.twitter.TwitterEmojiProvider
 import dagger.hilt.android.HiltAndroidApp
 
 const val SONG_CHANNEL_ID = "song_notification_channel"
+const val SONG_NOTIFICATION_CHANNEL_NAME = "Music Notification"
+const val SONG_NOTIFICATION_ID = 1207
 const val GENERIC_CHANNEL_ID = "generic_notification_channel"
 const val GENERIC_CHANNEL_DESCRIPTION = "Generic Notifications"
-const val PLAY = "play"
-const val NEXT = "next"
-const val PREVIOUS = "previous"
-const val EXIT = "EXIT"
 
 @HiltAndroidApp
 class HomeApplication : Application() {
@@ -28,8 +26,8 @@ class HomeApplication : Application() {
             val songNotificationChannel =
                 NotificationChannel(
                     SONG_CHANNEL_ID,
-                    "Song Playing",
-                    NotificationManager.IMPORTANCE_HIGH
+                    SONG_NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_LOW
                 )
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(songNotificationChannel)
