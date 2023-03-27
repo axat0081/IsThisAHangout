@@ -6,12 +6,15 @@ import android.util.Log
 import androidx.media3.common.Player
 import androidx.media3.common.Player.*
 import androidx.media3.session.MediaBrowser
+import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.work.await
+import com.example.isthisahangout.api.MusicDatabase
 import com.example.isthisahangout.models.Song
 import com.example.isthisahangout.models.asSong
 import com.example.isthisahangout.models.music.MusicState
 import com.example.isthisahangout.models.toMediaItem
+import com.example.isthisahangout.models.toSong
 import com.example.isthisahangout.utils.asPlaybackState
 import com.example.isthisahangout.utils.orDefaultTimestamp
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,6 +28,7 @@ import javax.inject.Singleton
 @Singleton
 class MusicServiceConnection @Inject constructor(
     @ApplicationContext context: Context,
+    private val musicDatabase: MusicDatabase,
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var mediaBrowser: MediaBrowser? = null
@@ -44,16 +48,23 @@ class MusicServiceConnection @Inject constructor(
 
     init {
         coroutineScope.launch {
+            songList = musicDatabase.getAllSongs().map { it.toSong() }
             mediaBrowser = MediaBrowser.Builder(
                 context,
                 SessionToken(context, ComponentName(context, MusicService::class.java))
             ).buildAsync().await().apply {
+                setMediaItems(songList.map { it.toMediaItem() } )
                 addListener(PlayerListener())
-                setMediaItems(songList.map {
-                    it.toMediaItem()
-                }, 0, 0L)
             }
         }
+    }
+
+    fun subscribe(parentId: String) {
+        mediaBrowser?.subscribe(parentId, null)
+    }
+
+    fun unsubscribe(parentId: String) {
+        mediaBrowser?.unsubscribe(parentId)
     }
 
     fun skipPrevious() = mediaBrowser?.run {
@@ -74,19 +85,24 @@ class MusicServiceConnection @Inject constructor(
         play()
     }
 
-    fun setSongList(songs: List<Song>) {
-        songList = songs
-    }
-
     fun playSong(
         song: Song,
     ) {
-        Log.e("songList", songList.toString())
-        val index = songList.indexOf(song)
         mediaBrowser?.run {
-            seekTo(index, 0L)
-            prepare()
-            play()
+            var index = -1
+            for (i in 0 until songList.size - 1) {
+                if (songList[i].id == song.id) {
+                    index = i
+                    break
+                }
+            }
+            if (index != -1) {
+                setMediaItems(songList.map { it.toMediaItem() }, index, 0)
+                prepare()
+                play()
+            } else {
+                Log.e("Error", "index of song is -1")
+            }
         }
     }
 
@@ -121,6 +137,8 @@ class MusicServiceConnection @Inject constructor(
             duration = player.duration.orDefaultTimestamp()
         )
     }
+
+
 
     fun release() {
         mediaBrowser?.run {

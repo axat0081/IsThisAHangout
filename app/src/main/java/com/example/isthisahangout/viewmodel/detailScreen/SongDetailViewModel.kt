@@ -29,7 +29,6 @@ class SongDetailViewModel @Inject constructor(
     private val musicServiceConnection: MusicServiceConnection,
 ) : AndroidViewModel(app) {
     val song = savedStateHandle.get<Song>(SONG)!!
-
     val musicState = musicServiceConnection.musicState
     val currentPosition = musicServiceConnection.currentPosition
         .stateIn(viewModelScope, SharingStarted.Lazily, 0L)

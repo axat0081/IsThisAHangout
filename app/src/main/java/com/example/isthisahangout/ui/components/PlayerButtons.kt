@@ -7,20 +7,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Forward10
-import androidx.compose.material.icons.filled.Replay10
-import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.isthisahangout.R
-import com.example.isthisahangout.utils.AppIcons
 
 @Composable
 fun PlayerButtons(
@@ -46,7 +41,8 @@ fun PlayerButtons(
             Icon(
                 painter = painterResource(id = R.drawable.song_skip_prev),
                 modifier = Modifier.size(sideButtonSize),
-                contentDescription = stringResource(id = R.string.previous)
+                contentDescription = stringResource(id = R.string.previous),
+                tint = Color(0xFFF92672)
             )
         }
         IconButton(
@@ -55,7 +51,8 @@ fun PlayerButtons(
             Icon(
                 painter = painterResource(id = R.drawable.song_rewind),
                 modifier = Modifier.size(sideButtonSize),
-                contentDescription = stringResource(id = R.string.replay10)
+                contentDescription = stringResource(id = R.string.replay10),
+                tint = Color(0xFFF92672)
             )
         }
         Crossfade(targetState = playWhenReady, animationSpec = spring()) { targetPlayWhenReady ->
@@ -66,7 +63,8 @@ fun PlayerButtons(
                     Icon(
                         painter = painterResource(id = R.drawable.song_pause),
                         modifier = Modifier.size(playerButtonSize),
-                        contentDescription = stringResource(id = R.string.play)
+                        contentDescription = stringResource(id = R.string.play),
+                        tint = Color(0xFFF92672)
                     )
                 }
             } else {
@@ -76,7 +74,8 @@ fun PlayerButtons(
                     Icon(
                         painter = painterResource(id = R.drawable.song_play),
                         modifier = Modifier.size(playerButtonSize),
-                        contentDescription = stringResource(id = R.string.play)
+                        contentDescription = stringResource(id = R.string.play),
+                        tint = Color(0xFFF92672)
                     )
                 }
             }
@@ -87,7 +86,8 @@ fun PlayerButtons(
             Icon(
                 painter = painterResource(id = R.drawable.song_forward),
                 modifier = Modifier.size(sideButtonSize),
-                contentDescription = stringResource(id = R.string.forward10)
+                contentDescription = stringResource(id = R.string.forward10),
+                tint = Color(0xFFF92672)
             )
         }
         IconButton(
@@ -96,7 +96,8 @@ fun PlayerButtons(
             Icon(
                 painter = painterResource(id = R.drawable.song_skip_next),
                 modifier = Modifier.size(sideButtonSize),
-                contentDescription = stringResource(id = R.string.next)
+                contentDescription = stringResource(id = R.string.next),
+                tint = Color(0xFFF92672)
             )
         }
     }

@@ -68,5 +68,4 @@ class MusicSessionCallback @Inject constructor(
         coroutineScope.cancel()
         musicActionHandler.cancelCoroutineScope()
     }
-
 }

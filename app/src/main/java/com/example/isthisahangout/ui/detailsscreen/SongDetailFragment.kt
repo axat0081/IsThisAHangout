@@ -133,12 +133,12 @@ class SongDetailFragment : Fragment(R.layout.fragment_song_detail),
                         ) {
                             Text(
                                 text = (currentPosition / 1000).toInt().asFormattedString(),
-                                color = Color(0x66D9EF)
+                                color = Color(0xFF66D9EF)
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
                                 text = (musicState.duration / 1000).toInt().asFormattedString(),
-                                color = Color(0x66D9EF)
+                                color = Color(0xFF66D9EF)
                             )
                         }
                         Spacer(modifier = Modifier.height(spacing.spaceMediumLarge))

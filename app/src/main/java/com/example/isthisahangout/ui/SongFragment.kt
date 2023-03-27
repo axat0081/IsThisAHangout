@@ -25,6 +25,7 @@ class SongFragment : Fragment(R.layout.fragment_song), SongAdapter.OnItemClickLi
     private var _binding: FragmentSongBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModels<SongViewModel>()
+
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,12 +42,12 @@ class SongFragment : Fragment(R.layout.fragment_song), SongAdapter.OnItemClickLi
             songRetryButton.isVisible = false
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.songs.collect { result->
-                        if(result == null) return@collect
+                    viewModel.songs.collect { result ->
+                        if (result == null) return@collect
                         songAdapter.submitList(result.data?.map {
                             it.toSong()
                         })
-                        when(result){
+                        when (result) {
                             is Resource.Loading -> {
                                 songRefreshLayout.isRefreshing = true
                                 songErrorTextView.isVisible = false
@@ -58,7 +59,7 @@ class SongFragment : Fragment(R.layout.fragment_song), SongAdapter.OnItemClickLi
                             is Resource.Error -> {
                                 songRefreshLayout.isRefreshing = false
                                 songErrorTextView.isVisible = true
-                                val message = result.error?.localizedMessage?: ""
+                                val message = result.error?.localizedMessage ?: ""
                                 songErrorTextView.text = "Error: $message"
                             }
                         }

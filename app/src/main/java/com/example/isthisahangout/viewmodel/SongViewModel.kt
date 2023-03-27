@@ -10,9 +10,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.isthisahangout.MainActivity
+import com.example.isthisahangout.api.MEDIA_ROOT_ID
 import com.example.isthisahangout.models.Song
 import com.example.isthisahangout.models.SongDto
-import com.example.isthisahangout.models.toSong
 import com.example.isthisahangout.service.music.MusicServiceConnection
 import com.example.isthisahangout.service.uploadService.FirebaseUploadService
 import com.example.isthisahangout.utils.asResourceFlow
@@ -37,6 +37,11 @@ class SongViewModel @Inject constructor(
 
     private val songChannel = Channel<SongEvent>()
     val songEventFlow = songChannel.receiveAsFlow()
+
+    init {
+        musicServiceConnection.subscribe(MEDIA_ROOT_ID)
+    }
+
 
     var songTitle = state.get<String>("song_title") ?: ""
         set(value) {
@@ -69,9 +74,7 @@ class SongViewModel @Inject constructor(
     }
 
     val songs = musicCollectionRef.asResourceFlow {
-        val songList = it.toObjects(SongDto::class.java)
-        musicServiceConnection.setSongList(songList.toList().map { songDto -> songDto.toSong() })
-        songList
+        it.toObjects(SongDto::class.java)
     }.stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     fun onUploadClick() {
@@ -121,7 +124,7 @@ class SongViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnection.release()
+        musicServiceConnection.unsubscribe(MEDIA_ROOT_ID)
     }
 
     sealed class SongEvent {
